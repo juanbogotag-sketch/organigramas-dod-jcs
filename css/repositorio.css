@@ -30,8 +30,15 @@ header h1 {
 }
 
 header p { margin: 2px 0; color: #cfd8e6; font-size: 14px; }
-header .hlink { margin-top: 10px; }
-header .hlink a { color: #9fc3e8; font-size: 13px; }
+.hlinks { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.hbtn {
+  display: inline-block; background: transparent; border: 1px solid #9fc3e8; color: #dbe7f5;
+  padding: 8px 18px; border-radius: 18px; font-size: 13.5px; font-family: inherit;
+  text-decoration: none; cursor: pointer;
+}
+.hbtn:hover { background: rgba(159, 195, 232, .15); }
+.hbtn.off { opacity: .45; cursor: default; }
+.hbtn.off:hover { background: transparent; }
 
 main { max-width: 1080px; margin: 0 auto; padding: 22px 16px 60px; position: relative; z-index: 1; }
 header { position: relative; z-index: 1; }
@@ -60,20 +67,28 @@ header { position: relative; z-index: 1; }
 
 #wm {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: min(1020px, 96vw); opacity: .38; pointer-events: none; z-index: 0;
+  width: min(1020px, 96vw); opacity: .18; pointer-events: none; z-index: 0;
 }
 
 .cols { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
 .col { flex: 1 1 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
 #foot { text-align: center; padding: 38px 0 6px; }
-#footlogo { width: 460px; max-width: 88vw; }
+#footlogo { width: 230px; max-width: 70vw; }
 
 .frow { display: flex; gap: 10px; margin-bottom: 18px; }
 .frow #q { flex: 1 1 auto; margin-bottom: 0; }
 #fsub {
   flex: 0 1 300px; padding: 11px 12px; font-size: 14.5px; font-family: inherit;
   border: 1px solid var(--line); border-radius: 20px; background: #fff; color: var(--ink);
+}
+
+.frow2 { display: flex; align-items: center; gap: 10px; margin: -6px 0 18px; }
+.frow2[hidden] { display: none; }
+.sub2lab { font-size: 13.5px; color: var(--mu); margin-left: auto; }
+#fsub2 {
+  flex: 0 1 300px; padding: 10px 12px; font-size: 14.5px; font-family: inherit;
+  border: 1px solid var(--blue2); border-radius: 20px; background: #fff; color: var(--ink);
 }
 
 .cat {
@@ -192,6 +207,9 @@ header { position: relative; z-index: 1; }
   .cols { flex-direction: column; }
   .col { width: 100%; }
   .frow { flex-direction: column; }
+  .frow2 { flex-wrap: wrap; }
+  .sub2lab { margin-left: 0; }
+  #fsub2 { flex: 1 1 auto; }
   #fsub { flex: 1 1 auto; }
   .row { flex-wrap: wrap; }
   .ver { align-self: stretch; width: 100%; }
