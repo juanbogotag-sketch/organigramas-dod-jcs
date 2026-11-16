@@ -60,14 +60,14 @@ header { position: relative; z-index: 1; }
 
 #wm {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: min(880px, 94vw); opacity: .07; pointer-events: none; z-index: 0;
+  width: min(1020px, 96vw); opacity: .14; pointer-events: none; z-index: 0;
 }
 
 .cols { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
 .col { flex: 1 1 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
 #foot { text-align: center; padding: 38px 0 6px; }
-#footlogo { width: 340px; max-width: 86vw; }
+#footlogo { width: 460px; max-width: 88vw; }
 
 .frow { display: flex; gap: 10px; margin-bottom: 18px; }
 .frow #q { flex: 1 1 auto; margin-bottom: 0; }
