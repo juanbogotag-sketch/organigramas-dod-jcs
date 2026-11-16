@@ -60,7 +60,7 @@ header { position: relative; z-index: 1; }
 
 #wm {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: min(1020px, 96vw); opacity: .45; pointer-events: none; z-index: 0;
+  width: min(1020px, 96vw); opacity: .38; pointer-events: none; z-index: 0;
 }
 
 .cols { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
@@ -112,7 +112,7 @@ header { position: relative; z-index: 1; }
 
 .row {
   display: flex; gap: 14px; align-items: flex-start;
-  background: rgba(255, 255, 255, .92); border: 1px solid var(--line); border-radius: 8px;
+  background: rgba(255, 255, 255, .88); border: 1px solid var(--line); border-radius: 8px;
   padding: 12px; margin-bottom: 10px;
 }
 
