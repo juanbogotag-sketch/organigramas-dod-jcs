@@ -24,7 +24,11 @@
   <header>
     <h1>Repositorio Juan Pablo</h1>
     <p id="subtitle">Base de datos de perfiles</p>
-    <p class="hlink"><a href="index.html">Ir al organigrama interactivo →</a></p>
+    <div class="hlinks">
+      <a class="hbtn" href="index.html">Ir al organigrama interactivo del Poder Ejecutivo</a>
+      <button type="button" class="hbtn" id="btnAliados">Aliados en el Congreso</button>
+      <button type="button" class="hbtn off" id="btnLeg" disabled title="En desarrollo">Ir al Poder Legislativo</button>
+    </div>
   </header>
 
   <main>
@@ -44,6 +48,12 @@
           aria-label="Buscar en esta categoría">
         <select id="fsub" aria-label="Filtrar por subgrupo (departamento u oficina)">
           <option value="">Todos los subgrupos</option>
+        </select>
+      </div>
+      <div class="frow2" id="frow2" hidden>
+        <span class="sub2lab">Subgrupo:</span>
+        <select id="fsub2" aria-label="Filtrar por subgrupo de segundo nivel">
+          <option value="">Todos</option>
         </select>
       </div>
       <div id="groups"></div>
