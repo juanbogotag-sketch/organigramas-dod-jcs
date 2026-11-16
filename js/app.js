@@ -196,6 +196,27 @@ window.__APP_FN = function () {
     }
   };
 
+  // Sincronización con los datos publicados (data.js): el estado guardado en
+  // el navegador puede quedar desactualizado frente a data.js (p. ej., nodos
+  // nuevos publicados desde otro equipo). En cada carga se incorporan los
+  // árboles y nodos publicados que falten localmente, sin tocar los ya
+  // presentes: las ediciones locales no publicadas se conservan.
+  (function syncFromSeed() {
+    if (FORCE_VIEW) return;
+    try {
+      const sd = seed();
+      let added = 0;
+      sd.trees.forEach(x => {
+        if (!tree0(S, x.id)) { S.trees.push(x); added++; }
+      });
+      const have = new Set(S.nodes.map(n => n.id + '|' + n.t));
+      sd.nodes.forEach(sn => {
+        if (!have.has(sn.id + '|' + sn.t)) { S.nodes.push(sn); added++; }
+      });
+      if (added) save();
+    } catch (e) {}
+  })();
+
   const cix = id => {
     const t = S.trees.find(x => x.id == id);
     return t && t.ci != null ? t.ci : S.trees.findIndex(x => x.id == id);
