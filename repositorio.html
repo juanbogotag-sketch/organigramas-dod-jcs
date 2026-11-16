@@ -9,6 +9,18 @@
 </head>
 
 <body>
+  <div id="gate" hidden>
+    <div class="gcard">
+      <h2>Repositorio Juan Pablo</h2>
+      <p>Para entrar, escribe tu nombre completo.</p>
+      <label for="gname">Nombre completo</label>
+      <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
+      <button id="gbtn" class="p" disabled>Entrar</button>
+    </div>
+  </div>
+
+  <img id="wm" alt="" hidden>
+
   <header>
     <h1>Repositorio Juan Pablo</h1>
     <p id="subtitle">Base de datos de perfiles</p>
@@ -17,14 +29,23 @@
 
   <main>
     <section id="home">
-      <div id="cats"></div>
+      <div class="cols">
+        <div class="col" id="colL"></div>
+        <div class="col" id="colR"></div>
+      </div>
+      <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos"></footer>
     </section>
 
     <section id="listview" hidden>
       <button id="back" type="button">← Volver a las categorías</button>
       <h2 id="catTitle"></h2>
-      <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
-        aria-label="Buscar en esta categoría">
+      <div class="frow">
+        <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
+          aria-label="Buscar en esta categoría">
+        <select id="fsub" aria-label="Filtrar por subgrupo (departamento u oficina)">
+          <option value="">Todos los subgrupos</option>
+        </select>
+      </div>
       <div id="groups"></div>
       <p id="empty" hidden></p>
     </section>
@@ -61,6 +82,7 @@
   <script src="js/data.js"></script>
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
+  <script src="js/logo.js"></script>
   <script src="js/repositorio.js"></script>
 </body>
 
