@@ -9,7 +9,7 @@
   // ---------- Membrete de la Embajada ----------
   if (typeof LOGO_EMB !== 'undefined') {
     $('#footlogo').src = LOGO_EMB;
-    $('#wm').src = LOGO_EMB;
+    $('#wm').src = (typeof LOGO_WM !== 'undefined' && LOGO_WM) ? LOGO_WM : LOGO_EMB;
   }
 
   // ---------- Puerta de acceso: nombre completo (como en el organigrama) ----------
