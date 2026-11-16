@@ -67,19 +67,29 @@
 
   const PEOPLE = [];
   SD.nodes.forEach(n => PEOPLE.push({
-    cat: 'ejecutivo', key: 'ej|' + n.t + '|' + n.id,
+    cat: 'ejecutivo', key: 'ej|' + n.t + '|' + n.id, orgId: n.t,
     name: n.name, title: n.title || '', title_en: n.title || '',
     org: (treeById[n.t] || {}).name || n.t, dep: parentLabel(n),
     es: n.es || '', en: n.en || '',
     photo: (typeof PH !== 'undefined' && PH[n.id]) || '', ord: treeOrder[n.t] || 0
   }));
   (typeof PERFILES_CT !== 'undefined' ? PERFILES_CT : []).forEach(p => PEOPLE.push({
-    cat: 'centros', key: 'ct|' + p.id,
+    cat: 'centros', key: 'ct|' + p.id, orgId: p.org,
     name: p.name, title: p.cargo_es, title_en: p.cargo_en,
     org: p.org, dep: '',
     es: p.es || '', en: p.en || '',
     photo: (typeof PHCT !== 'undefined' && PHCT[p.id]) || '', ord: 0
   }));
+
+  // Subgrupos de segundo nivel: árboles que cuelgan de un nodo de otro árbol
+  // (p. ej., Department of Defense/War -> Army, Air Force, Navy, JCS, DIA, Policy)
+  const CHILDREN = {};
+  SD.trees.forEach(t => {
+    if (t.link) {
+      const parent = nodeById[t.link];
+      if (parent) (CHILDREN[parent.t] = CHILDREN[parent.t] || []).push(t.id);
+    }
+  });
 
   const CATS = [
     { id: 'ejecutivo', label: 'Poder Ejecutivo' },
@@ -150,14 +160,39 @@
     sel.innerHTML = '<option value="">Todos los subgrupos</option>' +
       orgs.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
     sel.value = '';
+    $('#fsub2').value = '';
+    $('#frow2').hidden = true;
     renderList();
     window.scrollTo(0, 0);
+  }
+  function onSubChange() {
+    const orgName = $('#fsub').value;
+    const f2 = $('#fsub2'), row2 = $('#frow2');
+    let kids = [];
+    if (orgName) {
+      const person = PEOPLE.find(p => p.cat === curCat && p.org === orgName);
+      const oid = person ? person.orgId : null;
+      if (oid && CHILDREN[oid]) kids = CHILDREN[oid].map(id => (treeById[id] || {}).name).filter(Boolean);
+    }
+    if (kids.length) {
+      f2.innerHTML = '<option value="">Todos</option>' +
+        kids.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
+      f2.value = '';
+      row2.hidden = false;
+    } else {
+      f2.value = '';
+      row2.hidden = true;
+    }
+    renderList();
   }
   function renderList() {
     const all = inCat(curCat);
     const nq = norm($('#q').value);
     const sub = $('#fsub').value;
-    let list = sub ? all.filter(p => p.org === sub) : all;
+    const sub2 = $('#frow2').hidden ? '' : $('#fsub2').value;
+    let list = all;
+    if (sub2) list = all.filter(p => p.org === sub2);
+    else if (sub) list = all.filter(p => p.org === sub);
     if (nq) list = list.filter(p => norm(p.name + ' ' + p.title + ' ' + p.org + ' ' + p.dep).includes(nq));
     const groups = new Map();
     list.forEach(p => { if (!groups.has(p.org)) groups.set(p.org, []); groups.get(p.org).push(p); });
@@ -193,7 +228,9 @@
     window.scrollTo(0, 0);
   });
   $('#q').addEventListener('input', () => renderList());
-  $('#fsub').addEventListener('change', () => renderList());
+  $('#fsub').addEventListener('change', onSubChange);
+  $('#fsub2').addEventListener('change', () => renderList());
+  $('#btnAliados').addEventListener('click', () => openCat('legislativo'));
 
   // ---------- Vista previa del perfil ----------
   let cur = null, curLang = 'es';
