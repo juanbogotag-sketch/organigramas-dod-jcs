@@ -6,6 +6,48 @@
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
+  // ---------- Membrete de la Embajada ----------
+  if (typeof LOGO_EMB !== 'undefined') {
+    $('#footlogo').src = LOGO_EMB;
+    $('#wm').src = LOGO_EMB;
+  }
+
+  // ---------- Puerta de acceso: nombre completo (como en el organigrama) ----------
+  (function gate() {
+    const g = $('#gate'), inp = $('#gname'), btn = $('#gbtn');
+    if (!g || !inp || !btn) return;
+    g.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const chk = () => { btn.disabled = inp.value.trim().length < 2; };
+    inp.addEventListener('input', chk);
+    chk();
+    const go = () => {
+      const nombre = inp.value.trim();
+      if (nombre.length < 2) return;
+      try {
+        const ua = navigator.userAgent || '';
+        const br = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /OPR\/|Opera/.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Otro navegador';
+        const os = /Android/.test(ua) ? 'Android' : /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /Windows/.test(ua) ? 'Windows' : /Mac OS X|Macintosh/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Otro sistema';
+        const tipo = /iPad|Tablet/.test(ua) ? 'Tableta' : /Mobi|Android|iPhone|iPod/.test(ua) ? 'Celular' : 'Computador';
+        let a = [];
+        try { a = JSON.parse(localStorage.getItem('orgs_visitas_v1')) || []; } catch (e) { a = []; }
+        const now = new Date(), p = n => String(n).padStart(2, '0');
+        a.push({
+          dia: now.getFullYear() + '-' + p(now.getMonth() + 1) + '-' + p(now.getDate()),
+          hora: p(now.getHours()) + ':' + p(now.getMinutes()) + ':' + p(now.getSeconds()),
+          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, sitio: 'Repositorio'
+        });
+        if (a.length > 500) a = a.slice(-500);
+        localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
+      } catch (e) {}
+      g.hidden = true;
+      document.body.style.overflow = '';
+    };
+    btn.addEventListener('click', go);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
+  })();
+
   // ---------- Armar la base de personas ----------
   const SD = seed();
   const nodeByKey = {}, nodeById = {}, treeById = {};
@@ -78,14 +120,18 @@
   }
   const initials = name => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
-  // ---------- Portada: categorías ----------
+  // ---------- Portada: categorías en dos columnas ----------
+  function catCard(c) {
+    const n = inCat(c.id).length;
+    return '<button type="button" class="cat" data-cat="' + c.id + '">' +
+      '<span class="cl">' + esc(c.label) + '</span>' +
+      '<span class="cn">' + (n ? n + (n === 1 ? ' perfil' : ' perfiles') : 'Todavía sin perfiles') + '</span></button>';
+  }
   function renderCats() {
-    $('#cats').innerHTML = CATS.map(c => {
-      const n = inCat(c.id).length;
-      return '<button type="button" class="cat" data-cat="' + c.id + '">' +
-        '<span class="cl">' + esc(c.label) + '</span>' +
-        '<span class="cn">' + (n ? n + (n === 1 ? ' perfil' : ' perfiles') : 'Todavía sin perfiles') + '</span></button>';
-    }).join('');
+    const left = ['ejecutivo', 'legislativo', 'judicial'];
+    const byId = {}; CATS.forEach(c => { byId[c.id] = c; });
+    $('#colL').innerHTML = left.map(id => catCard(byId[id])).join('');
+    $('#colR').innerHTML = CATS.filter(c => !left.includes(c.id)).map(catCard).join('');
     document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => openCat(b.dataset.cat)));
   }
 
@@ -95,15 +141,24 @@
     curCat = id;
     $('#home').hidden = true;
     $('#listview').hidden = false;
+    $('#wm').hidden = false;
     $('#catTitle').textContent = (CATS.find(c => c.id === id) || {}).label || id;
     $('#q').value = '';
-    renderList('');
+    const sel = $('#fsub');
+    const orgs = [];
+    inCat(id).forEach(p => { if (!orgs.includes(p.org)) orgs.push(p.org); });
+    sel.innerHTML = '<option value="">Todos los subgrupos</option>' +
+      orgs.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
+    sel.value = '';
+    renderList();
     window.scrollTo(0, 0);
   }
-  function renderList(q) {
+  function renderList() {
     const all = inCat(curCat);
-    const nq = norm(q);
-    const list = nq ? all.filter(p => norm(p.name + ' ' + p.title + ' ' + p.org + ' ' + p.dep).includes(nq)) : all;
+    const nq = norm($('#q').value);
+    const sub = $('#fsub').value;
+    let list = sub ? all.filter(p => p.org === sub) : all;
+    if (nq) list = list.filter(p => norm(p.name + ' ' + p.title + ' ' + p.org + ' ' + p.dep).includes(nq));
     const groups = new Map();
     list.forEach(p => { if (!groups.has(p.org)) groups.set(p.org, []); groups.get(p.org).push(p); });
     let html = '';
@@ -127,16 +182,18 @@
       empty.textContent = 'Todavía no hay perfiles en esta categoría. Se irán agregando a medida que se elaboren.';
     } else if (!list.length) {
       empty.hidden = false;
-      empty.textContent = 'Ningún perfil coincide con la búsqueda.';
+      empty.textContent = 'Ningún perfil coincide con la búsqueda o el filtro.';
     } else empty.hidden = true;
     document.querySelectorAll('.ver').forEach(b => b.addEventListener('click', () => openProfile(b.dataset.key)));
   }
   $('#back').addEventListener('click', () => {
     $('#listview').hidden = true;
+    $('#wm').hidden = true;
     $('#home').hidden = false;
     window.scrollTo(0, 0);
   });
-  $('#q').addEventListener('input', e => renderList(e.target.value));
+  $('#q').addEventListener('input', () => renderList());
+  $('#fsub').addEventListener('change', () => renderList());
 
   // ---------- Vista previa del perfil ----------
   let cur = null, curLang = 'es';
@@ -189,7 +246,7 @@
 
   async function wordProfile(p, lang) {
     const {
-      Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType,
+      Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header,
       HorizontalPositionRelativeFrom: HR, HorizontalPositionAlign: HA,
       VerticalPositionRelativeFrom: VR, TextWrappingType: TW, TextWrappingSide: TS, LineRuleType
     } = docx;
@@ -200,7 +257,7 @@
     const ch = [];
     let ttl = p.name + (p.title ? ', ' + (lang === 'es' ? p.title : (p.title_en || p.title)) : '');
     if (p.org && ttl.indexOf(p.org) < 0) ttl += ', ' + p.org;
-    ch.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { line: 240, after: 0 }, children: [run(ttl, { bold: true })] }));
+    ch.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { line: 240, after: 160 }, children: [run(ttl, { bold: true })] }));
     ch.push(new Paragraph({
       alignment: AlignmentType.RIGHT, spacing: { line: 240, after: 160 },
       children: [new TextRun({ text: 'V.' + dt + ' ' + (now.getHours() < 12 ? 'AM' : 'PM'), font: 'Arial', size: 16 })]
@@ -230,10 +287,26 @@
       spacing: { after: 160, line: 360, lineRule: LineRuleType.AT_LEAST },
       children: (i === 0 && img ? [img] : []).concat([run(t)])
     })));
+    // Encabezado de página: membrete de la Embajada, centrado, 2,91 cm de ancho (110 px)
+    const db = s => {
+      const b = atob(s.split(',')[1]), u = new Uint8Array(b.length);
+      for (let j = 0; j < b.length; j++) u[j] = b.charCodeAt(j);
+      return u;
+    };
+    let hdr = null;
+    if (typeof LOGO_EMB !== 'undefined' && LOGO_EMB) {
+      hdr = new Header({
+        children: [new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [new ImageRun({ type: 'png', data: db(LOGO_EMB), transformation: { width: 110, height: 49 } })]
+        })]
+      });
+    }
     const buf = await (await Packer.toBlob(new Document({
       styles: { default: { document: { run: { font: 'Arial', size: 24 } } } },
       sections: [{
-        properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1134, right: 1418, bottom: 1134, left: 1418 } } },
+        properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1134, right: 1418, bottom: 1134, left: 1418, header: 720 } } },
+        ...(hdr ? { headers: { default: hdr } } : {}),
         children: ch
       }]
     }))).arrayBuffer();
