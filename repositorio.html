@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Repositorio Juan Pablo — Perfiles</title>
+  <link rel="stylesheet" href="css/repositorio.css">
+</head>
+
+<body>
+  <header>
+    <h1>Repositorio Juan Pablo</h1>
+    <p id="subtitle">Base de datos de perfiles</p>
+    <p class="hlink"><a href="index.html">Ir al organigrama interactivo →</a></p>
+  </header>
+
+  <main>
+    <section id="home">
+      <div id="cats"></div>
+    </section>
+
+    <section id="listview" hidden>
+      <button id="back" type="button">← Volver a las categorías</button>
+      <h2 id="catTitle"></h2>
+      <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
+        aria-label="Buscar en esta categoría">
+      <div id="groups"></div>
+      <p id="empty" hidden></p>
+    </section>
+  </main>
+
+  <div id="modal" hidden role="dialog" aria-modal="true" aria-label="Perfil">
+    <div class="mbox">
+      <button id="mx" type="button" aria-label="Cerrar perfil">✕ Cerrar</button>
+      <div class="mhead">
+        <img id="mph" alt="">
+        <div>
+          <h2 id="mname"></h2>
+          <div id="mtitle"></div>
+          <div id="morg"></div>
+          <div id="mdep"></div>
+        </div>
+      </div>
+      <div class="langrow" role="group" aria-label="Idioma del perfil">
+        <button type="button" data-l="es" class="on">Español</button>
+        <button type="button" data-l="en">English</button>
+      </div>
+      <div id="mtext"></div>
+      <div class="mrow">
+        <button id="mword" type="button" class="p">Descargar en Word</button>
+        <button id="mback" type="button">Volver a la lista</button>
+      </div>
+      <p id="mmsg"></p>
+    </div>
+  </div>
+
+  <script src="js/vendor/jszip.min.js"></script>
+  <script src="js/vendor/docx.min.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/photos_ct.js"></script>
+  <script src="js/datos_ct.js"></script>
+  <script src="js/repositorio.js"></script>
+</body>
+
+</html>
