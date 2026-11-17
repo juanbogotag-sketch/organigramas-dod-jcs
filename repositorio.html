@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Torio · Embajada de Colombia en Estados Unidos</title>
-  <link rel="stylesheet" href="css/repositorio.css?v=7">
+  <link rel="stylesheet" href="css/repositorio.css?v=8">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -36,7 +36,6 @@
     <p id="subtitle">Base de datos de perfiles</p>
     <div class="hlinks">
       <a class="hbtn" href="index.html">Ir al organigrama interactivo del Poder Ejecutivo</a>
-      <button type="button" class="hbtn" id="btnAliados">Aliados en el Congreso</button>
       <button type="button" class="hbtn" id="btnLeg" onclick="location.href='congreso.html'">Ir al Poder Legislativo</button>
     </div>
   </header>
@@ -89,8 +88,11 @@
         <button type="button" data-l="en">English</button>
       </div>
       <div id="mtext"></div>
+      <div id="mcontacto" hidden></div>
       <div class="mrow">
         <button id="mword" type="button" class="p">Descargar en Word</button>
+        <button id="mcontact" type="button" hidden>Contacto</button>
+        <button id="madd" type="button">📁 Agregar a la carpeta</button>
         <button id="mback" type="button">Volver a la lista</button>
         <a id="mdl" hidden></a>
         <button id="mshare" type="button" class="p" hidden>Compartir / Guardar en el celular</button>
@@ -119,6 +121,25 @@
   </div>
 
   <button type="button" id="btnSug" class="sugfab" title="Sugerencias" aria-label="Sugerencias">💡</button>
+
+  <button type="button" id="cartFab" class="cartfab" title="Carpeta de perfiles" aria-label="Carpeta de perfiles">📁<span id="cartN" class="cartn" hidden>0</span></button>
+
+  <div id="cartPanel" hidden role="dialog" aria-label="Carpeta de perfiles">
+    <div class="cphead"><b>📁 Carpeta de perfiles</b><button id="cartX" type="button" aria-label="Cerrar carpeta">✕</button></div>
+    <div id="cartList"></div>
+    <p id="cartMsg"></p>
+    <div class="mrow">
+      <button id="cartZip" type="button" class="p" disabled>Generar carpeta (ZIP)</button>
+      <a id="cartDl" hidden></a>
+      <button id="cartShare" type="button" class="p" hidden>Compartir / Guardar</button>
+      <button id="cartClear" type="button">Vaciar</button>
+    </div>
+  </div>
+
+  <div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <img id="zoomImg" alt="">
+    <p>Toca o haz clic para cerrar</p>
+  </div>
   <script src="js/vendor/jszip.min.js"></script>
   <script src="js/vendor/docx.min.js"></script>
   <script src="js/photos.js"></script>
@@ -126,7 +147,7 @@
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=7"></script>
+  <script src="js/repositorio.js?v=8"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
