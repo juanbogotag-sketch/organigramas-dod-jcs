@@ -79,7 +79,7 @@ header { position: relative; z-index: 1; }
 #gate::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: url('../img/patron_escudos.png') repeat; background-size: 170px;
-  opacity: .03;
+  opacity: .015;
 }
 #gate .gcard { position: relative; z-index: 1; }
 
