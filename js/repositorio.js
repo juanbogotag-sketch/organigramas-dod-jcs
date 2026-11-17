@@ -535,7 +535,9 @@
         saveCart(); renderCart(); paintCartBtn();
       }));
     }
+    $('#cartGen').disabled = !cart.length;
     $('#cartZip').disabled = cart.length < 2;
+    if (!cart.length) $('#cartOpts').hidden = true;
     const dl = $('#cartDl'); if (dl) dl.hidden = true;
     const cs = $('#cartShare'); if (cs) cs.hidden = true;
   }
@@ -555,7 +557,20 @@
     cart = []; saveCart(); renderCart(); paintCartBtn();
     $('#cartMsg').textContent = '';
   });
-  let zipURL = null, zipFile = null;
+  let genURL = null, genFile = null;
+  function offerFile(blob, name) {
+    if (genURL) URL.revokeObjectURL(genURL);
+    genURL = URL.createObjectURL(blob);
+    genFile = new File([blob], name, { type: blob.type || 'application/octet-stream' });
+    const a = $('#cartDl');
+    a.href = genURL;
+    a.setAttribute('download', name);
+    a.textContent = '⬇ Descargar: ' + name;
+    a.hidden = false;
+    const cs = $('#cartShare');
+    if (cs && navigator.canShare && navigator.canShare({ files: [genFile] })) cs.hidden = false;
+    if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
+  }
   $('#cartZip').addEventListener('click', async () => {
     const items = cart.map(x => ({ p: PEOPLE.find(q => q.key === x.key), lang: x.lang })).filter(x => x.p);
     if (items.length < 2) return;
@@ -573,26 +588,99 @@
       const blob = await z.generateAsync({ type: 'blob' });
       const now = new Date(), p2 = n => String(n).padStart(2, '0');
       const zn = 'Carpeta_Torio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.zip';
-      if (zipURL) URL.revokeObjectURL(zipURL);
-      zipURL = URL.createObjectURL(blob);
-      zipFile = new File([blob], zn, { type: 'application/zip' });
-      const a = $('#cartDl');
-      a.href = zipURL;
-      a.setAttribute('download', zn);
-      a.textContent = '⬇ Descargar ZIP: ' + zn;
-      a.hidden = false;
-      const cs = $('#cartShare');
-      if (cs && navigator.canShare && navigator.canShare({ files: [zipFile] })) cs.hidden = false;
+      offerFile(blob, zn);
       $('#cartMsg').textContent = 'Carpeta lista: ' + items.length + ' perfiles en un solo ZIP.';
-      if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
     } catch (e) {
       $('#cartMsg').textContent = 'No se pudo generar la carpeta.';
     }
   });
   $('#cartShare').addEventListener('click', async () => {
-    if (!zipFile) return;
-    try { await navigator.share({ files: [zipFile] }); } catch (e) {}
+    if (!genFile) return;
+    try { await navigator.share({ files: [genFile] }); } catch (e) {}
   });
+  $('#cartGen').addEventListener('click', () => {
+    const o = $('#cartOpts');
+    o.hidden = !o.hidden;
+  });
+  $('#cartXlsx').addEventListener('click', async () => {
+    const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(Boolean);
+    if (!items.length) return;
+    $('#cartMsg').textContent = 'Generando la matriz…';
+    try {
+      const blob = await buildXlsx(items.map(matrixRow));
+      const now = new Date(), p2 = n => String(n).padStart(2, '0');
+      offerFile(blob, 'Matriz_Torio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx');
+      $('#cartMsg').textContent = 'Matriz lista: ' + items.length + ' personas.';
+    } catch (e) {
+      $('#cartMsg').textContent = 'No se pudo generar la matriz.';
+    }
+  });
+
+  // ---------- Matriz en Excel de las personas de la carpeta ----------
+  // Siempre en inglés, con las 9 columnas del formato de Juan Pablo:
+  // Prefix | Name | Last Name | Job Title | Office | Organization |
+  // Organization Type | E-mail | Other Contact
+  const ORG_BY_TREE = {
+    dod: 'Department of War', pol: 'Department of War', jcs: 'Department of War',
+    dia: 'Department of War', army: 'Department of War', af: 'Department of War', navy: 'Department of War',
+    state: 'Department of State', wha: 'Department of State', pm: 'Department of State', ct: 'Department of State',
+    ds: 'Department of State', isn: 'Department of State', ads: 'Department of State', aukus: 'Department of State', inl: 'Department of State',
+    odni: 'Office of the Director of National Intelligence', wh: 'The White House',
+    ondcp: 'Office of National Drug Control Policy', cia: 'Central Intelligence Agency',
+    doj: 'Department of Justice', fbi: 'Department of Justice', dea: 'Department of Justice',
+    dhs: 'Department of Homeland Security', ice: 'Department of Homeland Security'
+  };
+  const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', otros: '' };
+  const PREFIJO_CONOCIDO = { s3: 'Ms.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
+  const HON_RE = /^(Dr|Amb|Gen|Lt|Maj|Col|Capt|Cpt|Adm|VAdm|RAdm|Sgt|CMSgt|SMSgt|MSgt|Brig|Hon)\.$/;
+
+  function splitName(p) {
+    let name = String(p.name || '').trim();
+    let prefix = '';
+    if (p.cat === 'ejecutivo') prefix = PREFIJO_CONOCIDO[p.key.split('|')[2]] || '';
+    const toks = name.split(/\s+/);
+    const hon = [];
+    while (toks.length > 1 && HON_RE.test(toks[0])) hon.push(toks.shift());
+    if (hon.length) { name = toks.join(' '); if (!prefix) prefix = hon.join(' '); }
+    if (!prefix && /ambassador/i.test(p.title_en || p.title || '')) prefix = 'Amb.';
+    const parts = name.split(/\s+/).filter(Boolean);
+    const last = parts.length > 1 ? parts.pop() : '';
+    return { prefix, first: parts.join(' '), last };
+  }
+
+  function matrixRow(p) {
+    const s = splitName(p);
+    let office = '', org = '';
+    const type = TYPE_BY_CAT[p.cat] || '';
+    if (p.cat === 'ejecutivo') { office = p.org || ''; org = ORG_BY_TREE[p.orgId] || ''; }
+    else if (p.cat === 'centros') { org = p.org || ''; }
+    else { office = p.org || ''; org = p.org || ''; }
+    let email = '';
+    const other = [];
+    const ct = contactOf(p);
+    if (ct) ct.forEach(r => {
+      if (/@/.test(r.v) && /correo oficial/i.test(r.k)) email = r.v;
+      else other.push(r.v);
+    });
+    return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · ')];
+  }
+
+  async function buildXlsx(rows, outType) {
+    const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const colL = i => String.fromCharCode(65 + i);
+    const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
+    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Other Contact'];
+    const sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
+      rowXml(head, 1) + rows.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
+    const z = new JSZip();
+    z.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>');
+    z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+    z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Matriz" sheetId="1" r:id="rId1"/></sheets></workbook>');
+    z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>');
+    z.file('xl/worksheets/sheet1.xml', sheet);
+    return await z.generateAsync({ type: outType || 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
   renderCart();
 
   renderCats();
