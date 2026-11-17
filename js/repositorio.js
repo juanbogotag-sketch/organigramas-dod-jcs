@@ -646,7 +646,16 @@
     'martinez-fernandez': [{ k: 'Correo oficial', v: 'andres.martinezfernandez@heritage.org' }],
     'scharifker': [{ k: 'Correo oficial', v: 'DScharifker@meridian.org' }],
     'dippell': [{ k: 'Correo oficial', v: 'mdippell@ndi.org' }],
-    'garrastazu': [{ k: 'Correo de la oficina (IRI)', v: 'info@iri.org' }]
+    'garrastazu': [{ k: 'Correo de la oficina (IRI)', v: 'info@iri.org' }],
+    'feith': [{ k: 'Correo', v: 'davidjfeith@gmail.com' }],
+    'fontaine': [{ k: 'Correo de su asistente', v: 'kkoett@cnas.org' }],
+    'restrepo': [{ k: 'Correo', v: 'dan.restrepo@gmail.com' }],
+    'billingslea': [{ k: 'Correo oficial', v: 'mbillingslea@hudson.org' }],
+    'chertoff': [{ k: 'Correo oficial', v: 'michael.chertoff@chertoffgroup.com' }, { k: 'Correo de su asistente', v: 'meggie.trusty@chertoffgroup.com' }],
+    'mckinley': [{ k: 'Correo oficial', v: 'pmmckinley@cohengroup.net' }],
+    'boston': [{ k: 'Correo oficial', v: 'Scott_Boston@rand.org' }],
+    'pernin': [{ k: 'Correo oficial', v: 'Christopher_Pernin@rand.org' }],
+    'chorev': [{ k: 'Correo oficial', v: 'mchorev@rand.org' }]
   };
   function contactOf(p) {
     if (!p) return null;
@@ -849,6 +858,7 @@
   const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', embajada: 'Diplomatic Missions', otros: '' };
   const PREFIJO_CONOCIDO = { s3: 'Ms.', s4: 'Mr.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
   const PREFIJO_EX = { beasley: 'Mr.', barbulescu: 'Ms.', kocheulov: 'Mr.', lee: 'Ms.', ormsby: 'Mr.', york: 'Mr.', fishman: 'Mr.', "algarra": 'Coronel', "vargas-cano": 'Coronel', "villa": 'Sargento Mayor de Comando', "diaz-irreno": 'Coronel', "cabrera": 'Capitán de Navío', "arias": 'Sargento Mayor de Comando', "lopez-duque": 'Coronel', "urrea": 'Coronel', "martinez-ossa": 'Mayor General', "morales": 'Coronel', "rincon": 'Coronel', "velasco": 'Sargento Mayor de Comando', "iregui": 'Capitán de Navío', "parra": 'Comisario', "peterson": 'Ms.', "madigan": 'Mr.', "hui": 'Mr.', "bodner": 'Ms.', "fuse": 'Ms.', "thomas": 'Ms.', "zegar": 'Ms.', "burgos": 'Ms.', "stackhouse": 'Mr.', "kitt": 'Ms.', "besosa": 'Mr.', "bello": 'Mr.', "wilson": 'Captain', "spalding": 'Lieutenant', "norkiewicz": 'Mr.', "jacquez": 'Ms.', "ortiz": 'Mr.', "cannavo": 'MS', "kroger": 'Mr.', "blasini": 'Ms.', "carrera": 'Ms.', "varela": 'Mr.', "auger": 'Ms.', "polga-hecimovich": 'Mr.', "arnold": 'Ms.', "meade": 'Ms.', "underwood": 'Mr.', "velasco": 'Mr.', "liberatori": 'Major General', "gorigoitia": 'Major General', "santamaria": 'General', "correa": 'Colonel', "skeete": 'Colonel', "diaz": 'Major General', "chini": 'Rear Admiral', "barros": 'Rear Admiral', "acevedo": 'Captain', "duarte": 'Rear Admiral', "rueda": 'Captain', "gavarrete": 'Colonel', "archila": 'Vice Admiral', "mejia": 'Colonel', "espinoza": 'Brigadier General', "angulo": 'Rear Admiral', "jessen": 'Commander', "tocci": 'Captain', "looman": 'Captain', "woolrich": 'Rear Admiral', "charpentier": 'Captain', "gore": 'Captain', "tremblay": 'Captain', "mugica": 'Captain', "ledridge": 'Captain', "griffin": 'Lieutenant', "gilbert": 'Lieutenant Colonel', "croker": 'Mr.', "chapman": 'Captain', "cbodner": 'Lieutenant Commander', "varona": 'Captain', "frost": 'Commodore', "ambrogi": 'Brigadier General', "santana": 'Colonel', "lopez": 'Major General', "camara": 'Major General', "vaca": 'Colonel', "grady": 'Lieutenant Commander', "roncone": 'Ms.' };
+  const PREFIJO_CT = { feith: 'Mr.', fontaine: 'Mr.', restrepo: 'Mr.', billingslea: 'Mr.', chertoff: 'Mr.', mckinley: 'Mr.', boston: 'Mr.', pernin: 'Mr.', chorev: 'Mr.' };
   const HON_RE = /^(Dr|Amb|Gen|Lt|Maj|Col|Capt|Cpt|Adm|VAdm|RAdm|Sgt|CMSgt|SMSgt|MSgt|Brig|Hon)\.$/;
 
   function splitName(p) {
@@ -856,6 +866,7 @@
     let prefix = '';
     if (p.key.indexOf('ex|') === 0) prefix = PREFIJO_EX[p.key.split('|')[1]] || '';
     else if (p.cat === 'ejecutivo') prefix = PREFIJO_CONOCIDO[p.key.split('|')[2]] || '';
+    else if (p.cat === 'centros') prefix = PREFIJO_CT[p.key.split('|')[1]] || '';
     if (p.key.indexOf('ex|') === 0 && (p.fn || p.ln)) return { prefix, first: p.fn || '', last: p.ln || '' };
     const toks = name.split(/\s+/);
     const hon = [];
