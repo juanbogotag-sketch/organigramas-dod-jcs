@@ -231,7 +231,7 @@
       html += '<div class="gname"><span>' + esc(org) + ' (' + folks.length + ')</span>' +
         (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
       folks.forEach(p => {
-        html += '<div class="row">' +
+        html += '<div class="row" data-key="' + esc(p.key) + '">' +
           (p.photo ? '<img class="ph" src="' + p.photo + '" alt="">' : '<div class="phx">' + esc(initials(p.name)) + '</div>') +
           '<div class="info"><div class="nm">' + esc(p.name) + '</div>' +
           (p.title ? '<div class="ti">' + esc(p.title) + '</div>' : '') +
@@ -251,6 +251,7 @@
       empty.textContent = 'Ningún perfil coincide con la búsqueda o el filtro.';
     } else empty.hidden = true;
     document.querySelectorAll('.ver').forEach(b => b.addEventListener('click', () => openProfile(b.dataset.key)));
+    paintSelRows();
   }
   $('#back').addEventListener('click', () => {
     $('#listview').hidden = true;
@@ -600,6 +601,30 @@
   $('#cartShare').addEventListener('click', async () => {
     if (!genFile) return;
     try { await navigator.share({ files: [genFile] }); } catch (e) {}
+  });
+  // Selección rápida: con el modo activo, tocar una tarjeta la agrega o la
+  // quita de la carpeta sin abrir la ficha.
+  let selMode = false;
+  function paintSelRows() {
+    document.querySelectorAll('#groups .row').forEach(r => {
+      r.classList.toggle('sel', !!r.dataset.key && inCart(r.dataset.key));
+    });
+  }
+  $('#selFab').addEventListener('click', () => {
+    selMode = !selMode;
+    $('#selFab').classList.toggle('on', selMode);
+    document.body.classList.toggle('selmode', selMode);
+    paintSelRows();
+  });
+  $('#groups').addEventListener('click', e => {
+    if (!selMode) return;
+    if (e.target.closest('.ver') || e.target.closest('.vorg')) return;
+    const row = e.target.closest('.row');
+    if (!row || !row.dataset.key) return;
+    const key = row.dataset.key;
+    if (inCart(key)) cart = cart.filter(x => x.key !== key);
+    else cart.push({ key, lang: 'es' });
+    saveCart(); renderCart(); paintSelRows(); paintCartBtn();
   });
   $('#cartGen').addEventListener('click', () => {
     const o = $('#cartOpts');
