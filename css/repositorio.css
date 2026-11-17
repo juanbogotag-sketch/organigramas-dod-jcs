@@ -12,7 +12,7 @@
 body {
   margin: 0;
   padding-top: 7px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
   color: var(--ink);
   background: var(--bg);
 }
@@ -33,6 +33,7 @@ header {
 header h1 {
   margin: 0 0 6px;
   font-size: 34px;
+  font-weight: 800;
   letter-spacing: .5px;
 }
 
@@ -64,7 +65,7 @@ header { position: relative; z-index: 1; }
   background: #fff; border-radius: 14px; max-width: 380px; width: 100%;
   padding: 26px 24px; box-shadow: 0 12px 40px rgba(0, 0, 0, .4);
 }
-#gate h2 { font-family: Georgia, serif; color: var(--blue); margin: 0 0 8px; font-size: 22px; }
+#gate h2 { font-family: 'Montserrat', Arial, sans-serif; font-weight: 800; color: var(--blue); margin: 0 0 8px; font-size: 22px; }
 #gate p { color: var(--mu); font-size: 14px; margin: 0 0 16px; }
 #gate label { display: block; font-size: 13px; color: var(--mu); margin-bottom: 6px; }
 #gate input {
