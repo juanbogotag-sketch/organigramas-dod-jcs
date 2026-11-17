@@ -11,9 +11,16 @@
 
 body {
   margin: 0;
+  padding-top: 7px;
   font-family: Arial, Helvetica, sans-serif;
   color: var(--ink);
   background: var(--bg);
+}
+
+.tricolor {
+  position: fixed; top: 0; left: 0; right: 0; height: 7px; z-index: 500;
+  pointer-events: none;
+  background: linear-gradient(to bottom, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
 }
 
 header {
@@ -99,10 +106,9 @@ header { position: relative; z-index: 1; }
 .cat {
   display: block;
   width: 100%;
-  text-align: left;
+  text-align: center;
   background: #fff;
   border: 1px solid var(--line);
-  border-left: 6px solid var(--blue2);
   border-radius: 8px;
   padding: 18px;
   cursor: pointer;
