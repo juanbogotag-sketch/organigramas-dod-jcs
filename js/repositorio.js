@@ -238,6 +238,7 @@
           '<div class="og">' + esc(p.org) + (p.dep ? ' · Depende de: ' + esc(p.dep) : '') + '</div>' +
           (p.es ? '<p class="fp">' + esc(firstPara(p.es)) + '</p>' : '<p class="fp"><em>Sin perfil todavía.</em></p>') +
           '</div>' +
+          '<div class="selbar"><button type="button" data-l="es">ES</button><button type="button" data-l="en">EN</button><button type="button" data-l="both">BOTH</button></div>' +
           '<button type="button" class="ver" data-key="' + esc(p.key) + '">Ver o descargar</button></div>';
       });
     });
@@ -605,9 +606,17 @@
   // Selección rápida: con el modo activo, tocar una tarjeta la agrega o la
   // quita de la carpeta sin abrir la ficha.
   let selMode = false;
+  function inCartLang(key, lang) { return cart.some(x => x.key === key && x.lang === lang); }
   function paintSelRows() {
     document.querySelectorAll('#groups .row').forEach(r => {
-      r.classList.toggle('sel', !!r.dataset.key && inCart(r.dataset.key));
+      const k = r.dataset.key;
+      r.classList.toggle('sel', !!k && inCart(k));
+      r.querySelectorAll('.selbar button').forEach(b => {
+        const l = b.dataset.l;
+        b.classList.toggle('on', !!k && (l === 'both'
+          ? (inCartLang(k, 'es') && inCartLang(k, 'en'))
+          : inCartLang(k, l)));
+      });
     });
   }
   $('#selFab').addEventListener('click', () => {
@@ -618,12 +627,22 @@
   });
   $('#groups').addEventListener('click', e => {
     if (!selMode) return;
-    if (e.target.closest('.ver') || e.target.closest('.vorg')) return;
+    const btn = e.target.closest('.selbar button');
+    if (!btn) return;
     const row = e.target.closest('.row');
     if (!row || !row.dataset.key) return;
-    const key = row.dataset.key;
-    if (inCart(key)) cart = cart.filter(x => x.key !== key);
-    else cart.push({ key, lang: 'es' });
+    const key = row.dataset.key, l = btn.dataset.l;
+    if (l === 'both') {
+      if (inCartLang(key, 'es') && inCartLang(key, 'en')) cart = cart.filter(x => x.key !== key);
+      else {
+        if (!inCartLang(key, 'es')) cart.push({ key, lang: 'es' });
+        if (!inCartLang(key, 'en')) cart.push({ key, lang: 'en' });
+      }
+    } else if (inCartLang(key, l)) {
+      cart = cart.filter(x => !(x.key === key && x.lang === l));
+    } else {
+      cart.push({ key, lang: l });
+    }
     saveCart(); renderCart(); paintSelRows(); paintCartBtn();
   });
   $('#cartGen').addEventListener('click', () => {
@@ -631,7 +650,9 @@
     o.hidden = !o.hidden;
   });
   $('#cartXlsx').addEventListener('click', async () => {
-    const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(Boolean);
+    const seenM = new Set();
+    const items = cart.map(x => PEOPLE.find(q => q.key === x.key))
+      .filter(p => p && !seenM.has(p.key) && seenM.add(p.key));
     if (!items.length) return;
     $('#cartMsg').textContent = 'Generando la matriz…';
     try {
