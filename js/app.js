@@ -1448,37 +1448,50 @@ window.__APP_FN = function () {
     else {
       const av = JSON.parse(localStorage.getItem('orgs_visitas_v1') || '[]');
       for (let i = av.length - 1; i >= 0; i--) {
-        if (av[i] && av[i].nombre) { localStorage.setItem('orgs_visitante', av[i].nombre); YA_REGISTRADO = true; break; }
+        if (av[i] && av[i].nombre) { localStorage.setItem('orgs_visitante', JSON.stringify({ n: av[i].nombre, e: av[i].correo || '' })); YA_REGISTRADO = true; break; }
       }
     }
   } catch (e) {}
   if (!IS_OWNER && !YA_REGISTRADO) {
-    const g = $('#gate'), inp = $('#gname'), btn = $('#gbtn');
+    const g = $('#gate'), inp = $('#gname'), eml = $('#gemail'), btn = $('#gbtn');
     if (g && inp && btn) {
       g.hidden = false;
       document.body.style.overflow = 'hidden';
-      const chk = () => { btn.disabled = inp.value.trim().length < 2; };
+      const correoOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      const esClave = v => { const t = v.trim().toLowerCase(); return t === 'jgonzalez' || t === 'admin123'; };
+      const chk = () => { btn.disabled = !(esClave(inp.value) || (inp.value.trim().length >= 2 && (!eml || correoOk(eml.value.trim())))); };
       inp.addEventListener('input', chk);
+      if (eml) eml.addEventListener('input', chk);
       chk();
       const go = () => {
         const nombre = inp.value.trim();
-        if (nombre.length < 2) return;
-        if (nombre.toLowerCase() === 'jgonzalez' || nombre.toLowerCase() === 'admin123') {
-          unlockOwner();
-          return;
-        }
-        try { localStorage.setItem('orgs_visitante', nombre); } catch (e) {}
+        if (esClave(nombre)) { unlockOwner(); return; }
+        const correo = eml ? eml.value.trim() : '';
+        if (nombre.length < 2 || (eml && !correoOk(correo))) return;
+        try { localStorage.setItem('orgs_visitante', JSON.stringify({ n: nombre, e: correo })); } catch (e) {}
         btn.disabled = true;
         try {
           let a = JSON.parse(localStorage.getItem('orgs_visitas_v1')) || [];
-          if (a.length) a[a.length - 1].nombre = nombre;
+          if (a.length) { a[a.length - 1].nombre = nombre; a[a.length - 1].correo = correo; }
           localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
+        } catch (e) {}
+        try {
+          fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              name: nombre, email: correo, pagina: 'Organigrama',
+              _subject: 'Registro de visitante — Organigrama',
+              _template: 'table', _captcha: 'false'
+            })
+          }).catch(() => {});
         } catch (e) {}
         g.hidden = true;
         document.body.style.overflow = '';
       };
       btn.onclick = go;
       inp.addEventListener('keydown', e => { if (e.key == 'Enter') go(); });
+      if (eml) eml.addEventListener('keydown', e => { if (e.key == 'Enter') go(); });
       setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
     }
   } else {
