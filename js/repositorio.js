@@ -131,7 +131,7 @@
     name: p.name, title: p.title, title_en: p.title,
     org: p.org, dep: p.dep || '',
     es: p.es || '', en: p.en || '',
-    photo: '', ord: treeOrder[p.orgId] || 0, visible: true,
+    photo: p.photo || '', ord: treeOrder[p.orgId] || 0, visible: true,
     fn: p.fn || '', ln: p.ln || ''
   }));
   (typeof FICHAS_EX !== 'undefined' ? FICHAS_EX : []).forEach(p => PEOPLE.push({
