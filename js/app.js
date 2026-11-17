@@ -1440,7 +1440,19 @@ window.__APP_FN = function () {
   }
 
   // Pantalla de acceso para visitantes (no aparece para el propietario)
-  if (!IS_OWNER) {
+  // A quien ya se registró en este navegador no se le vuelve a pedir el
+  // nombre; en modo incógnito no queda registro y la puerta sí aparece.
+  let YA_REGISTRADO = false;
+  try {
+    if (localStorage.getItem('orgs_visitante')) YA_REGISTRADO = true;
+    else {
+      const av = JSON.parse(localStorage.getItem('orgs_visitas_v1') || '[]');
+      for (let i = av.length - 1; i >= 0; i--) {
+        if (av[i] && av[i].nombre) { localStorage.setItem('orgs_visitante', av[i].nombre); YA_REGISTRADO = true; break; }
+      }
+    }
+  } catch (e) {}
+  if (!IS_OWNER && !YA_REGISTRADO) {
     const g = $('#gate'), inp = $('#gname'), btn = $('#gbtn');
     if (g && inp && btn) {
       g.hidden = false;
@@ -1455,6 +1467,7 @@ window.__APP_FN = function () {
           unlockOwner();
           return;
         }
+        try { localStorage.setItem('orgs_visitante', nombre); } catch (e) {}
         btn.disabled = true;
         try {
           let a = JSON.parse(localStorage.getItem('orgs_visitas_v1')) || [];
@@ -1670,6 +1683,17 @@ window.__APP_FN = function () {
     });
     document.addEventListener('click', e => { if (!e.target.closest('#qwrap')) hide(); });
   })();
+
+  // Enlace directo desde Torio: ?tree=<id> abre solo ese árbol, desplegado.
+  try {
+    const tq = new URLSearchParams(location.search).get('tree');
+    if (tq && tree(tq)) {
+      S.view = tq;
+      S.tree = tq;
+      S.sel = null;
+      S.nodes.forEach(n => { if (n.t == tq) n.c = 0; });
+    }
+  } catch (e) {}
 
   setDev(detectDev(), 0);
   if (IS_OWNER) setMode('view');
