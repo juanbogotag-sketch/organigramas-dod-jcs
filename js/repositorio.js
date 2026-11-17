@@ -232,6 +232,48 @@
   $('#fsub2').addEventListener('change', () => renderList());
   $('#btnAliados').addEventListener('click', () => openCat('legislativo'));
 
+  // ---------- Sugerencias (el envío llega al Gmail de Juan Pablo vía FormSubmit) ----------
+  const sug = $('#sug');
+  $('#btnSug').addEventListener('click', () => {
+    $('#sugStep1').hidden = false;
+    $('#sugForm').hidden = true;
+    $('#sugMsg').textContent = '';
+    sug.hidden = false;
+  });
+  $('#sugx').addEventListener('click', () => { sug.hidden = true; });
+  sug.addEventListener('click', e => { if (e.target === sug) sug.hidden = true; });
+  $('#sugOpt').addEventListener('click', () => {
+    $('#sugStep1').hidden = true;
+    $('#sugForm').hidden = false;
+    $('#sugText').focus();
+  });
+  $('#sugBack').addEventListener('click', () => {
+    $('#sugForm').hidden = true;
+    $('#sugStep1').hidden = false;
+  });
+  $('#sugText').addEventListener('input', e => { $('#sugSend').disabled = !e.target.value.trim(); });
+  $('#sugForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const txt = $('#sugText').value.trim();
+    if (!txt) return;
+    const btn = $('#sugSend');
+    btn.disabled = true;
+    $('#sugMsg').textContent = 'Enviando…';
+    try {
+      const r = await fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Repositorio', sugerencia: txt })
+      });
+      if (!r.ok) throw new Error('envío rechazado');
+      $('#sugMsg').textContent = '¡Gracias! Tu sugerencia fue enviada.';
+      $('#sugText').value = '';
+    } catch (err) {
+      $('#sugMsg').innerHTML = 'No se pudo enviar desde aquí. Puedes escribir directamente a <a href="mailto:juan.bogotag@gmail.com">juan.bogotag@gmail.com</a>.';
+      btn.disabled = false;
+    }
+  });
+
   // ---------- Vista previa del perfil ----------
   let cur = null, curLang = 'es';
   function openProfile(key) {
