@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Torio · Embajada de Colombia en Estados Unidos</title>
-  <link rel="stylesheet" href="css/repositorio.css?v=10">
+  <link rel="stylesheet" href="css/repositorio.css?v=11">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -125,6 +125,7 @@
   <button type="button" id="btnSug" class="sugfab" title="Sugerencias" aria-label="Sugerencias">💡</button>
 
   <button type="button" id="cartFab" class="cartfab" title="Carpeta de perfiles" aria-label="Carpeta de perfiles">📁<span id="cartN" class="cartn" hidden>0</span></button>
+  <button type="button" id="selFab" class="selfab" title="Seleccionar perfiles tocando su tarjeta" aria-label="Seleccionar perfiles para la carpeta">📁➕</button>
 
   <div id="cartPanel" hidden role="dialog" aria-label="Carpeta de perfiles">
     <div class="cphead"><b>📁 Carpeta de perfiles</b><button id="cartX" type="button" aria-label="Cerrar carpeta">✕</button></div>
@@ -153,7 +154,7 @@
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=10"></script>
+  <script src="js/repositorio.js?v=11"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
