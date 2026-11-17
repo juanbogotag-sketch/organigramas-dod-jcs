@@ -78,8 +78,9 @@ header { position: relative; z-index: 1; }
 #gate button:disabled { opacity: .45; cursor: default; }
 
 #wm {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.06);
   width: min(1020px, 96vw); opacity: .18; pointer-events: none; z-index: 0;
+  filter: blur(9px);
 }
 
 .cols { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
