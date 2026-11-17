@@ -20,7 +20,7 @@ body {
 .tricolor {
   position: fixed; top: 0; left: 0; right: 0; height: 7px; z-index: 500;
   pointer-events: none;
-  background: linear-gradient(to bottom, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
+  background: linear-gradient(to right, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
 }
 
 header {
