@@ -390,3 +390,14 @@ body.selmode #groups .row { cursor: pointer; }
   content: '✓ En la carpeta'; position: absolute; top: 8px; right: 8px;
   background: var(--blue2); color: #fff; font-size: 11.5px; border-radius: 10px; padding: 3px 9px;
 }
+
+/* Barra ES / EN / BOTH de la selección rápida */
+.selbar { display: none; gap: 8px; margin-top: 6px; justify-content: center; }
+body.selmode .selbar { display: flex; }
+.selbar button {
+  border: 1.5px solid #2f3b4c; background: #fff; color: #2f3b4c;
+  border-radius: 16px; padding: 5px 14px; font-size: 12.5px; font-weight: bold;
+  letter-spacing: .4px; cursor: pointer; font-family: inherit;
+}
+.selbar button:hover { background: #eef1f3; }
+.selbar button.on { background: #2f3b4c; color: #fff; }
