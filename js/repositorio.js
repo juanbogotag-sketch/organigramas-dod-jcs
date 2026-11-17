@@ -12,30 +12,59 @@
     $('#wm').src = (typeof LOGO_WM !== 'undefined' && LOGO_WM) ? LOGO_WM : LOGO_EMB;
   }
 
-  // ---------- Puerta de acceso: nombre completo (como en el organigrama) ----------
+  // ---------- Puerta de acceso: registro con nombre y correo ----------
+  // ---------- Registro de visitantes (nombre y correo) ----------
+  function leerRegistro() {
+    try {
+      const v = localStorage.getItem('orgs_visitante') || '';
+      if (!v) return null;
+      if (v.charAt(0) === '{') { const o = JSON.parse(v); return { n: o.n || '', e: o.e || '' }; }
+      return { n: v, e: '' };
+    } catch (e) { return null; }
+  }
+  // Avisa a Juan Pablo por correo (FormSubmit) cuando alguien se registra
+  // por primera vez en un dispositivo. El propietario no se reporta.
+  function reportarRegistro(nombre, correo, sitio) {
+    try {
+      if (localStorage.getItem('orgs_owner_v1') === '1') return;
+      fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: nombre, email: correo, pagina: sitio,
+          _subject: 'Registro de visitante — ' + sitio,
+          _template: 'table', _captcha: 'false'
+        })
+      }).catch(() => {});
+    } catch (e) {}
+  }
+
   (function gate() {
-    const g = $('#gate'), inp = $('#gname'), btn = $('#gbtn');
+    const g = $('#gate'), inp = $('#gname'), eml = $('#gemail'), btn = $('#gbtn');
     if (!g || !inp || !btn) return;
     // A quien ya se registró en este navegador no se le vuelve a pedir el
-    // nombre; en modo incógnito no queda registro y la puerta sí aparece.
+    // registro; en modo incógnito no queda registro y la puerta sí aparece.
     try {
-      let conocido = localStorage.getItem('orgs_visitante') || '';
-      if (!conocido) {
+      let reg = leerRegistro();
+      if (!reg) {
         const av = JSON.parse(localStorage.getItem('orgs_visitas_v1') || '[]');
-        for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { conocido = av[i].nombre; break; }
-        if (conocido) localStorage.setItem('orgs_visitante', conocido);
+        for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { reg = { n: av[i].nombre, e: av[i].correo || '' }; break; }
+        if (reg) localStorage.setItem('orgs_visitante', JSON.stringify(reg));
       }
-      if (conocido) return;
+      if (reg && reg.n) return;
     } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
-    const chk = () => { btn.disabled = inp.value.trim().length < 2; };
+    const correoOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    const chk = () => { btn.disabled = !(inp.value.trim().length >= 2 && (!eml || correoOk(eml.value.trim()))); };
     inp.addEventListener('input', chk);
+    if (eml) eml.addEventListener('input', chk);
     chk();
     const go = () => {
       const nombre = inp.value.trim();
-      if (nombre.length < 2) return;
-      try { localStorage.setItem('orgs_visitante', nombre); } catch (e) {}
+      const correo = eml ? eml.value.trim() : '';
+      if (nombre.length < 2 || (eml && !correoOk(correo))) return;
+      try { localStorage.setItem('orgs_visitante', JSON.stringify({ n: nombre, e: correo })); } catch (e) {}
       try {
         const ua = navigator.userAgent || '';
         const br = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /OPR\/|Opera/.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Otro navegador';
@@ -47,16 +76,18 @@
         a.push({
           dia: now.getFullYear() + '-' + p(now.getMonth() + 1) + '-' + p(now.getDate()),
           hora: p(now.getHours()) + ':' + p(now.getMinutes()) + ':' + p(now.getSeconds()),
-          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, sitio: 'Torio'
+          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, correo: correo, sitio: 'Torio'
         });
         if (a.length > 500) a = a.slice(-500);
         localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
       } catch (e) {}
+      reportarRegistro(nombre, correo, 'Torio');
       g.hidden = true;
       document.body.style.overflow = '';
     };
     btn.addEventListener('click', go);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    if (eml) eml.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
     setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
   })();
 
@@ -295,7 +326,12 @@
       const r = await fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Torio', sugerencia: txt })
+        body: JSON.stringify((() => {
+          const reg = leerRegistro();
+          const d = { _subject: 'Sugerencia de perfiles — Torio', sugerencia: txt, name: (reg && reg.n) || 'Sin registro' };
+          if (reg && reg.e) d.email = reg.e;
+          return d;
+        })())
       });
       if (!r.ok) throw new Error('envío rechazado');
       $('#sugMsg').textContent = '¡Gracias! Tu sugerencia fue enviada.';
