@@ -1,4 +1,4 @@
-// Repositorio Juan Pablo — base de datos de perfiles.
+// Repositorio — base de datos de perfiles (Embajada de Colombia en Estados Unidos).
 // Fuentes: Poder Ejecutivo desde js/data.js + js/photos.js (los mismos datos
 // del organigrama); centros de pensamiento desde js/datos_ct.js + js/photos_ct.js.
 (function () {
@@ -71,14 +71,17 @@
     name: n.name, title: n.title || '', title_en: n.title || '',
     org: (treeById[n.t] || {}).name || n.t, dep: parentLabel(n),
     es: n.es || '', en: n.en || '',
-    photo: (typeof PH !== 'undefined' && PH[n.id]) || '', ord: treeOrder[n.t] || 0
+    photo: (typeof PH !== 'undefined' && PH[n.id]) || '', ord: treeOrder[n.t] || 0,
+    // Visible si tiene nombre de persona, foto o perfil; los cargos sin titular
+    // (nombre vacío, sin foto y sin perfil) no se muestran, pero el dato se conserva.
+    visible: !!(n.name || n.es || n.en || (typeof PH !== 'undefined' && PH[n.id]))
   }));
   (typeof PERFILES_CT !== 'undefined' ? PERFILES_CT : []).forEach(p => PEOPLE.push({
     cat: 'centros', key: 'ct|' + p.id, orgId: p.org,
     name: p.name, title: p.cargo_es, title_en: p.cargo_en,
     org: p.org, dep: '',
     es: p.es || '', en: p.en || '',
-    photo: (typeof PHCT !== 'undefined' && PHCT[p.id]) || '', ord: 0
+    photo: (typeof PHCT !== 'undefined' && PHCT[p.id]) || '', ord: 0, visible: true
   }));
 
   // Subgrupos de segundo nivel: árboles que cuelgan de un nodo de otro árbol
@@ -99,8 +102,8 @@
     { id: 'academia', label: 'Academia y universidades' },
     { id: 'otros', label: 'Otros' }
   ];
-  const inCat = id => PEOPLE.filter(p => p.cat === id);
-  $('#subtitle').textContent = 'Base de datos de perfiles · ' + PEOPLE.length + ' personas';
+  const inCat = id => PEOPLE.filter(p => p.cat === id && p.visible);
+  $('#subtitle').textContent = 'Base de datos de perfiles · ' + PEOPLE.filter(p => p.visible).length + ' personas';
 
   // ---------- Utilidades de texto ----------
   function firstPara(text) {
