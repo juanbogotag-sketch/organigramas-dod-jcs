@@ -341,14 +341,18 @@
       a.href = dlURL;
       a.setAttribute('download', r.name);
       a.textContent = '⬇ Descargar: ' + r.name;
-      a.hidden = false;
       const sh = $('#mshare');
       const canShare = !!(sh && navigator.canShare && navigator.canShare({ files: [dlFile] }));
-      if (canShare) sh.hidden = false;
-      $('#mmsg').textContent = canShare
-        ? 'Documento generado. En el celular, «Compartir / Guardar» es la forma segura de guardarlo.'
-        : 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
-      if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
+      if (canShare) {
+        // En el celular el enlace de descarga no sirve: queda solo Compartir / Guardar.
+        a.hidden = true;
+        sh.hidden = false;
+        $('#mmsg').textContent = 'Documento generado. Toca «Compartir / Guardar» para guardarlo en tu celular.';
+      } else {
+        a.hidden = false;
+        $('#mmsg').textContent = 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
+        if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
+      }
     } catch (e) {
       $('#mmsg').textContent = 'No se pudo generar el documento.';
     }
