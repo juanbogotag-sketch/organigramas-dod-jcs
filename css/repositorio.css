@@ -338,3 +338,19 @@ header { position: relative; z-index: 1; }
   padding: 10px 16px; cursor: pointer; font-size: 14px; text-decoration: none;
 }
 #cartPanel a#cartDl[hidden] { display: none; }
+
+/* Opciones al generar desde la carpeta */
+#cartOpts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+#cartOpts[hidden] { display: none; }
+#cartOpts button {
+  border: 1px solid var(--line); background: #fff; border-radius: 6px;
+  padding: 10px 14px; cursor: pointer; font-family: inherit; font-size: 14px; text-align: left;
+}
+#cartOpts button:hover { border-color: var(--blue2); }
+#cartOpts button:disabled { opacity: .45; cursor: default; }
+
+/* Lista de perfiles en dos columnas en el computador */
+@media (min-width: 861px) {
+  #groups { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  #groups .gname { grid-column: 1 / -1; }
+}
