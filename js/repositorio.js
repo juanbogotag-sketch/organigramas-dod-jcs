@@ -127,7 +127,7 @@
     photo: (typeof PHCT !== 'undefined' && PHCT[p.id]) || '', ord: 0, visible: true
   }));
   (typeof PERFILES_EX !== 'undefined' ? PERFILES_EX : []).forEach(p => PEOPLE.push({
-    cat: 'ejecutivo', key: 'ex|' + p.id, orgId: p.orgId,
+    cat: p.cat || 'ejecutivo', key: 'ex|' + p.id, orgId: p.orgId,
     name: p.name, title: p.title, title_en: p.title,
     org: p.org, dep: p.dep || '',
     es: p.es || '', en: p.en || '',
