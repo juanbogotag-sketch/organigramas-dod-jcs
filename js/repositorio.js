@@ -195,9 +195,10 @@
   // ---------- Portada: categorías en dos columnas ----------
   function catCard(c) {
     const n = inCat(c.id).length;
-    // Poder Legislativo: la tarjeta de la portada lleva directo a la página
-    // del Congreso (decisión de Juan Pablo, 17 nov 2026); no abre una lista.
-    const sub = c.id === 'legislativo' ? 'Ir a la página del Congreso'
+    // Poder Legislativo: desde que hay perfiles de staffers (17 nov 2026), la
+    // tarjeta abre la lista de la categoría; la página del Congreso queda
+    // enlazada dentro de la vista y en el botón del encabezado.
+    const sub = (c.id === 'legislativo' && !n) ? 'Ir a la página del Congreso'
       : (n ? n + (n === 1 ? ' perfil' : ' perfiles') : 'Todavía sin perfiles');
     return '<button type="button" class="cat" data-cat="' + c.id + '">' +
       '<span class="cl">' + esc(c.label) + '</span>' +
@@ -211,7 +212,7 @@
     $('#colR').innerHTML = right.map(id => catCard(byId[id])).join('');
     $('#colB').innerHTML = catCard(byId['otros']);
     document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => {
-      if (b.dataset.cat === 'legislativo') { window.location.href = 'congreso.html'; return; }
+      if (b.dataset.cat === 'legislativo' && inCat('legislativo').length === 0) { window.location.href = 'congreso.html'; return; }
       openCat(b.dataset.cat);
     }));
   }
@@ -224,6 +225,8 @@
     $('#listview').hidden = false;
     $('#wm').hidden = false;
     $('#catTitle').textContent = (CATS.find(c => c.id === id) || {}).label || id;
+    const catEx = $('#catExtra');
+    if (catEx) catEx.hidden = (id !== 'legislativo');
     $('#q').value = '';
     const sel = $('#fsub');
     const orgs = [];
