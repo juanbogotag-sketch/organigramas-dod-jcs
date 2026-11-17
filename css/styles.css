@@ -953,24 +953,18 @@ body:not(.dev-mobile) #phandle:hover {
   opacity: .45;
   cursor: not-allowed;
 }
-#gate::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: url('../img/textura_floral.png') repeat; background-size: 340px;
-  opacity: .07;
-}
 #gate::after {
-  content: ''; position: absolute; left: 50%; top: 50%; pointer-events: none;
-  width: min(600px, 92vw); height: min(600px, 92vw);
-  transform: translate(-50%, -50%);
+  content: ''; position: absolute; right: -24px; bottom: -24px; pointer-events: none;
+  width: min(230px, 52vw); height: min(230px, 52vw);
   background: url('../img/escudo_blanco.png') center / contain no-repeat;
-  opacity: .13;
+  opacity: .3;
 }
 #gate .gcard { position: relative; z-index: 1; overflow: hidden; }
 #gate .gcard::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
   background: linear-gradient(to right, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
 }
-#gate .gcrest { display: block; height: 86px; width: auto; margin: 2px auto 10px; }
+#gate .gcrest { display: block; height: 52px; width: auto; margin: 2px auto 8px; }
 
 #qwrap {
   position: absolute;
