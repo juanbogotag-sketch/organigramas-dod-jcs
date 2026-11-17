@@ -16,6 +16,17 @@
   (function gate() {
     const g = $('#gate'), inp = $('#gname'), btn = $('#gbtn');
     if (!g || !inp || !btn) return;
+    // A quien ya se registró en este navegador no se le vuelve a pedir el
+    // nombre; en modo incógnito no queda registro y la puerta sí aparece.
+    try {
+      let conocido = localStorage.getItem('orgs_visitante') || '';
+      if (!conocido) {
+        const av = JSON.parse(localStorage.getItem('orgs_visitas_v1') || '[]');
+        for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { conocido = av[i].nombre; break; }
+        if (conocido) localStorage.setItem('orgs_visitante', conocido);
+      }
+      if (conocido) return;
+    } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
     const chk = () => { btn.disabled = inp.value.trim().length < 2; };
@@ -24,6 +35,7 @@
     const go = () => {
       const nombre = inp.value.trim();
       if (nombre.length < 2) return;
+      try { localStorage.setItem('orgs_visitante', nombre); } catch (e) {}
       try {
         const ua = navigator.userAgent || '';
         const br = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /OPR\/|Opera/.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Otro navegador';
@@ -212,7 +224,9 @@
     list.forEach(p => { if (!groups.has(p.org)) groups.set(p.org, []); groups.get(p.org).push(p); });
     let html = '';
     groups.forEach((folks, org) => {
-      html += '<div class="gname">' + esc(org) + ' (' + folks.length + ')</div>';
+      const tid = (curCat === 'ejecutivo' && folks[0]) ? folks[0].orgId : '';
+      html += '<div class="gname"><span>' + esc(org) + ' (' + folks.length + ')</span>' +
+        (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
       folks.forEach(p => {
         html += '<div class="row">' +
           (p.photo ? '<img class="ph" src="' + p.photo + '" alt="">' : '<div class="phx">' + esc(initials(p.name)) + '</div>') +
@@ -244,7 +258,6 @@
   $('#q').addEventListener('input', () => renderList());
   $('#fsub').addEventListener('change', onSubChange);
   $('#fsub2').addEventListener('change', () => renderList());
-  $('#btnAliados').addEventListener('click', () => openCat('legislativo'));
 
   // ---------- Sugerencias (el envío llega al Gmail de Juan Pablo vía FormSubmit) ----------
   const sug = $('#sug');
@@ -302,6 +315,11 @@
     $('#mmsg').textContent = '';
     const lk3 = $('#mdl'); if (lk3) lk3.hidden = true;
     const sh3 = $('#mshare'); if (sh3) sh3.hidden = true;
+    const ctd = contactOf(cur);
+    const cb = $('#mcontact'); if (cb) cb.hidden = !ctd;
+    const cp = $('#mcontacto');
+    if (cp) { cp.hidden = true; cp.innerHTML = ctd ? ctd.map(contactRow).join('') : ''; }
+    paintCartBtn();
     paintProfile();
     $('#modal').hidden = false;
   }
@@ -343,16 +361,14 @@
       a.textContent = '⬇ Descargar: ' + r.name;
       const sh = $('#mshare');
       const canShare = !!(sh && navigator.canShare && navigator.canShare({ files: [dlFile] }));
-      if (canShare) {
-        // En el celular el enlace de descarga no sirve: queda solo Compartir / Guardar.
-        a.hidden = true;
-        sh.hidden = false;
-        $('#mmsg').textContent = 'Documento generado. Toca «Compartir / Guardar» para guardarlo en tu celular.';
-      } else {
-        a.hidden = false;
-        $('#mmsg').textContent = 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
-        if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
-      }
+      // La descarga queda SIEMPRE disponible: en el computador es la vía que
+      // funciona. «Compartir / Guardar» se suma cuando el equipo lo permite.
+      a.hidden = false;
+      if (sh) sh.hidden = !canShare;
+      $('#mmsg').textContent = canShare
+        ? 'Documento generado. En el celular puedes usar «Compartir / Guardar»; en el computador, «Descargar».'
+        : 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
+      if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
     } catch (e) {
       $('#mmsg').textContent = 'No se pudo generar el documento.';
     }
@@ -442,6 +458,142 @@
     const slug = p.name.replace(/[^\wáéíóúñ]+/gi, '_').replace(/^_+|_+$/g, '');
     return { blob, name: (lang === 'es' ? 'Perfil_' : 'Profile_') + slug + '_V_' + dt + '_JPGB' + (lang === 'es' ? '' : '_EN') + '.docx' };
   }
+
+  // ---------- Contactos verificados ----------
+  // Correo oficial de Boone (consta en la base del evento de la Embajada) y
+  // contactos de oficina verificados de PM, CT, P y DDTC. Clave: id del nodo.
+  const PM_OF = [
+    { k: 'Correo de oficina (PM-CPA)', v: 'PM-CPA@state.gov' },
+    { k: 'Correo de oficina (Outreach PM)', v: 'T_Outreach_PM@State.gov' },
+    { k: 'Teléfono del front office (PM)', v: '(202) 647-9022' }
+  ];
+  const CT_OF = [{ k: 'Teléfono de la oficina del Coordinador (CT)', v: '(202) 647-9892' }];
+  const CONTACTOS = {
+    d20: [{ k: 'Correo oficial', v: 'chase.l.boone.civ@mail.mil' }],
+    po20: [{ k: 'Correo oficial', v: 'chase.l.boone.civ@mail.mil' }],
+    s3: [{ k: 'Teléfono de su oficina (P)', v: '(202) 647-2471' }],
+    c1: CT_OF, c2: CT_OF, c3: CT_OF, c4: CT_OF,
+    m1: PM_OF, m3: PM_OF, m5: PM_OF,
+    m4: PM_OF.concat([
+      { k: 'Correo de su dirección (DDTC)', v: 'DDTCResponseTeam@state.gov' },
+      { k: 'Teléfono DDTC', v: '(202) 663-1282' }
+    ])
+  };
+  function contactOf(p) {
+    if (!p || p.cat !== 'ejecutivo') return null;
+    return CONTACTOS[p.key.split('|')[2]] || null;
+  }
+  function contactRow(r) {
+    const v = esc(r.v);
+    const link = /@/.test(r.v)
+      ? '<a href="mailto:' + v + '">' + v + '</a>'
+      : (/^[\d(]/.test(r.v) ? '<a href="tel:' + r.v.replace(/[^+\d]/g, '') + '">' + v + '</a>' : v);
+    return '<div class="crow"><span class="ck">' + esc(r.k) + ': </span>' + link + '</div>';
+  }
+  $('#mcontact').addEventListener('click', () => {
+    const cp = $('#mcontacto');
+    if (cp) cp.hidden = !cp.hidden;
+  });
+
+  // ---------- Foto ampliable ----------
+  $('#mph').addEventListener('click', () => {
+    if (!cur || !cur.photo) return;
+    $('#zoomImg').src = cur.photo;
+    $('#zoom').hidden = false;
+  });
+  $('#zoom').addEventListener('click', () => { $('#zoom').hidden = true; });
+
+  // ---------- Carpeta de perfiles (como un carrito) ----------
+  let cart = [];
+  try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
+  cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
+  const saveCart = () => { try { localStorage.setItem('torio_carpeta_v1', JSON.stringify(cart)); } catch (e) {} };
+  const inCart = key => cart.some(x => x.key === key);
+  function paintCartBtn() {
+    const b = $('#madd');
+    if (!b || !cur) return;
+    b.textContent = inCart(cur.key) ? '📁 Quitar de la carpeta' : '📁 Agregar a la carpeta';
+  }
+  function renderCart() {
+    const badge = $('#cartN');
+    badge.hidden = !cart.length;
+    badge.textContent = cart.length;
+    const list = $('#cartList');
+    if (!cart.length) {
+      list.innerHTML = '<p class="cempty">La carpeta está vacía. Abre un perfil y toca «Agregar a la carpeta».</p>';
+    } else {
+      list.innerHTML = cart.map((x, i) => {
+        const p = PEOPLE.find(q => q.key === x.key);
+        if (!p) return '';
+        return '<div class="citem">' +
+          (p.photo ? '<img src="' + p.photo + '" alt="">' : '<div class="cphx">' + esc(initials(p.name)) + '</div>') +
+          '<div class="cinfo"><b>' + esc(p.name) + '</b><small>' + (x.lang === 'en' ? 'Perfil en inglés' : 'Perfil en español') + '</small></div>' +
+          '<button type="button" class="crm" data-i="' + i + '" aria-label="Quitar de la carpeta">✕</button></div>';
+      }).join('');
+      list.querySelectorAll('.crm').forEach(b => b.addEventListener('click', () => {
+        cart.splice(+b.dataset.i, 1);
+        saveCart(); renderCart(); paintCartBtn();
+      }));
+    }
+    $('#cartZip').disabled = cart.length < 2;
+    const dl = $('#cartDl'); if (dl) dl.hidden = true;
+    const cs = $('#cartShare'); if (cs) cs.hidden = true;
+  }
+  $('#madd').addEventListener('click', () => {
+    if (!cur) return;
+    if (inCart(cur.key)) cart = cart.filter(x => x.key !== cur.key);
+    else cart.push({ key: cur.key, lang: curLang });
+    saveCart(); renderCart(); paintCartBtn();
+  });
+  $('#cartFab').addEventListener('click', () => {
+    const p = $('#cartPanel');
+    p.hidden = !p.hidden;
+    if (!p.hidden) renderCart();
+  });
+  $('#cartX').addEventListener('click', () => { $('#cartPanel').hidden = true; });
+  $('#cartClear').addEventListener('click', () => {
+    cart = []; saveCart(); renderCart(); paintCartBtn();
+    $('#cartMsg').textContent = '';
+  });
+  let zipURL = null, zipFile = null;
+  $('#cartZip').addEventListener('click', async () => {
+    const items = cart.map(x => ({ p: PEOPLE.find(q => q.key === x.key), lang: x.lang })).filter(x => x.p);
+    if (items.length < 2) return;
+    $('#cartMsg').textContent = 'Generando ' + items.length + ' documentos…';
+    try {
+      const z = new JSZip();
+      const used = {};
+      for (const it of items) {
+        const r = await wordProfile(it.p, it.lang);
+        let nm = r.name;
+        if (used[nm]) nm = nm.replace(/\.docx$/, '_' + (used[nm] + 1) + '.docx');
+        used[r.name] = (used[r.name] || 0) + 1;
+        z.file(nm, r.blob);
+      }
+      const blob = await z.generateAsync({ type: 'blob' });
+      const now = new Date(), p2 = n => String(n).padStart(2, '0');
+      const zn = 'Carpeta_Torio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.zip';
+      if (zipURL) URL.revokeObjectURL(zipURL);
+      zipURL = URL.createObjectURL(blob);
+      zipFile = new File([blob], zn, { type: 'application/zip' });
+      const a = $('#cartDl');
+      a.href = zipURL;
+      a.setAttribute('download', zn);
+      a.textContent = '⬇ Descargar ZIP: ' + zn;
+      a.hidden = false;
+      const cs = $('#cartShare');
+      if (cs && navigator.canShare && navigator.canShare({ files: [zipFile] })) cs.hidden = false;
+      $('#cartMsg').textContent = 'Carpeta lista: ' + items.length + ' perfiles en un solo ZIP.';
+      if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
+    } catch (e) {
+      $('#cartMsg').textContent = 'No se pudo generar la carpeta.';
+    }
+  });
+  $('#cartShare').addEventListener('click', async () => {
+    if (!zipFile) return;
+    try { await navigator.share({ files: [zipFile] }); } catch (e) {}
+  });
+  renderCart();
 
   renderCats();
 })();
