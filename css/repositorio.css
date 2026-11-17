@@ -85,6 +85,8 @@ header { position: relative; z-index: 1; }
 
 .cols { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
 .col { flex: 1 1 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.colsB { display: flex; justify-content: center; margin-top: 14px; }
+.colB { flex: 0 1 calc(50% - 7px); display: flex; flex-direction: column; min-width: 0; }
 
 #foot { text-align: center; padding: 38px 0 6px; }
 #footlogo { width: 230px; max-width: 70vw; }
@@ -256,6 +258,7 @@ header { position: relative; z-index: 1; }
   header h1 { font-size: 26px; }
   .cols { flex-direction: column; }
   .col { width: 100%; }
+  .colB { flex: 1 1 100%; }
   .frow { flex-direction: column; }
   .frow2 { flex-wrap: wrap; }
   .sub2lab { margin-left: 0; }
