@@ -355,16 +355,17 @@ header { position: relative; z-index: 1; }
 /* Lista de perfiles: las columnas se reacomodan con el ancho útil de la
    pantalla (al alejar el zoom caben más columnas; al acercar, menos) */
 @media (min-width: 861px) {
-  #groups { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 16px; }
+  #groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 24px; }
   #groups .gname { grid-column: 1 / -1; }
+  #groups .row { margin-bottom: 0; }
 }
 @media (min-width: 1251px) {
-  main { max-width: 1420px; }
-  #groups { grid-template-columns: repeat(3, 1fr); }
+  main { max-width: 1400px; padding-left: 36px; padding-right: 36px; }
+  #groups { grid-template-columns: repeat(3, 1fr); gap: 22px 28px; }
 }
 @media (min-width: 1701px) {
-  main { max-width: 1780px; }
-  #groups { grid-template-columns: repeat(4, 1fr); }
+  main { max-width: 1700px; padding-left: 48px; padding-right: 48px; }
+  #groups { grid-template-columns: repeat(4, 1fr); gap: 24px 32px; }
 }
 
 /* Selección rápida para la carpeta */
