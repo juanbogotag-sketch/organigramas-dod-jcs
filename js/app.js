@@ -209,6 +209,26 @@ window.__APP_FN = function () {
       sd.trees.forEach(x => {
         if (!tree0(S, x.id)) { S.trees.push(x); added++; }
       });
+      // Renombrados en la publicación (p. ej., ids corregidos): si un nodo
+      // local ya no está en los datos publicados pero en su mismo árbol hay
+      // un nodo publicado con el mismo nombre, el local es la versión vieja
+      // del renombrado: se retira y los hijos locales que colgaban de él
+      // pasan al id nuevo. Las demás ediciones locales no se tocan.
+      const seedKeys = new Set(sd.nodes.map(n => n.id + '|' + n.t));
+      const renamed = {}; // 'árbol|idViejo' -> idNuevo
+      S.nodes.forEach(n => {
+        if (n.name && !seedKeys.has(n.id + '|' + n.t)) {
+          const rep = sd.nodes.find(sn => sn.t === n.t && sn.name === n.name && sn.id !== n.id);
+          if (rep) renamed[n.t + '|' + n.id] = rep.id;
+        }
+      });
+      if (Object.keys(renamed).length) {
+        S.nodes = S.nodes.filter(n => !renamed[n.t + '|' + n.id]);
+        S.nodes.forEach(n => {
+          if (n.p && renamed[n.t + '|' + n.p]) n.p = renamed[n.t + '|' + n.p];
+        });
+        added++;
+      }
       const have = new Set(S.nodes.map(n => n.id + '|' + n.t));
       sd.nodes.forEach(sn => {
         if (!have.has(sn.id + '|' + sn.t)) { S.nodes.push(sn); added++; }
