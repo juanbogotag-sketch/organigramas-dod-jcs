@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=25">
+  <link rel="stylesheet" href="css/repositorio.css?v=26">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -61,6 +61,7 @@
       <button id="back" type="button">← Volver a las categorías</button>
       <div class="cathead">
         <h2 id="catTitle"></h2>
+        <a id="catExtra" class="vorg" href="congreso.html" hidden>Ver la página del Congreso (comités y presidentes) →</a>
       </div>
       <div class="frow">
         <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
@@ -162,7 +163,7 @@
   <script src="js/datos_ct.js"></script>
   <script src="js/datos_foro.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=20"></script>
+  <script src="js/repositorio.js?v=21"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
