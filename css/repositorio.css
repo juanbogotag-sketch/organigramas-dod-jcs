@@ -134,7 +134,14 @@ header { position: relative; z-index: 1; }
 .gname {
   font-size: 16px; font-weight: bold; color: var(--blue);
   margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--line);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
 }
+.vorg {
+  font-size: 12.5px; font-weight: normal; color: var(--blue);
+  border: 1px solid var(--blue); border-radius: 14px; padding: 4px 12px;
+  text-decoration: none; background: #fff; white-space: nowrap;
+}
+.vorg:hover { background: var(--blue); color: #fff; }
 
 .row {
   display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
@@ -264,3 +271,70 @@ header { position: relative; z-index: 1; }
   box-shadow: 0 3px 10px rgba(11, 38, 69, .35);
 }
 .sugfab:hover { background: var(--blue2); }
+
+/* Foto ampliable en la ficha */
+.mhead img { cursor: zoom-in; }
+#zoom {
+  position: fixed; inset: 0; z-index: 90; background: rgba(6, 17, 34, .92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 18px; cursor: zoom-out;
+}
+#zoom[hidden] { display: none; }
+#zoom img { max-width: min(92vw, 560px); max-height: 84vh; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+#zoom p { color: #cfd8e6; font-size: 13px; margin: 12px 0 0; }
+
+/* Panel de contacto en la ficha */
+#mcontacto {
+  margin-top: 14px; background: #f2f5f9; border: 1px solid var(--line);
+  border-radius: 8px; padding: 12px 14px; font-size: 14px;
+}
+#mcontacto[hidden] { display: none; }
+#mcontacto .crow { margin: 4px 0; }
+#mcontacto .ck { color: var(--mu); }
+#mcontacto a { color: var(--blue2); }
+
+/* Carpeta de perfiles (tipo carrito) */
+.cartfab {
+  position: fixed; top: 16px; right: 16px; z-index: 45;
+  width: 52px; height: 52px; border-radius: 12px;
+  background: var(--blue); color: #fff; border: 1px solid #9fc3e8;
+  font-size: 23px; line-height: 1; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(11, 38, 69, .35);
+}
+.cartfab:hover { background: var(--blue2); }
+.cartn {
+  position: absolute; top: -7px; right: -7px; min-width: 22px; height: 22px;
+  border-radius: 11px; background: #CE1126; color: #fff; font-size: 12.5px;
+  font-weight: bold; display: flex; align-items: center; justify-content: center; padding: 0 5px;
+}
+.cartn[hidden] { display: none; }
+#cartPanel {
+  position: fixed; top: 78px; right: 12px; z-index: 55;
+  width: min(370px, calc(100vw - 24px)); max-height: calc(100vh - 100px); overflow-y: auto;
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 12px 34px rgba(10, 29, 56, .28); padding: 14px 16px 16px;
+}
+#cartPanel[hidden] { display: none; }
+.cphead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cphead b { color: var(--blue); font-size: 16px; }
+#cartX {
+  background: none; border: 1px solid var(--line); border-radius: 6px;
+  padding: 4px 9px; cursor: pointer; font-family: inherit; font-size: 13px;
+}
+.citem { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #eee7da; }
+.citem img, .citem .cphx { width: 34px; height: 44px; object-fit: cover; border-radius: 3px; background: #e8e2d5; flex: 0 0 auto; }
+.citem .cphx { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: var(--mu); }
+.citem .cinfo { flex: 1 1 auto; min-width: 0; }
+.citem .cinfo b { display: block; font-size: 13.5px; }
+.citem .cinfo small { color: var(--mu); font-size: 12px; }
+.crm {
+  background: none; border: 1px solid var(--line); border-radius: 6px;
+  padding: 4px 8px; cursor: pointer; font-family: inherit; font-size: 12.5px; flex: 0 0 auto;
+}
+.cempty { color: var(--mu); font-size: 13.5px; margin: 8px 0; }
+#cartMsg { font-size: 12.5px; color: var(--mu); margin: 8px 0 0; }
+#cartPanel a#cartDl {
+  border: 1px solid var(--blue); background: var(--blue); color: #fff; border-radius: 6px;
+  padding: 10px 16px; cursor: pointer; font-size: 14px; text-decoration: none;
+}
+#cartPanel a#cartDl[hidden] { display: none; }
