@@ -76,12 +76,12 @@
         a.push({
           dia: now.getFullYear() + '-' + p(now.getMonth() + 1) + '-' + p(now.getDate()),
           hora: p(now.getHours()) + ':' + p(now.getMinutes()) + ':' + p(now.getSeconds()),
-          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, correo: correo, sitio: 'Torio'
+          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, correo: correo, sitio: 'Repositorio'
         });
         if (a.length > 500) a = a.slice(-500);
         localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
       } catch (e) {}
-      reportarRegistro(nombre, correo, 'Torio');
+      reportarRegistro(nombre, correo, 'Repositorio');
       g.hidden = true;
       document.body.style.overflow = '';
     };
@@ -350,7 +350,7 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify((() => {
           const reg = leerRegistro();
-          const d = { _subject: 'Sugerencia de perfiles — Torio', sugerencia: txt, name: (reg && reg.n) || 'Sin registro' };
+          const d = { _subject: 'Sugerencia de perfiles — Repositorio', sugerencia: txt, name: (reg && reg.n) || 'Sin registro' };
           if (reg && reg.e) d.email = reg.e;
           return d;
         })())
@@ -756,7 +756,7 @@
       }
       const blob = await z.generateAsync({ type: 'blob' });
       const now = new Date(), p2 = n => String(n).padStart(2, '0');
-      const zn = 'Carpeta_Torio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.zip';
+      const zn = 'Carpeta_Repositorio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.zip';
       offerFile(blob, zn);
       $('#cartMsg').textContent = 'Carpeta lista: ' + items.length + ' perfiles en un solo ZIP.';
     } catch (e) {
@@ -822,7 +822,7 @@
     try {
       const blob = await buildXlsx(items.map(matrixRow));
       const now = new Date(), p2 = n => String(n).padStart(2, '0');
-      offerFile(blob, 'Matriz_Torio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx');
+      offerFile(blob, 'Matriz_Repositorio_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx');
       $('#cartMsg').textContent = 'Matriz lista: ' + items.length + ' personas.';
     } catch (e) {
       $('#cartMsg').textContent = 'No se pudo generar la matriz.';
