@@ -87,6 +87,32 @@ const PERFILES_EX = [
   "dep": "Office of International Affairs (OIA), Criminal Division",
   "es": "Aaron E. York se desempeña como abogado litigante en la Oficina de Asuntos Internacionales de la División Criminal del Departamento de Justicia de los Estados Unidos. En sus antecedentes profesionales, intervino en las diligencias judiciales del caso contra Geovany Andrés Rojas, alias «Araña», señalado como presunto cabecilla narcoterrorista. En dicho proceso, logró, de forma conjunta con el agregado judicial en Bogotá, Kristopher Jarvis, el arresto y la extradición desde Colombia del acusado. El procesado enfrenta cargos por conspiración internacional para distribuir cocaína y narcoterrorismo en una causa vinculada a la Fiscalía Federal del Distrito Sur de California (2026).",
   "en": "Aaron E. York serves as a Trial Attorney in the Office of International Affairs (OIA) within the Criminal Division at the United States Department of Justice (DOJ). In his professional background, he participated in the legal proceedings involving Geovany Andrés Rojas, alias \"Araña\", an alleged narcoterrorist leader. In this case, alongside Judicial Attaché in Bogotá Kristopher Jarvis, he secured the arrest and extradition from Colombia of the defendant. The defendant faces charges of international conspiracy to distribute cocaine and narcoterrorism in a prosecution associated with the United States Attorney's Office for the Southern District of California (2026)."
+ },
+ {
+  "id": "ireland",
+  "cat": "legislativo",
+  "name": "Core Ireland",
+  "fn": "Core",
+  "ln": "Ireland",
+  "title": "Professional Staff Member",
+  "orgId": "",
+  "org": "House Committee on Foreign Affairs",
+  "dep": "Subcommittee on Western Hemisphere",
+  "es": "Core Ireland se desempeña como miembro del personal profesional del Subcomité del Hemisferio Occidental de la Cámara de Representantes de los Estados Unidos, el órgano del Comité de Asuntos Exteriores que supervisa la política estadounidense hacia América Latina y el Caribe. En sus antecedentes formativos, se graduó con el mejor promedio de su promoción en la escuela secundaria Bend Senior High School, en Oregón, con el diploma del Bachillerato Internacional (2016), y obtuvo una licenciatura en estudios internacionales, economía y español en la Universidad Johns Hopkins, con honores generales y de departamento (2021). En su trayectoria profesional, inició su experiencia en el Congreso como pasante en la oficina del representante Greg Walden (2020). Más adelante, integró el equipo de programa para América Latina y el Caribe del Instituto Republicano Internacional (2023), en apoyo de programas de fortalecimiento democrático en la región. Posteriormente, se incorporó al Senado como corresponsal legislativo del senador Marco Rubio (2025), a cargo de la correspondencia con los electores en asuntos de política exterior, antes de pasar a su cargo actual en la Cámara de Representantes. En el plano personal, su dominio del español y su formación en estudios internacionales reflejan una vocación temprana por los asuntos hemisféricos.",
+  "en": "Core Ireland serves as a Professional Staff Member of the Subcommittee on Western Hemisphere of the United States House of Representatives, the panel of the House Foreign Affairs Committee (HFAC) that oversees United States policy toward Latin America and the Caribbean. In terms of education, Ireland graduated as valedictorian of Bend Senior High School in Oregon, earning the International Baccalaureate diploma (2016), and later earned a Bachelor of Arts in international studies, economics, and Spanish from Johns Hopkins University, with general and departmental honors (2021). In terms of professional experience, Ireland first served on Capitol Hill as an intern in the office of Representative Greg Walden (2020). Ireland later joined the Latin America and the Caribbean program team at the International Republican Institute (IRI) (2023), supporting democracy-strengthening programs across the region. Ireland then moved to the Senate as a Legislative Correspondent for Senator Marco Rubio (2025), handling constituent correspondence on foreign policy matters, before taking up the current role in the House. On a personal note, a command of Spanish and training in international studies reflect an early vocation for hemispheric affairs."
+ },
+ {
+  "id": "hartman",
+  "cat": "legislativo",
+  "name": "Victoria Hartman",
+  "fn": "Victoria",
+  "ln": "Hartman",
+  "title": "Policy Analyst",
+  "orgId": "",
+  "org": "Senate Committee on Foreign Relations",
+  "dep": "",
+  "es": "Victoria Hartman se desempeña como analista de políticas del Comité de Relaciones Exteriores del Senado de los Estados Unidos, el comité encargado de supervisar la política exterior y la asistencia exterior de los Estados Unidos. En sus antecedentes formativos, obtuvo una licenciatura en ciencias políticas y relaciones internacionales en Flagler College, en Florida (2023). En su trayectoria profesional, inició su experiencia en el Capitolio como pasante en la oficina del senador Marco Rubio (2022) y después como pasante del propio Comité de Relaciones Exteriores del Senado (2024). Más adelante, trabajó como asistente de personal en la oficina del senador Ron Johnson (2025), antes de regresar al Comité de Relaciones Exteriores en su cargo actual. En el plano personal, su trayectoria refleja un interés temprano y sostenido por la política exterior: antes de graduarse ya había hecho pasantías en el Senado y en el comité en el que hoy trabaja.",
+  "en": "Victoria Hartman serves as a Policy Analyst for the United States Senate Committee on Foreign Relations (SFRC), the committee charged with overseeing American foreign policy and foreign assistance. In her academic background, she earned a Bachelor of Arts in political science and international relations from Flagler College in Florida (2023). In her professional career, she began her Capitol Hill experience as an intern in the office of Senator Marco Rubio (2022) and later interned with the Senate Foreign Relations Committee itself (2024). She subsequently worked as a Staff Assistant in the office of Senator Ron Johnson (2025), before returning to the Foreign Relations Committee in her current role. On a personal note, her path reflects an early and sustained interest in foreign policy: before graduating, she had already interned in the Senate and at the committee where she works today."
  }
 ];
 const FICHAS_EX = [
