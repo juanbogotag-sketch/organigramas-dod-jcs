@@ -1,6 +1,6 @@
 /* Torio — service worker: red primero; la caché solo es respaldo sin conexión.
    Los archivos propios del organigrama (index.html, app.js, styles.css) pasan directos. */
-var CACHE = 'torio-v2';
+var CACHE = 'torio-v3';
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
