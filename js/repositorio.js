@@ -158,6 +158,7 @@
     { id: 'judicial', label: 'Poder Judicial' },
     { id: 'centros', label: 'Centros de pensamiento' },
     { id: 'academia', label: 'Academia y universidades' },
+    { id: 'embajada', label: 'Embajada de Colombia' },
     { id: 'otros', label: 'Otros' }
   ];
   const inCat = id => PEOPLE.filter(p => p.cat === id && p.visible);
@@ -204,9 +205,11 @@
   }
   function renderCats() {
     const left = ['ejecutivo', 'legislativo', 'judicial'];
+    const right = ['centros', 'academia', 'embajada'];
     const byId = {}; CATS.forEach(c => { byId[c.id] = c; });
     $('#colL').innerHTML = left.map(id => catCard(byId[id])).join('');
-    $('#colR').innerHTML = CATS.filter(c => !left.includes(c.id)).map(catCard).join('');
+    $('#colR').innerHTML = right.map(id => catCard(byId[id])).join('');
+    $('#colB').innerHTML = catCard(byId['otros']);
     document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => {
       if (b.dataset.cat === 'legislativo') { window.location.href = 'congreso.html'; return; }
       openCat(b.dataset.cat);
@@ -829,7 +832,7 @@
     doj: 'Department of Justice', fbi: 'Department of Justice', dea: 'Department of Justice',
     dhs: 'Department of Homeland Security', ice: 'Department of Homeland Security'
   };
-  const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', otros: '' };
+  const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', embajada: 'Diplomatic Missions', otros: '' };
   const PREFIJO_CONOCIDO = { s3: 'Ms.', s4: 'Mr.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
   const PREFIJO_EX = { beasley: 'Mr.', barbulescu: 'Ms.', kocheulov: 'Mr.', lee: 'Ms.', ormsby: 'Mr.', york: 'Mr.', fishman: 'Mr.', "peterson": 'Ms.', "madigan": 'Mr.', "hui": 'Mr.', "bodner": 'Ms.', "fuse": 'Ms.', "thomas": 'Ms.', "zegar": 'Ms.', "burgos": 'Ms.', "stackhouse": 'Mr.', "kitt": 'Ms.', "besosa": 'Mr.', "bello": 'Mr.', "wilson": 'Captain', "spalding": 'Lieutenant', "norkiewicz": 'Mr.', "jacquez": 'Ms.', "ortiz": 'Mr.', "cannavo": 'MS', "kroger": 'Mr.', "blasini": 'Ms.', "carrera": 'Ms.', "varela": 'Mr.', "auger": 'Ms.', "polga-hecimovich": 'Mr.', "arnold": 'Ms.', "meade": 'Ms.', "underwood": 'Mr.', "velasco": 'Mr.', "liberatori": 'Major General', "gorigoitia": 'Major General', "santamaria": 'General', "correa": 'Colonel', "skeete": 'Colonel', "diaz": 'Major General', "chini": 'Rear Admiral', "barros": 'Rear Admiral', "acevedo": 'Captain', "duarte": 'Rear Admiral', "rueda": 'Captain', "gavarrete": 'Colonel', "archila": 'Vice Admiral', "mejia": 'Colonel', "espinoza": 'Brigadier General', "angulo": 'Rear Admiral', "jessen": 'Commander', "tocci": 'Captain', "looman": 'Captain', "woolrich": 'Rear Admiral', "charpentier": 'Captain', "gore": 'Captain', "tremblay": 'Captain', "mugica": 'Captain', "ledridge": 'Captain', "griffin": 'Lieutenant', "gilbert": 'Lieutenant Colonel', "croker": 'Mr.', "chapman": 'Captain', "cbodner": 'Lieutenant Commander', "varona": 'Captain', "frost": 'Commodore', "ambrogi": 'Brigadier General', "santana": 'Colonel', "lopez": 'Major General', "camara": 'Major General', "vaca": 'Colonel', "grady": 'Lieutenant Commander', "roncone": 'Ms.' };
   const HON_RE = /^(Dr|Amb|Gen|Lt|Maj|Col|Capt|Cpt|Adm|VAdm|RAdm|Sgt|CMSgt|SMSgt|MSgt|Brig|Hon)\.$/;
