@@ -168,6 +168,9 @@
     $('#listview').hidden = false;
     $('#wm').hidden = false;
     $('#catTitle').textContent = (CATS.find(c => c.id === id) || {}).label || id;
+    const co = $('#catOrg');
+    const dest = id === 'ejecutivo' ? 'index.html' : (id === 'legislativo' ? 'congreso.html' : '');
+    if (co) { co.hidden = !dest; if (dest) co.href = dest; }
     $('#q').value = '';
     const sel = $('#fsub');
     const orgs = [];
