@@ -1015,3 +1015,16 @@ body:not(.dev-mobile) #phandle:hover {
   margin: 2px 0 6px;
   min-height: 15px;
 }
+
+#backRepo {
+  display: block;
+  background: #0A1D38;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-size: 13.5px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+#backRepo:hover { background: #1D5C63; }
