@@ -136,7 +136,7 @@
   }));
   (typeof FICHAS_EX !== 'undefined' ? FICHAS_EX : []).forEach(p => PEOPLE.push({
     cat: p.cat, key: 'ex|' + p.id, orgId: p.orgId,
-    name: p.name, title: p.title || '', title_en: p.title || '',
+    name: p.name, title: p.title || '', title_en: p.title_en || p.title || '',
     org: p.org, dep: p.dep || '',
     es: '', en: '', photo: '', ord: treeOrder[p.orgId] || 0, visible: true,
     fn: p.fn || '', ln: p.ln || ''
@@ -553,6 +553,17 @@
     ormsby: [{ k: 'Correo oficial', v: 'Jesse.Ormsby@usdoj.gov' }],
     york: [{ k: 'Correo oficial', v: 'Aaron.E.York@usdoj.gov' }],
     fishman: [{ k: 'Correo oficial', v: 'FishmanKA@state.gov' }],
+    "algarra": [{"k": "Correo oficial", "v": "defenseattache@colombiaemb.org"}],
+    "vargas-cano": [{"k": "Correo oficial", "v": "militaryattache@colombiaemb.org"}],
+    "villa": [{"k": "Correo oficial", "v": "oattache@colombiaemb.org"}],
+    "diaz-irreno": [{"k": "Correo oficial", "v": "adjuntomil1@colombiaemb.org"}],
+    "cabrera": [{"k": "Correo oficial", "v": "navalattache@colombiaemb.org"}],
+    "arias": [{"k": "Correo oficial", "v": "navofsec@colombiaemb.org"}],
+    "lopez-duque": [{"k": "Correo oficial", "v": "airattache@colombiaemb.org"}],
+    "urrea": [{"k": "Correo oficial", "v": "john.urrea@correo.policia.gov.co"}, {"k": "Correo alterno", "v": "policeattache@colombiaemb.org"}],
+    "martinez-ossa": [{"k": "Correo oficial", "v": "misionmilitaroea@cgfm.mil.co"}, {"k": "Correo alterno", "v": "juan.martinez@fac.mil.co"}],
+    "velasco": [{"k": "Correo oficial", "v": "misionmilitaroea@cgfm.mil.co"}],
+    "parra": [{"k": "Correo oficial", "v": "Agrepol.eeuu@policia.gov.co"}],
     "peterson": [{"k": "Correo oficial", "v": "JULIA.PETERSON@cbp.dhs.gov"}],
     "madigan": [{"k": "Correo oficial", "v": "keith.madigan@cbp.dhs.gov"}],
     "hui": [{"k": "Correo oficial", "v": "Dennis.Hui2@usdoj.gov"}],
@@ -584,7 +595,7 @@
     "brantley": [{"k": "Correo oficial", "v": "courtney.brantley@hq.dhs.gov"}],
     "liberatori": [{"k": "Correo", "v": "argattache@amilusa.com"}, {"k": "Correo alterno", "v": "ararmy.assistante@gmail.com"}],
     "gorigoitia": [{"k": "Correo", "v": "agremil@mmchusa.org"}, {"k": "Correo alterno", "v": "paula@mmchusa.org"}],
-    "santamaria": [{"k": "Correo", "v": "oattache@colombiaemb.org"}, {"k": "Correo alterno", "v": "luicard@gmail.com"}],
+    "santamaria": [{"k": "Correo oficial", "v": "defenseattache@colombiaemb.org"}, {"k": "Correo", "v": "oattache@colombiaemb.org"}, {"k": "Correo alterno", "v": "luicard@gmail.com"}],
     "correa": [{"k": "Correo", "v": "agremilusa@yahoo.com"}, {"k": "Correo alterno", "v": "epcastilloc@ejercito.mil.ec"}],
     "skeete": [{"k": "Correo", "v": "jskeete@minfor.gov.gy"}],
     "diaz": [{"k": "Correo", "v": "misionmilitaruy@gmail.com"}],
@@ -834,7 +845,7 @@
   };
   const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', embajada: 'Diplomatic Missions', otros: '' };
   const PREFIJO_CONOCIDO = { s3: 'Ms.', s4: 'Mr.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
-  const PREFIJO_EX = { beasley: 'Mr.', barbulescu: 'Ms.', kocheulov: 'Mr.', lee: 'Ms.', ormsby: 'Mr.', york: 'Mr.', fishman: 'Mr.', "peterson": 'Ms.', "madigan": 'Mr.', "hui": 'Mr.', "bodner": 'Ms.', "fuse": 'Ms.', "thomas": 'Ms.', "zegar": 'Ms.', "burgos": 'Ms.', "stackhouse": 'Mr.', "kitt": 'Ms.', "besosa": 'Mr.', "bello": 'Mr.', "wilson": 'Captain', "spalding": 'Lieutenant', "norkiewicz": 'Mr.', "jacquez": 'Ms.', "ortiz": 'Mr.', "cannavo": 'MS', "kroger": 'Mr.', "blasini": 'Ms.', "carrera": 'Ms.', "varela": 'Mr.', "auger": 'Ms.', "polga-hecimovich": 'Mr.', "arnold": 'Ms.', "meade": 'Ms.', "underwood": 'Mr.', "velasco": 'Mr.', "liberatori": 'Major General', "gorigoitia": 'Major General', "santamaria": 'General', "correa": 'Colonel', "skeete": 'Colonel', "diaz": 'Major General', "chini": 'Rear Admiral', "barros": 'Rear Admiral', "acevedo": 'Captain', "duarte": 'Rear Admiral', "rueda": 'Captain', "gavarrete": 'Colonel', "archila": 'Vice Admiral', "mejia": 'Colonel', "espinoza": 'Brigadier General', "angulo": 'Rear Admiral', "jessen": 'Commander', "tocci": 'Captain', "looman": 'Captain', "woolrich": 'Rear Admiral', "charpentier": 'Captain', "gore": 'Captain', "tremblay": 'Captain', "mugica": 'Captain', "ledridge": 'Captain', "griffin": 'Lieutenant', "gilbert": 'Lieutenant Colonel', "croker": 'Mr.', "chapman": 'Captain', "cbodner": 'Lieutenant Commander', "varona": 'Captain', "frost": 'Commodore', "ambrogi": 'Brigadier General', "santana": 'Colonel', "lopez": 'Major General', "camara": 'Major General', "vaca": 'Colonel', "grady": 'Lieutenant Commander', "roncone": 'Ms.' };
+  const PREFIJO_EX = { beasley: 'Mr.', barbulescu: 'Ms.', kocheulov: 'Mr.', lee: 'Ms.', ormsby: 'Mr.', york: 'Mr.', fishman: 'Mr.', "algarra": 'Coronel', "vargas-cano": 'Coronel', "villa": 'Sargento Mayor de Comando', "diaz-irreno": 'Coronel', "cabrera": 'Capitán de Navío', "arias": 'Sargento Mayor de Comando', "lopez-duque": 'Coronel', "urrea": 'Coronel', "martinez-ossa": 'Mayor General', "morales": 'Coronel', "rincon": 'Coronel', "velasco": 'Sargento Mayor de Comando', "iregui": 'Capitán de Navío', "parra": 'Comisario', "peterson": 'Ms.', "madigan": 'Mr.', "hui": 'Mr.', "bodner": 'Ms.', "fuse": 'Ms.', "thomas": 'Ms.', "zegar": 'Ms.', "burgos": 'Ms.', "stackhouse": 'Mr.', "kitt": 'Ms.', "besosa": 'Mr.', "bello": 'Mr.', "wilson": 'Captain', "spalding": 'Lieutenant', "norkiewicz": 'Mr.', "jacquez": 'Ms.', "ortiz": 'Mr.', "cannavo": 'MS', "kroger": 'Mr.', "blasini": 'Ms.', "carrera": 'Ms.', "varela": 'Mr.', "auger": 'Ms.', "polga-hecimovich": 'Mr.', "arnold": 'Ms.', "meade": 'Ms.', "underwood": 'Mr.', "velasco": 'Mr.', "liberatori": 'Major General', "gorigoitia": 'Major General', "santamaria": 'General', "correa": 'Colonel', "skeete": 'Colonel', "diaz": 'Major General', "chini": 'Rear Admiral', "barros": 'Rear Admiral', "acevedo": 'Captain', "duarte": 'Rear Admiral', "rueda": 'Captain', "gavarrete": 'Colonel', "archila": 'Vice Admiral', "mejia": 'Colonel', "espinoza": 'Brigadier General', "angulo": 'Rear Admiral', "jessen": 'Commander', "tocci": 'Captain', "looman": 'Captain', "woolrich": 'Rear Admiral', "charpentier": 'Captain', "gore": 'Captain', "tremblay": 'Captain', "mugica": 'Captain', "ledridge": 'Captain', "griffin": 'Lieutenant', "gilbert": 'Lieutenant Colonel', "croker": 'Mr.', "chapman": 'Captain', "cbodner": 'Lieutenant Commander', "varona": 'Captain', "frost": 'Commodore', "ambrogi": 'Brigadier General', "santana": 'Colonel', "lopez": 'Major General', "camara": 'Major General', "vaca": 'Colonel', "grady": 'Lieutenant Commander', "roncone": 'Ms.' };
   const HON_RE = /^(Dr|Amb|Gen|Lt|Maj|Col|Capt|Cpt|Adm|VAdm|RAdm|Sgt|CMSgt|SMSgt|MSgt|Brig|Hon)\.$/;
 
   function splitName(p) {
