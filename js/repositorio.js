@@ -266,7 +266,7 @@
       const r = await fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Repositorio', sugerencia: txt })
+        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Repositodo', sugerencia: txt })
       });
       if (!r.ok) throw new Error('envío rechazado');
       $('#sugMsg').textContent = '¡Gracias! Tu sugerencia fue enviada.';
