@@ -352,10 +352,19 @@ header { position: relative; z-index: 1; }
 #cartOpts button:hover { border-color: var(--blue2); }
 #cartOpts button:disabled { opacity: .45; cursor: default; }
 
-/* Lista de perfiles en dos columnas en el computador */
+/* Lista de perfiles: las columnas se reacomodan con el ancho útil de la
+   pantalla (al alejar el zoom caben más columnas; al acercar, menos) */
 @media (min-width: 861px) {
-  #groups { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  #groups { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 16px; }
   #groups .gname { grid-column: 1 / -1; }
+}
+@media (min-width: 1251px) {
+  main { max-width: 1420px; }
+  #groups { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1701px) {
+  main { max-width: 1780px; }
+  #groups { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* Selección rápida para la carpeta */
