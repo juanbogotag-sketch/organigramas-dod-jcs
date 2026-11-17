@@ -301,6 +301,7 @@
     $('#mdep').textContent = cur.dep ? 'Depende de: ' + cur.dep : '';
     $('#mmsg').textContent = '';
     const lk3 = $('#mdl'); if (lk3) lk3.hidden = true;
+    const sh3 = $('#mshare'); if (sh3) sh3.hidden = true;
     paintProfile();
     $('#modal').hidden = false;
   }
@@ -313,6 +314,7 @@
       : '<p><em>Este perfil aún no tiene texto en este idioma. Está pendiente de elaboración.</em></p>';
     $('#mword').disabled = !text;
     const lk2 = $('#mdl'); if (lk2) lk2.hidden = true;
+    const sh2 = $('#mshare'); if (sh2) sh2.hidden = true;
   }
   document.querySelectorAll('.langrow button').forEach(b => b.addEventListener('click', () => { curLang = b.dataset.l; paintProfile(); }));
   const closeModal = () => { $('#modal').hidden = true; };
@@ -324,25 +326,36 @@
   // En el celular (Safari) un clic programado tras generar el archivo se ignora:
   // por eso el documento generado queda como un enlace real (#mdl) que el
   // usuario toca para descargarlo. En escritorio/Android se dispara solo.
-  let dlURL = null;
+  let dlURL = null, dlFile = null;
   $('#mword').addEventListener('click', async () => {
     if (!cur) return;
     $('#mmsg').textContent = 'Generando el documento…';
     const lk = $('#mdl'); if (lk) lk.hidden = true;
+    const sh0 = $('#mshare'); if (sh0) sh0.hidden = true;
     try {
       const r = await wordProfile(cur, curLang);
       if (dlURL) URL.revokeObjectURL(dlURL);
       dlURL = URL.createObjectURL(r.blob);
+      dlFile = new File([r.blob], r.name, { type: r.blob.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
       const a = $('#mdl');
       a.href = dlURL;
       a.setAttribute('download', r.name);
       a.textContent = '⬇ Descargar: ' + r.name;
       a.hidden = false;
-      $('#mmsg').textContent = 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
+      const sh = $('#mshare');
+      const canShare = !!(sh && navigator.canShare && navigator.canShare({ files: [dlFile] }));
+      if (canShare) sh.hidden = false;
+      $('#mmsg').textContent = canShare
+        ? 'Documento generado. En el celular, «Compartir / Guardar» es la forma segura de guardarlo.'
+        : 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
       if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
     } catch (e) {
       $('#mmsg').textContent = 'No se pudo generar el documento.';
     }
+  });
+  $('#mshare').addEventListener('click', async () => {
+    if (!dlFile) return;
+    try { await navigator.share({ files: [dlFile] }); } catch (e) {}
   });
 
   async function wordProfile(p, lang) {
