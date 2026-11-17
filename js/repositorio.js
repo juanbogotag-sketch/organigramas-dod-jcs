@@ -160,6 +160,15 @@
     const sel = $('#fsub');
     const orgs = [];
     inCat(id).forEach(p => { if (!orgs.includes(p.org)) orgs.push(p.org); });
+    // Orden pedido por Juan Pablo: primero los subgrupos que tienen más
+    // subgrupos propios; de últimos, los que no tienen ninguno.
+    const cntOf = {}, ordOf = {};
+    inCat(id).forEach(p => {
+      const c = (p.orgId && CHILDREN[p.orgId]) ? CHILDREN[p.orgId].length : 0;
+      if (cntOf[p.org] === undefined || c > cntOf[p.org]) cntOf[p.org] = c;
+      if (ordOf[p.org] === undefined || p.ord < ordOf[p.org]) ordOf[p.org] = p.ord;
+    });
+    orgs.sort((a, b) => (cntOf[b] - cntOf[a]) || (ordOf[a] - ordOf[b]));
     sel.innerHTML = '<option value="">Todos los subgrupos</option>' +
       orgs.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
     sel.value = '';
@@ -175,7 +184,9 @@
     if (orgName) {
       const person = PEOPLE.find(p => p.cat === curCat && p.org === orgName);
       const oid = person ? person.orgId : null;
-      if (oid && CHILDREN[oid]) kids = CHILDREN[oid].map(id => (treeById[id] || {}).name).filter(Boolean);
+      if (oid && CHILDREN[oid]) kids = CHILDREN[oid].slice()
+        .sort((a, b) => ((CHILDREN[b] || []).length - (CHILDREN[a] || []).length))
+        .map(id => (treeById[id] || {}).name).filter(Boolean);
     }
     if (kids.length) {
       f2.innerHTML = '<option value="">Todos</option>' +
