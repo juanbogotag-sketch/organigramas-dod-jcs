@@ -357,3 +357,21 @@ header { position: relative; z-index: 1; }
   #groups { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
   #groups .gname { grid-column: 1 / -1; }
 }
+
+/* Selección rápida para la carpeta */
+.selfab {
+  position: fixed; top: 78px; right: 16px; z-index: 45;
+  width: 52px; height: 52px; border-radius: 12px;
+  background: #fff; color: var(--blue); border: 1px solid var(--blue);
+  font-size: 19px; line-height: 1; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(11, 38, 69, .25);
+}
+.selfab:hover { border-color: var(--blue2); color: var(--blue2); }
+.selfab.on { background: var(--blue2); color: #fff; border-color: var(--blue2); }
+body.selmode #groups .row { cursor: pointer; }
+#groups .row { position: relative; }
+#groups .row.sel { outline: 2px solid var(--blue2); outline-offset: -2px; background: rgba(29, 92, 99, .08); }
+#groups .row.sel::after {
+  content: '✓ En la carpeta'; position: absolute; top: 8px; right: 8px;
+  background: var(--blue2); color: #fff; font-size: 11.5px; border-radius: 10px; padding: 3px 9px;
+}
