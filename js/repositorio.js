@@ -126,6 +126,21 @@
     es: p.es || '', en: p.en || '',
     photo: (typeof PHCT !== 'undefined' && PHCT[p.id]) || '', ord: 0, visible: true
   }));
+  (typeof PERFILES_EX !== 'undefined' ? PERFILES_EX : []).forEach(p => PEOPLE.push({
+    cat: 'ejecutivo', key: 'ex|' + p.id, orgId: p.orgId,
+    name: p.name, title: p.title, title_en: p.title,
+    org: p.org, dep: p.dep || '',
+    es: p.es || '', en: p.en || '',
+    photo: '', ord: treeOrder[p.orgId] || 0, visible: true,
+    fn: p.fn || '', ln: p.ln || ''
+  }));
+  (typeof FICHAS_EX !== 'undefined' ? FICHAS_EX : []).forEach(p => PEOPLE.push({
+    cat: p.cat, key: 'ex|' + p.id, orgId: p.orgId,
+    name: p.name, title: p.title || '', title_en: p.title || '',
+    org: p.org, dep: p.dep || '',
+    es: '', en: '', photo: '', ord: treeOrder[p.orgId] || 0, visible: true,
+    fn: p.fn || '', ln: p.ln || ''
+  }));
 
   // Subgrupos de segundo nivel: árboles que cuelgan de un nodo de otro árbol
   // (p. ej., Department of Defense/War -> Army, Air Force, Navy, JCS, DIA, Policy)
@@ -513,6 +528,7 @@
     d20: [{ k: 'Correo oficial', v: 'chase.l.boone.civ@mail.mil' }],
     po20: [{ k: 'Correo oficial', v: 'chase.l.boone.civ@mail.mil' }],
     s3: [{ k: 'Teléfono de su oficina (P)', v: '(202) 647-2471' }],
+    s4: [{ k: 'Correo oficial', v: 'DiNannoT@state.gov' }],
     c1: CT_OF, c2: CT_OF, c3: CT_OF, c4: CT_OF,
     m1: PM_OF, m3: PM_OF, m5: PM_OF,
     m4: PM_OF.concat([
@@ -520,9 +536,103 @@
       { k: 'Teléfono DDTC', v: '(202) 663-1282' }
     ])
   };
+  // Correos de la base del evento de la Embajada (V17.11.26): personas del
+  // foro que viven en Torio sin ser nodos del organigrama (clave «ex|<id>»).
+  const CONTACTOS_EX = {
+    beasley: [{ k: 'Correo oficial', v: 'John.A.Beasley@usdoj.gov' }],
+    barbulescu: [{ k: 'Correo oficial', v: 'Ruxandra.Barbulescu@usdoj.gov' }],
+    kocheulov: [{ k: 'Correo oficial', v: 'Vladimir.Kocheulov@usdoj.gov' }],
+    lee: [{ k: 'Correo oficial', v: 'Courtney.Lee2@usdoj.gov' }],
+    ormsby: [{ k: 'Correo oficial', v: 'Jesse.Ormsby@usdoj.gov' }],
+    york: [{ k: 'Correo oficial', v: 'Aaron.E.York@usdoj.gov' }],
+    fishman: [{ k: 'Correo oficial', v: 'FishmanKA@state.gov' }],
+    "peterson": [{"k": "Correo oficial", "v": "JULIA.PETERSON@cbp.dhs.gov"}],
+    "madigan": [{"k": "Correo oficial", "v": "keith.madigan@cbp.dhs.gov"}],
+    "hui": [{"k": "Correo oficial", "v": "Dennis.Hui2@usdoj.gov"}],
+    "bodner": [{"k": "Correo oficial", "v": "Amy.Bodner@usdoj.gov"}],
+    "fuse": [{"k": "Correo oficial", "v": "Marisa.Fuse@usdoj.gov"}],
+    "thomas": [{"k": "Correo oficial", "v": "Clotilde.Alexandra-Estelle.Thomas@usdoj.gov"}],
+    "zegar": [{"k": "Correo oficial", "v": "Allison.Zegar@usdoj.gov"}],
+    "burgos": [{"k": "Correo oficial", "v": "Isabella.Burgos@usdoj.gov"}],
+    "stackhouse": [{"k": "Correo oficial", "v": "StackhouseT@state.gov"}],
+    "kitt": [{"k": "Correo oficial", "v": "ellen.e.kitt.civ@mail.mil"}],
+    "besosa": [{"k": "Correo oficial", "v": "miguel.a.besosa.ctr@mail.mil"}],
+    "bello": [{"k": "Correo oficial", "v": "mauricio.bello@dodiis.mil"}],
+    "wilson": [{"k": "Correo oficial", "v": "joshua.b.wilson.mil@us.navy.mil"}],
+    "spalding": [{"k": "Correo oficial", "v": "luc.p.spalding.mil@us.navy.mil"}],
+    "norkiewicz": [{"k": "Correo oficial", "v": "Collin.norkiewicz@us.af.mil"}],
+    "jacquez": [{"k": "Correo oficial", "v": "Alissa.m.jacquez.civ@army.mil"}],
+    "ortiz": [{"k": "Correo oficial", "v": "michael.c.ortiz@dea.gov"}],
+    "cannavo": [{"k": "Correo oficial", "v": "nmcannavo@fbi.gov"}],
+    "kroger": [{"k": "Correo oficial", "v": "KrogerKB@state.gov"}],
+    "blasini": [{"k": "Correo oficial", "v": "DeJesusP@state.gov"}],
+    "carrera": [{"k": "Correo oficial", "v": "CarreraM2@state.gov"}],
+    "auger": [{"k": "Correo oficial", "v": "AugerVE@state.gov"}],
+    "polga-hecimovich": [{"k": "Correo oficial", "v": "polgahec@usna.edu"}],
+    "arnold": [{"k": "Correo oficial", "v": "ArnoldJM@state.gov"}],
+    "meade": [{"k": "Correo oficial", "v": "klmeade@fbi.gov"}],
+    "underwood": [{"k": "Correo oficial", "v": "jtunderwood@fbi.gov"}],
+    "velasco": [{"k": "Correo oficial", "v": "simon.velasco@hq.dhs.gov"}],
+    "liang": [{"k": "Correo oficial", "v": "Jingqi.Liang.Civ@mail.smil.mil"}],
+    "brantley": [{"k": "Correo oficial", "v": "courtney.brantley@hq.dhs.gov"}],
+    "liberatori": [{"k": "Correo", "v": "argattache@amilusa.com"}, {"k": "Correo alterno", "v": "ararmy.assistante@gmail.com"}],
+    "gorigoitia": [{"k": "Correo", "v": "agremil@mmchusa.org"}, {"k": "Correo alterno", "v": "paula@mmchusa.org"}],
+    "santamaria": [{"k": "Correo", "v": "oattache@colombiaemb.org"}, {"k": "Correo alterno", "v": "luicard@gmail.com"}],
+    "correa": [{"k": "Correo", "v": "agremilusa@yahoo.com"}, {"k": "Correo alterno", "v": "epcastilloc@ejercito.mil.ec"}],
+    "skeete": [{"k": "Correo", "v": "jskeete@minfor.gov.gy"}],
+    "diaz": [{"k": "Correo", "v": "misionmilitaruy@gmail.com"}],
+    "chini": [{"k": "Correo", "v": "osva_chini@hotmail.com"}],
+    "barros": [{"k": "Correo", "v": "adneuc@gmail.com"}],
+    "acevedo": [{"k": "Correo", "v": "jefe@chilenavy.us"}],
+    "duarte": [{"k": "Correo", "v": "friasduartefranklinodalis@gmail.com"}],
+    "rueda": [{"k": "Correo", "v": "fabriciorueda@armada.mil.ec"}],
+    "gavarrete": [{"k": "Correo", "v": "agredef.esa025@gmail.com"}],
+    "archila": [{"k": "Correo", "v": "agremil.gt@gmail.com"}],
+    "mejia": [{"k": "Correo", "v": "def.honduras.dc@ffaa.mil.hn"}],
+    "espinoza": [{"k": "Correo", "v": "defensausa@mre.gov.py"}],
+    "angulo": [{"k": "Correo", "v": "oscar.oliva@marina.pe"}],
+    "jessen": [{"k": "Correo", "v": "jessenbak@foreign.gov.tt"}],
+    "tocci": [{"k": "Correo", "v": "ruizvictor1974@gmail.com"}],
+    "looman": [{"k": "Correo", "v": "erikjan.looman@minbuza.nl"}],
+    "woolrich": [{"k": "Correo", "v": "agrenavusa@semar.gob.mx"}],
+    "charpentier": [{"k": "Correo", "v": "christophe.charpentier@diplomatie.gouv.fr"}],
+    "gore": [{"k": "Correo", "v": "NavalAttacheUSA@nzdf.mil.nz"}],
+    "tremblay": [{"k": "Correo", "v": "luc.Tremblay6@forces.gc.ca"}],
+    "mugica": [{"k": "Correo", "v": "cmugicaruiz@fn.mde.es"}],
+    "ledridge": [{"k": "Correo", "v": "matthew.j.ledridge.mil@us.navy.mil"}],
+    "griffin": [{"k": "Correo", "v": "lydia.a.griffin.mil@us.navy.mil"}],
+    "gilbert": [{"k": "Correo", "v": "FLO_HQMC@usmc.mil"}],
+    "croker": [{"k": "Correo", "v": "brian.croker.civ@usmc.mil"}],
+    "chapman": [{"k": "Correo", "v": "brian.m.chapman@uscg.mil"}],
+    "cbodner": [{"k": "Correo", "v": "christopher.p.bodner@uscg.mil"}],
+    "varona": [{"k": "Correo", "v": "david.c.varona.mil@us.navy.mil"}],
+    "frost": [{"k": "Correo", "v": "david.frost3@defence.gov.au"}],
+    "ambrogi": [{"k": "Correo", "v": "airattacheassistant.ar@gmail.com"}],
+    "santana": [{"k": "Correo", "v": "jsantanasom@gmail.com"}],
+    "lopez": [{"k": "Correo", "v": "agrefap.usa@outlook.com"}],
+    "camara": [{"k": "Correo", "v": "attache.adeua@fab.mil.br"}, {"k": "Correo alterno", "v": "secretaria.adeua@fab.mil.br"}],
+    "vaca": [{"k": "Correo", "v": "eafattache@yahoo.com"}],
+    "grady": [{"k": "Correo oficial", "v": "Dana.W.Grady@uscg.mil"}],
+    "roncone": [{"k": "Correo oficial", "v": "Nita_V_Lalla@ondcp.eop.gov"}]
+  };
+  // Correos de la misma base para centros de pensamiento (clave «ct|<id>»).
+  // OJO: el correo que la base trae para Marczak es el de Isabella Palacios;
+  // no se usa para no publicar un dato errado.
+  const CONTACTOS_CT = {
+    'ford-maldonado': [{ k: 'Correo oficial', v: 'mford@americafirstpolicy.com' }],
+    'sinfoto-rafael-de-osma': [{ k: 'Correo oficial', v: 'rdeosma@as-coa.org' }],
+    'hernandez-roy': [{ k: 'Correo oficial', v: 'ChernandezRoy@csis.org' }],
+    'martinez-fernandez': [{ k: 'Correo oficial', v: 'andres.martinezfernandez@heritage.org' }],
+    'scharifker': [{ k: 'Correo oficial', v: 'DScharifker@meridian.org' }],
+    'dippell': [{ k: 'Correo oficial', v: 'mdippell@ndi.org' }],
+    'garrastazu': [{ k: 'Correo de la oficina (IRI)', v: 'info@iri.org' }]
+  };
   function contactOf(p) {
-    if (!p || p.cat !== 'ejecutivo') return null;
-    return CONTACTOS[p.key.split('|')[2]] || null;
+    if (!p) return null;
+    if (p.key.indexOf('ex|') === 0) return CONTACTOS_EX[p.key.split('|')[1]] || null;
+    if (p.cat === 'ejecutivo') return CONTACTOS[p.key.split('|')[2]] || null;
+    if (p.cat === 'centros') return CONTACTOS_CT[p.key.split('|')[1]] || null;
+    return null;
   }
   function contactRow(r) {
     const v = esc(r.v);
@@ -716,13 +826,16 @@
     dhs: 'Department of Homeland Security', ice: 'Department of Homeland Security'
   };
   const TYPE_BY_CAT = { ejecutivo: 'U.S. Government', legislativo: 'Congress', judicial: 'U.S. Government', centros: 'Think Tank', academia: 'Academia', otros: '' };
-  const PREFIJO_CONOCIDO = { s3: 'Ms.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
+  const PREFIJO_CONOCIDO = { s3: 'Ms.', s4: 'Mr.', c1: 'Amb.', c2: 'Mr.', c3: 'Ms.', c4: 'Mr.', m1: 'Mr.', m3: 'Dr.', m4: 'Mr.', m5: 'Mr.', d20: 'Mr.', po20: 'Mr.' };
+  const PREFIJO_EX = { beasley: 'Mr.', barbulescu: 'Ms.', kocheulov: 'Mr.', lee: 'Ms.', ormsby: 'Mr.', york: 'Mr.', fishman: 'Mr.', "peterson": 'Ms.', "madigan": 'Mr.', "hui": 'Mr.', "bodner": 'Ms.', "fuse": 'Ms.', "thomas": 'Ms.', "zegar": 'Ms.', "burgos": 'Ms.', "stackhouse": 'Mr.', "kitt": 'Ms.', "besosa": 'Mr.', "bello": 'Mr.', "wilson": 'Captain', "spalding": 'Lieutenant', "norkiewicz": 'Mr.', "jacquez": 'Ms.', "ortiz": 'Mr.', "cannavo": 'MS', "kroger": 'Mr.', "blasini": 'Ms.', "carrera": 'Ms.', "varela": 'Mr.', "auger": 'Ms.', "polga-hecimovich": 'Mr.', "arnold": 'Ms.', "meade": 'Ms.', "underwood": 'Mr.', "velasco": 'Mr.', "liberatori": 'Major General', "gorigoitia": 'Major General', "santamaria": 'General', "correa": 'Colonel', "skeete": 'Colonel', "diaz": 'Major General', "chini": 'Rear Admiral', "barros": 'Rear Admiral', "acevedo": 'Captain', "duarte": 'Rear Admiral', "rueda": 'Captain', "gavarrete": 'Colonel', "archila": 'Vice Admiral', "mejia": 'Colonel', "espinoza": 'Brigadier General', "angulo": 'Rear Admiral', "jessen": 'Commander', "tocci": 'Captain', "looman": 'Captain', "woolrich": 'Rear Admiral', "charpentier": 'Captain', "gore": 'Captain', "tremblay": 'Captain', "mugica": 'Captain', "ledridge": 'Captain', "griffin": 'Lieutenant', "gilbert": 'Lieutenant Colonel', "croker": 'Mr.', "chapman": 'Captain', "cbodner": 'Lieutenant Commander', "varona": 'Captain', "frost": 'Commodore', "ambrogi": 'Brigadier General', "santana": 'Colonel', "lopez": 'Major General', "camara": 'Major General', "vaca": 'Colonel', "grady": 'Lieutenant Commander', "roncone": 'Ms.' };
   const HON_RE = /^(Dr|Amb|Gen|Lt|Maj|Col|Capt|Cpt|Adm|VAdm|RAdm|Sgt|CMSgt|SMSgt|MSgt|Brig|Hon)\.$/;
 
   function splitName(p) {
     let name = String(p.name || '').trim();
     let prefix = '';
-    if (p.cat === 'ejecutivo') prefix = PREFIJO_CONOCIDO[p.key.split('|')[2]] || '';
+    if (p.key.indexOf('ex|') === 0) prefix = PREFIJO_EX[p.key.split('|')[1]] || '';
+    else if (p.cat === 'ejecutivo') prefix = PREFIJO_CONOCIDO[p.key.split('|')[2]] || '';
+    if (p.key.indexOf('ex|') === 0 && (p.fn || p.ln)) return { prefix, first: p.fn || '', last: p.ln || '' };
     const toks = name.split(/\s+/);
     const hon = [];
     while (toks.length > 1 && HON_RE.test(toks[0])) hon.push(toks.shift());
