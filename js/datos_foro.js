@@ -27,6 +27,66 @@ const PERFILES_EX = [
   "dep": "INL",
   "es": "Kyle Fishman se desempeña como oficial del Servicio Exterior e integra el equipo Colombia de la Oficina de Asuntos Internacionales de Narcóticos y Aplicación de la Ley del Departamento de Estado de los Estados Unidos. En sus antecedentes profesionales y académicos, estudió Gobierno y Relaciones Internacionales en el Harvard College y realizó un año Fulbright en Costa Rica con la Fundación Arias. Posteriormente, antes de incorporarse al Departamento de Estado, ejerció como oficial de programas del Instituto Nacional Demócrata en Centroamérica, enfocado en observación electoral, seguridad ciudadana y liderazgo juvenil. Ya en la carrera diplomática, estuvo destinado en Varsovia como oficial consular y asistente del embajador. Después, en Montevideo, dirigió la difusión consular y la prevención de fraude. Como tercer destino, se desempeñó como oficial de programas de emprendimiento en la Oficina de Diplomacia Pública de la Oficina de Asuntos del Hemisferio Occidental, donde coordinó la Iniciativa de Jóvenes Líderes de las Américas. Más adelante, ejerció como agregado de diplomacia pública en la Embajada de los Estados Unidos en Santiago de Chile (2024), periodo en el que firmó en enero un memorando con la Universidad Austral de Chile. En el plano personal, es originario del sur de Florida.",
   "en": "Kyle Fishman serves as a Foreign Service Officer on the Colombia team in the Office of International Narcotics and Law Enforcement Affairs at the United States Department of State. In his professional and academic background, he studied Government and International Relations at Harvard College and completed a Fulbright year in Costa Rica with the Arias Foundation. Later, before joining the Department of State, he served as a program officer for the National Democratic Institute in Central America, focused on election observation, citizen security, and youth leadership. Once in the diplomatic career, he was posted in Warsaw as a consular officer and assistant to the ambassador. Afterwards, in Montevideo, he led consular outreach and fraud prevention. As his third posting, he served as an entrepreneurship programs officer in the Office of Public Diplomacy of the Bureau of Western Hemisphere Affairs, where he coordinated the Young Leaders of the Americas Initiative. Later, he served as a public diplomacy attaché at the United States Embassy in Santiago, Chile (2024), a period during which he signed a memorandum in January with the Austral University of Chile. On a personal level, he is originally from South Florida."
+ },
+ {
+  "id": "ormsby",
+  "name": "Jesse Ormsby",
+  "fn": "Jesse",
+  "ln": "Ormsby",
+  "title": "Associate Director for South America",
+  "orgId": "doj",
+  "org": "Department of Justice (DOJ)",
+  "dep": "Office of International Affairs (OIA), Criminal Division",
+  "es": "Jesse Ormsby se desempeña como director asociado interino y abogado en la Oficina de Asuntos Internacionales de la División Criminal del Departamento de Justicia de los Estados Unidos. En sus antecedentes profesionales, trabajó durante unos dos años con las autoridades uruguayas para congelar activos vinculados a un caso de fraude y ejerció como declarante en el caso de asistencia judicial mutua con Uruguay (2025). Posteriormente, prestó asistencia significativa en la extradición desde Colombia de dos cabecillas de una organización de tráfico de personas, Hernando Manuel De La Cruz Rivera Orjuela, alias «El Patrón», y Luis Enrique Linero Pinto, alias «El Calvo», junto al agregado judicial del Departamento de Justicia en Bogotá (2025).",
+  "en": "Jesse Ormsby serves as an Acting Associate Director and attorney in the Office of International Affairs (OIA) within the Criminal Division at the United States Department of Justice (DOJ). In his professional background, he worked for about two years with Uruguayan authorities to freeze assets in a fraud case and served as the Department's declarant in a mutual legal assistance case with Uruguay (2025). Subsequently, he provided significant assistance in the extradition from Colombia of two leaders of a human-trafficking organization, Hernando Manuel De La Cruz Rivera Orjuela, alias \"El Patrón,\" and Luis Enrique Linero Pinto, alias \"El Calvo,\" alongside DOJ Judicial Attaché in Bogotá Kristopher Jarvis (2025)."
+ },
+ {
+  "id": "barbulescu",
+  "name": "Ruxandra Barbulescu",
+  "fn": "Ruxandra",
+  "ln": "Barbulescu",
+  "title": "Trial Attorney",
+  "orgId": "doj",
+  "org": "Department of Justice (DOJ)",
+  "dep": "Office of International Affairs (OIA), Criminal Division",
+  "es": "Ruxandra Barbulescu se desempeña como abogada litigante en la Oficina de Asuntos Internacionales de la División Criminal del Departamento de Justicia de los Estados Unidos. En la lista del foro figura como Sandra Barbulescu. En sus antecedentes profesionales, se graduó de la Escuela de Derecho Cornell y fue admitida al colegio de abogados de Nueva York (1999). Asimismo, se ha desempeñado como abogada en el Departamento de Justicia de los Estados Unidos al menos desde (2016). En el ejercicio de sus funciones, ha tramitado extradiciones hacia Chile de presuntos miembros de la organización Tren de Aragua, entre las que destaca el caso de Rafael Enrique Gámez Salas, alias «Turko», líder de la célula chilena «Los Piratas», proceso en el que se produjo su arresto provisional (2025) y cuya extradición se consumó (2026), labor que llevó adelante junto a la abogada litigante Reena T. Mittelman.",
+  "en": "Ruxandra Barbulescu serves as a Trial Attorney in the Office of International Affairs (OIA) within the Criminal Division at the United States Department of Justice (DOJ). In the forum list, she appears as Sandra Barbulescu. In her prior professional career, she graduated from Cornell Law School and was admitted to the New York bar (1999). She has served as an attorney at the DOJ at least since (2016). In the performance of her duties, she has handled extraditions to Chile of alleged members of the Tren de Aragua organization, notably the case of Rafael Enrique Gámez Salas, alias «Turko», leader of the Chilean cell «Los Piratas», a proceeding involving his provisional arrest (2025) and completed extradition (2026), carried out alongside Trial Attorney Reena T. Mittelman."
+ },
+ {
+  "id": "kocheulov",
+  "name": "Vladimir Kocheulov",
+  "fn": "Vladimir",
+  "ln": "Kocheulov",
+  "title": "Trial Attorney",
+  "orgId": "doj",
+  "org": "Department of Justice (DOJ)",
+  "dep": "Office of International Affairs (OIA), Criminal Division",
+  "es": "Vladimir Kocheulov se desempeña como abogado litigante en la División Criminal del Departamento de Justicia de los Estados Unidos. En sus antecedentes profesionales, se graduó de la Escuela de Derecho de Brooklyn y fue admitido al colegio de abogados de Nueva York (2009). Posteriormente, ejerció como fiscal de distrito adjunto en la Fiscalía del Condado del Bronx, en Nueva York, donde participó en la Operación Black Stone contra la pandilla Gorilla Stone (2015). En dicha fiscalía ascendió a jefe de la Oficina de Estrategias contra el Delito, cargo que ocupaba (2020). Asimismo, su incorporación al Departamento de Justicia de los Estados Unidos se produjo hacia (2023).",
+  "en": "Vladimir Kocheulov serves as a Trial Attorney in the Criminal Division at the United States Department of Justice (DOJ). In his professional background, he graduated from Brooklyn Law School and was admitted to the New York bar (2009). He subsequently served as an Assistant District Attorney in the Bronx County District Attorney's Office in New York, where he participated in Operation Black Stone against the Gorilla Stone gang (2015). In that prosecutor's office, he rose to Chief of the Crime Strategies Bureau, a post he held (2020). He joined the DOJ around (2023)."
+ },
+ {
+  "id": "lee",
+  "name": "Courtney E. Lee",
+  "fn": "Courtney E.",
+  "ln": "Lee",
+  "title": "Trial Attorney",
+  "orgId": "doj",
+  "org": "Department of Justice (DOJ)",
+  "dep": "Office of International Affairs (OIA), Criminal Division",
+  "es": "Courtney E. Lee se desempeña como abogada litigante en la Oficina de Asuntos Internacionales de la División Criminal del Departamento de Justicia de los Estados Unidos. En sus antecedentes profesionales, cursó sus estudios de derecho en el Centro de Derecho de la Universidad de Georgetown, donde ejerció como coeditora del simposio del Georgetown Journal of Gender and the Law y participó en la Clínica de Violencia Doméstica en la representación de sobrevivientes ante la Corte Superior del Distrito de Columbia. Posteriormente, se desempeñó como fiscal federal sénior en la Sección de Delitos Sexuales y Violencia Intrafamiliar de la Fiscalía Federal del Distrito de Columbia, a cargo del procesamiento de delitos sexuales y violencia intrafamiliar. Asimismo, fue designada comisionada judicial (2023) para ejecutar una solicitud de asistencia judicial procedente de España en el marco de una investigación de fraude. En el plano personal, reside en Alexandria, Virginia, desde hace ocho años (2026).",
+  "en": "Courtney E. Lee serves as a Trial Attorney in the Office of International Affairs (OIA) within the Criminal Division at the United States Department of Justice (DOJ). In her professional background, she studied law at Georgetown University Law Center, where she served as symposium co-editor of the Georgetown Journal of Gender and the Law and participated in the Domestic Violence Clinic representing survivors before the D.C. Superior Court. She subsequently served as a Senior Assistant United States Attorney in the Sex Offense and Domestic Violence Section of the United States Attorney's Office for the District of Columbia, prosecuting sex offenses and domestic violence. Later, she was appointed as a judicial commissioner (2023) to execute Spain's request for judicial assistance in a fraud investigation. On a personal note, she has lived in Alexandria, Virginia, for eight years (2026)."
+ },
+ {
+  "id": "york",
+  "name": "Aaron E. York",
+  "fn": "Aaron E.",
+  "ln": "York",
+  "title": "Trial Attorney",
+  "orgId": "doj",
+  "org": "Department of Justice (DOJ)",
+  "dep": "Office of International Affairs (OIA), Criminal Division",
+  "es": "Aaron E. York se desempeña como abogado litigante en la Oficina de Asuntos Internacionales de la División Criminal del Departamento de Justicia de los Estados Unidos. En sus antecedentes profesionales, intervino en las diligencias judiciales del caso contra Geovany Andrés Rojas, alias «Araña», señalado como presunto cabecilla narcoterrorista. En dicho proceso, logró, de forma conjunta con el agregado judicial en Bogotá, Kristopher Jarvis, el arresto y la extradición desde Colombia del acusado. El procesado enfrenta cargos por conspiración internacional para distribuir cocaína y narcoterrorismo en una causa vinculada a la Fiscalía Federal del Distrito Sur de California (2026).",
+  "en": "Aaron E. York serves as a Trial Attorney in the Office of International Affairs (OIA) within the Criminal Division at the United States Department of Justice (DOJ). In his professional background, he participated in the legal proceedings involving Geovany Andrés Rojas, alias \"Araña\", an alleged narcoterrorist leader. In this case, alongside Judicial Attaché in Bogotá Kristopher Jarvis, he secured the arrest and extradition from Colombia of the defendant. The defendant faces charges of international conspiracy to distribute cocaine and narcoterrorism in a prosecution associated with the United States Attorney's Office for the Southern District of California (2026)."
  }
 ];
 const FICHAS_EX = [
@@ -384,7 +444,7 @@ const FICHAS_EX = [
  },
  {
   "id": "santamaria",
-  "cat": "otros",
+  "cat": "embajada",
   "name": "Luis Emilio Cardozo Santamaria",
   "fn": "Luis Emilio",
   "ln": "Cardozo Santamaria",
