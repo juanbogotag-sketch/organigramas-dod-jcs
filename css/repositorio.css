@@ -147,13 +147,13 @@ header { position: relative; z-index: 1; }
 .vorg:hover { background: var(--blue); color: #fff; }
 
 .row {
-  display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
+  display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center;
   background: rgba(255, 255, 255, .88); border: 1px solid var(--line); border-radius: 8px;
-  padding: 16px 12px 14px; margin-bottom: 10px;
+  padding: 12px 10px 10px; margin-bottom: 10px;
 }
 
 .row .ph, .row .phx {
-  width: 104px; height: 134px; object-fit: cover; border-radius: 4px; flex: 0 0 auto;
+  width: 82px; height: 106px; object-fit: cover; border-radius: 4px; flex: 0 0 auto;
   background: #e8e2d5;
 }
 
@@ -163,10 +163,10 @@ header { position: relative; z-index: 1; }
 }
 
 .row .info { flex: 1 1 auto; min-width: 0; width: 100%; }
-.row .nm { font-size: 16px; font-weight: bold; }
+.row .nm { font-size: 15px; font-weight: bold; }
 .row .ti { font-size: 13.5px; color: var(--blue2); margin-top: 1px; }
 .row .og { font-size: 12.5px; color: var(--mu); margin-top: 3px; }
-.row .fp { font-size: 13.5px; line-height: 1.45; margin: 7px auto 0; text-align: justify; max-width: 620px; }
+.row .fp { font-size: 12.5px; line-height: 1.4; margin: 5px auto 0; text-align: justify; max-width: 620px; }
 .row .fp em { color: var(--mu); }
 
 .ver {
@@ -354,18 +354,18 @@ header { position: relative; z-index: 1; }
 
 /* Lista de perfiles: las columnas se reacomodan con el ancho útil de la
    pantalla (al alejar el zoom caben más columnas; al acercar, menos) */
-@media (min-width: 861px) {
-  #groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 24px; }
+@media (min-width: 801px) {
+  #groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 20px; }
   #groups .gname { grid-column: 1 / -1; }
   #groups .row { margin-bottom: 0; }
 }
-@media (min-width: 1251px) {
-  main { max-width: 1400px; padding-left: 36px; padding-right: 36px; }
-  #groups { grid-template-columns: repeat(3, 1fr); gap: 22px 28px; }
+@media (min-width: 1151px) {
+  main { max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+  #groups { grid-template-columns: repeat(3, 1fr); gap: 20px 24px; }
 }
-@media (min-width: 1701px) {
-  main { max-width: 1700px; padding-left: 48px; padding-right: 48px; }
-  #groups { grid-template-columns: repeat(4, 1fr); gap: 24px 32px; }
+@media (min-width: 1501px) {
+  main { max-width: 1600px; padding-left: 40px; padding-right: 40px; }
+  #groups { grid-template-columns: repeat(4, 1fr); gap: 22px 28px; }
 }
 
 /* Selección rápida para la carpeta */
