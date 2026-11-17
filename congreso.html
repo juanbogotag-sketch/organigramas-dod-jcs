@@ -209,7 +209,7 @@
     document.getElementById('goCam').addEventListener('click', () => show('v-camara'));
     document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => show('v-home')));
 
-    if (window.LOGO_EMB) document.getElementById('footlogo').src = LOGO_EMB;
+    if (typeof LOGO_EMB !== 'undefined') document.getElementById('footlogo').src = LOGO_EMB;
   </script>
 </body>
 
