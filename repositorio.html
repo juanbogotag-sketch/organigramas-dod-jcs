@@ -21,9 +21,11 @@
   <div id="gate" hidden>
     <div class="gcard">
       <h2>Torio</h2>
-      <p>Para entrar, escribe tu nombre completo.</p>
+      <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
       <label for="gname">Nombre completo</label>
       <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
+      <label for="gemail">Correo electrónico</label>
+      <input id="gemail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
       <button id="gbtn" class="p" disabled>Entrar</button>
     </div>
   </div>
@@ -154,7 +156,7 @@
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=12"></script>
+  <script src="js/repositorio.js?v=13"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
