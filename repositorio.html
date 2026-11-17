@@ -28,6 +28,7 @@
       <a class="hbtn" href="index.html">Ir al organigrama interactivo del Poder Ejecutivo</a>
       <button type="button" class="hbtn" id="btnAliados">Aliados en el Congreso</button>
       <button type="button" class="hbtn off" id="btnLeg" disabled title="En desarrollo">Ir al Poder Legislativo</button>
+      <button type="button" class="hbtn" id="btnSug">Sugerencias</button>
     </div>
   </header>
 
@@ -83,6 +84,25 @@
         <button id="mback" type="button">Volver a la lista</button>
       </div>
       <p id="mmsg"></p>
+    </div>
+  </div>
+
+  <div id="sug" hidden role="dialog" aria-modal="true" aria-label="Sugerencias">
+    <div class="mbox">
+      <button id="sugx" type="button" aria-label="Cerrar">✕ Cerrar</button>
+      <h2 class="sugtitle">Sugerencias</h2>
+      <div id="sugStep1">
+        <button type="button" class="p sugopt" id="sugOpt">Sugerir perfiles</button>
+      </div>
+      <form id="sugForm" hidden>
+        <label for="sugText">Pega aquí el texto de tu sugerencia. Puedes poner lo que sea.</label>
+        <textarea id="sugText" rows="10" placeholder="Pega o escribe aquí el texto…"></textarea>
+        <div class="mrow">
+          <button type="submit" class="p" id="sugSend" disabled>Enviar</button>
+          <button type="button" id="sugBack">Volver</button>
+        </div>
+        <p id="sugMsg"></p>
+      </form>
     </div>
   </div>
 
