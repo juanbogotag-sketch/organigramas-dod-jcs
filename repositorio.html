@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Torio · Embajada de Colombia en Estados Unidos</title>
-  <link rel="stylesheet" href="css/repositorio.css?v=9">
+  <link rel="stylesheet" href="css/repositorio.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -35,7 +35,6 @@
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Base de datos de perfiles</p>
     <div class="hlinks">
-      <a class="hbtn" href="index.html">Ir al organigrama interactivo del Poder Ejecutivo</a>
       <button type="button" class="hbtn" id="btnLeg" onclick="location.href='congreso.html'">Ir al Poder Legislativo</button>
     </div>
   </header>
@@ -52,7 +51,10 @@
 
     <section id="listview" hidden>
       <button id="back" type="button">← Volver a las categorías</button>
-      <h2 id="catTitle"></h2>
+      <div class="cathead">
+        <h2 id="catTitle"></h2>
+        <a id="catOrg" class="vorg" href="index.html" hidden>Ver este organigrama</a>
+      </div>
       <div class="frow">
         <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
           aria-label="Buscar en esta categoría">
@@ -151,7 +153,7 @@
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=9"></script>
+  <script src="js/repositorio.js?v=10"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
