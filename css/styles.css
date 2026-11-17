@@ -953,6 +953,13 @@ body:not(.dev-mobile) #phandle:hover {
   opacity: .45;
   cursor: not-allowed;
 }
+#gate::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: url('../img/textura_floral.png') repeat; background-size: 170px;
+  opacity: .05;
+}
+#gate .gcard { position: relative; z-index: 1; }
+
 #qwrap {
   position: absolute;
   top: 10px;
