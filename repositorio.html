@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Torio · Embajada de Colombia en Estados Unidos</title>
-  <link rel="stylesheet" href="css/repositorio.css?v=8">
+  <link rel="stylesheet" href="css/repositorio.css?v=9">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -129,10 +129,14 @@
     <div id="cartList"></div>
     <p id="cartMsg"></p>
     <div class="mrow">
-      <button id="cartZip" type="button" class="p" disabled>Generar carpeta (ZIP)</button>
+      <button id="cartGen" type="button" class="p" disabled>Generar ▾</button>
       <a id="cartDl" hidden></a>
       <button id="cartShare" type="button" class="p" hidden>Compartir / Guardar</button>
       <button id="cartClear" type="button">Vaciar</button>
+    </div>
+    <div id="cartOpts" hidden>
+      <button id="cartZip" type="button" disabled>📁 Carpeta con los perfiles en Word (ZIP)</button>
+      <button id="cartXlsx" type="button">📊 Matriz en Excel (.xlsx)</button>
     </div>
   </div>
 
@@ -147,7 +151,7 @@
   <script src="js/photos_ct.js"></script>
   <script src="js/datos_ct.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=8"></script>
+  <script src="js/repositorio.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
