@@ -30,6 +30,11 @@ header h1 {
 }
 
 header p { margin: 2px 0; color: #cfd8e6; font-size: 14px; }
+header .emb {
+  font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: #9fc3e8; margin: 0 0 4px;
+}
+#credit { font-size: 11px; color: var(--mu); text-align: center; margin: 16px 0 0; }
 .hlinks { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .hbtn {
   display: inline-block; background: transparent; border: 1px solid #9fc3e8; color: #dbe7f5;
@@ -126,13 +131,13 @@ header { position: relative; z-index: 1; }
 }
 
 .row {
-  display: flex; gap: 14px; align-items: flex-start;
+  display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
   background: rgba(255, 255, 255, .88); border: 1px solid var(--line); border-radius: 8px;
-  padding: 12px; margin-bottom: 10px;
+  padding: 16px 12px 14px; margin-bottom: 10px;
 }
 
 .row .ph, .row .phx {
-  width: 72px; height: 90px; object-fit: cover; border-radius: 4px; flex: 0 0 auto;
+  width: 104px; height: 134px; object-fit: cover; border-radius: 4px; flex: 0 0 auto;
   background: #e8e2d5;
 }
 
@@ -141,11 +146,11 @@ header { position: relative; z-index: 1; }
   font-size: 24px; font-weight: bold; color: var(--mu);
 }
 
-.row .info { flex: 1 1 auto; min-width: 0; }
+.row .info { flex: 1 1 auto; min-width: 0; width: 100%; }
 .row .nm { font-size: 16px; font-weight: bold; }
 .row .ti { font-size: 13.5px; color: var(--blue2); margin-top: 1px; }
 .row .og { font-size: 12.5px; color: var(--mu); margin-top: 3px; }
-.row .fp { font-size: 13.5px; line-height: 1.45; margin: 7px 0 0; text-align: justify; }
+.row .fp { font-size: 13.5px; line-height: 1.45; margin: 7px auto 0; text-align: justify; max-width: 620px; }
 .row .fp em { color: var(--mu); }
 
 .ver {
@@ -177,9 +182,9 @@ header { position: relative; z-index: 1; }
   padding: 6px 10px; cursor: pointer; font-family: inherit; font-size: 13px;
 }
 
-.mhead { display: flex; gap: 16px; align-items: flex-start; }
-.mhead img { width: 100px; height: 125px; object-fit: cover; border-radius: 5px; background: #e8e2d5; }
-.mhead h2 { margin: 2px 40px 4px 0; font-size: 21px; color: var(--blue); }
+.mhead { display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
+.mhead img { width: 150px; height: 194px; object-fit: cover; border-radius: 5px; background: #e8e2d5; }
+.mhead h2 { margin: 8px 0 4px; font-size: 21px; color: var(--blue); }
 #mtitle { font-size: 14.5px; color: var(--blue2); }
 #morg, #mdep { font-size: 13px; color: var(--mu); margin-top: 3px; }
 
