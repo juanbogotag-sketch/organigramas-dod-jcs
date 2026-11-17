@@ -76,20 +76,6 @@ header { position: relative; z-index: 1; }
   padding: 12px; font-size: 15px; cursor: pointer; font-family: inherit;
 }
 #gate button:disabled { opacity: .45; cursor: default; }
-#gate::after {
-  content: ''; position: absolute; right: -24px; bottom: -24px; pointer-events: none;
-  width: min(230px, 52vw); height: min(230px, 52vw);
-  background: url('../img/escudo_blanco.png') center / contain no-repeat;
-  opacity: .3;
-}
-#gate .gcard { position: relative; z-index: 1; overflow: hidden; }
-#gate .gcard::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
-  background: linear-gradient(to right, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
-}
-#gate .gcrest { display: block; height: 52px; width: auto; margin: 2px auto 8px; }
-
-
 #wm {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.06);
   width: min(1020px, 96vw); opacity: .18; pointer-events: none; z-index: 0;
