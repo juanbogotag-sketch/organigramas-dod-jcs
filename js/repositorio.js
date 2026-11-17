@@ -35,7 +35,7 @@
         a.push({
           dia: now.getFullYear() + '-' + p(now.getMonth() + 1) + '-' + p(now.getDate()),
           hora: p(now.getHours()) + ':' + p(now.getMinutes()) + ':' + p(now.getSeconds()),
-          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, sitio: 'Repositorio'
+          dispositivo: tipo + ' · ' + os, navegador: br, nombre: nombre, sitio: 'Torio'
         });
         if (a.length > 500) a = a.slice(-500);
         localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
@@ -277,7 +277,7 @@
       const r = await fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Repositodo', sugerencia: txt })
+        body: JSON.stringify({ _subject: 'Sugerencia de perfiles — Torio', sugerencia: txt })
       });
       if (!r.ok) throw new Error('envío rechazado');
       $('#sugMsg').textContent = '¡Gracias! Tu sugerencia fue enviada.';
