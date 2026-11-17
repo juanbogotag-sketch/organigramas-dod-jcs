@@ -300,6 +300,7 @@
     $('#morg').textContent = cur.org;
     $('#mdep').textContent = cur.dep ? 'Depende de: ' + cur.dep : '';
     $('#mmsg').textContent = '';
+    const lk3 = $('#mdl'); if (lk3) lk3.hidden = true;
     paintProfile();
     $('#modal').hidden = false;
   }
@@ -311,6 +312,7 @@
       ? paras(text).map(t => '<p>' + esc(t) + '</p>').join('')
       : '<p><em>Este perfil aún no tiene texto en este idioma. Está pendiente de elaboración.</em></p>';
     $('#mword').disabled = !text;
+    const lk2 = $('#mdl'); if (lk2) lk2.hidden = true;
   }
   document.querySelectorAll('.langrow button').forEach(b => b.addEventListener('click', () => { curLang = b.dataset.l; paintProfile(); }));
   const closeModal = () => { $('#modal').hidden = true; };
@@ -319,19 +321,25 @@
   $('#modal').addEventListener('click', e => { if (e.target === $('#modal')) closeModal(); });
 
   // ---------- Descarga en Word (mismo formato del organigrama) ----------
-  function dl(blob, name) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  }
+  // En el celular (Safari) un clic programado tras generar el archivo se ignora:
+  // por eso el documento generado queda como un enlace real (#mdl) que el
+  // usuario toca para descargarlo. En escritorio/Android se dispara solo.
+  let dlURL = null;
   $('#mword').addEventListener('click', async () => {
     if (!cur) return;
     $('#mmsg').textContent = 'Generando el documento…';
+    const lk = $('#mdl'); if (lk) lk.hidden = true;
     try {
-      await wordProfile(cur, curLang);
-      $('#mmsg').textContent = 'Documento generado.';
+      const r = await wordProfile(cur, curLang);
+      if (dlURL) URL.revokeObjectURL(dlURL);
+      dlURL = URL.createObjectURL(r.blob);
+      const a = $('#mdl');
+      a.href = dlURL;
+      a.setAttribute('download', r.name);
+      a.textContent = '⬇ Descargar: ' + r.name;
+      a.hidden = false;
+      $('#mmsg').textContent = 'Documento generado. Si no se descarga solo, toca el botón azul de descarga.';
+      if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
     } catch (e) {
       $('#mmsg').textContent = 'No se pudo generar el documento.';
     }
@@ -415,7 +423,7 @@
     for (const nm of Object.keys(z.files)) if (/^word\/(styles|header\d*|footer\d*)\.xml$/.test(nm)) z.file(nm, fixR(await z.file(nm).async('string')));
     const blob = await z.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
     const slug = p.name.replace(/[^\wáéíóúñ]+/gi, '_').replace(/^_+|_+$/g, '');
-    dl(blob, (lang === 'es' ? 'Perfil_' : 'Profile_') + slug + '_V_' + dt + '_JPGB' + (lang === 'es' ? '' : '_EN') + '.docx');
+    return { blob, name: (lang === 'es' ? 'Perfil_' : 'Profile_') + slug + '_V_' + dt + '_JPGB' + (lang === 'es' ? '' : '_EN') + '.docx' };
   }
 
   renderCats();
