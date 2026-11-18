@@ -442,3 +442,6 @@ table.tab th, table.tab td { border: 1px solid var(--line); padding: 6px 9px; te
 table.tab th { background: #eef2f7; color: var(--blue); }
 .tabtitle { font-size: 16px; font-weight: bold; color: var(--blue); margin: 20px 0 4px; }
 .tabsec { font-size: 18px; color: var(--blue); margin: 26px 0 6px; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
+.repo-link { background: var(--blue); border-color: var(--blue); margin-bottom: 14px; }
+.repo-link .cl { color: #fff; }
+.repo-link .cn { color: #cdd8e6; }
