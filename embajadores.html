@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Embajadores y Cónsules · Colombia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/embajadores.css?v=1">
+  <meta name="theme-color" content="#0a1d38">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+</head>
+
+<body>
+  <div class="tricolor" aria-hidden="true"></div>
+  <div id="gate" hidden>
+    <div class="gcard">
+      <h2>Embajadores y Cónsules</h2>
+      <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
+      <label for="gname">Nombre completo</label>
+      <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
+      <label for="gemail">Correo electrónico</label>
+      <input id="gemail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+      <button id="gbtn" class="p" disabled>Entrar</button>
+    </div>
+  </div>
+
+  <img id="wm" alt="" hidden>
+
+  <header>
+    <h1>Embajadores y Cónsules</h1>
+    <p class="emb">República de Colombia</p>
+    <p id="subtitle">Representación diplomática y consular de Colombia en el mundo · Gobierno de Abelardo de la Espriella</p>
+    <div class="hlinks">
+      <button type="button" class="hbtn" onclick="location.href='repositorio.html'">Ir al Repositorio de perfiles</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home">
+      <input id="hq" type="search" placeholder="Buscar un embajador o cónsul por nombre, país, ciudad o profesión…" autocomplete="off" aria-label="Buscar embajadores y cónsules">
+      <p class="hslab">Busca directamente, sin entrar a las categorías.</p>
+      <div id="hsres"></div>
+      <div class="cols">
+        <div class="col" id="colL"></div>
+        <div class="col" id="colR"></div>
+      </div>
+      <div class="colsB"><div class="colB" id="colB"></div></div>
+      <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
+      </footer>
+    </section>
+
+    <section id="listview" hidden>
+      <button id="back" type="button">← Volver a las categorías</button>
+      <div class="cathead">
+        <h2 id="catTitle"></h2>
+      </div>
+      <div class="frow">
+        <input id="q" type="search" placeholder="Buscar por nombre, país, ciudad o profesión…" autocomplete="off" aria-label="Buscar en esta categoría">
+        <select id="fsub" aria-label="Filtrar"></select>
+      </div>
+      <div id="groups"></div>
+      <p id="empty" hidden></p>
+    </section>
+
+    <section id="tabview" hidden>
+      <button id="back2" type="button">← Volver a las categorías</button>
+      <div class="cathead">
+        <h2>Tabulación de la matriz</h2>
+      </div>
+      <p class="hslab">Cifras comparativas de la matriz (gobiernos Duque y Petro) y tabulaciones por género, profesión, universidad y partido.</p>
+      <div id="tabs"></div>
+    </section>
+  </main>
+
+  <div id="modal" hidden role="dialog" aria-modal="true" aria-label="Ficha">
+    <div class="mbox">
+      <button id="mx" type="button" aria-label="Cerrar ficha">✕ Cerrar</button>
+      <div class="mhead">
+        <div class="phx" id="mava"></div>
+        <div>
+          <h2 id="mname"></h2>
+          <div id="mtitle"></div>
+          <div id="morg"></div>
+        </div>
+      </div>
+      <div id="mfields"></div>
+      <div class="mrow">
+        <button id="mback" type="button">Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/logo.js"></script>
+  <script src="js/datos_embajadores.js"></script>
+  <script src="js/embajadores.js?v=1"></script>
+</body>
+
+</html>
