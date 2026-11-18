@@ -115,6 +115,19 @@ const PERFILES_EX = [
   "en": "Victoria Hartman serves as Policy Analyst of the Senate Committee on Foreign Relations (SFRC) of the United States Senate, a position she assumed in April 2025. In her academic and professional background, she was an intern for Senator Marco Rubio of Florida (2022) and earned a Bachelor of Arts in political science and international relations from Flagler College (2023). Subsequently, she was an intern for the SFRC (2024). Moving forward in her congressional career, she served in Congress as Staff Assistant to Senator Ron Johnson of Wisconsin (2025), before assuming her current position as Policy Analyst of the SFRC. On a personal level, her trajectory highlights her early entry into Congress and her training in political science and international relations."
  },
  {
+  "id": "mclaughlin",
+  "cat": "legislativo",
+  "name": "Matt McLaughlin",
+  "fn": "Matt",
+  "ln": "McLaughlin",
+  "title": "Professional Staff Member",
+  "orgId": "",
+  "org": "House Committee on Foreign Affairs",
+  "dep": "",
+  "es": "Matt McLaughlin se desempeña como miembro del personal profesional del Comité de Asuntos Exteriores de la Cámara de Representantes de los Estados Unidos, el comité encargado de supervisar la política exterior estadounidense, cargo que asumió en enero de 2025. En sus antecedentes formativos, cursó la educación secundaria en la escuela Sidwell Friends, en Washington (2012), y obtuvo una licenciatura en economía, ciencias políticas y español en Bates College, en Maine (2016). En su trayectoria profesional, su primer contacto con el Congreso fue como pasante en la oficina de la senadora Jeanne Shaheen, demócrata por Nuevo Hampshire (2013), cuando aún era estudiante universitario. Ya graduado, fue pasante del Comité de Normas de la Cámara de Representantes (2019) y del Comité de Asuntos Exteriores (2020), al que luego se incorporó como asociado de personal (2020). Posteriormente, pasó a la oficina del representante Gerry Connolly, demócrata por Virginia, como asistente legislativo (2021) y ascendió a asesor sénior de política exterior (2023), antes de regresar al Comité de Asuntos Exteriores en su cargo actual. En el plano personal, su formación en español y su recorrido de más de una década en el Congreso, desde pasante hasta miembro del personal profesional, reflejan una vocación sostenida por la política exterior.",
+  "en": "Matt McLaughlin serves as a Professional Staff Member of the House Foreign Affairs Committee (HFAC) of the United States House of Representatives, the committee that oversees United States foreign policy, a position he assumed in January 2025. In his educational background, he completed his secondary education at Sidwell Friends School in Washington (2012) and earned a bachelor's degree in economics, political science, and Spanish from Bates College in Maine (2016). His first contact with Congress came as an intern in the office of Senator Jeanne Shaheen, Democrat of New Hampshire (2013), while still a university student. After graduating, he interned with the House Committee on Rules (2019) and with the House Foreign Affairs Committee (HFAC) (2020), which he then joined as a Staff Associate (2020). He subsequently moved to the office of Representative Gerry Connolly, Democrat of Virginia, as a Legislative Assistant (2021) and rose to Senior Adviser for Foreign Policy (2023), before returning to the House Foreign Affairs Committee in his current role. On a personal note, his training in Spanish and his path of more than a decade in Congress, from intern to Professional Staff Member, reflect a sustained vocation for foreign policy."
+ },
+ {
   "id": "polga-hecimovich",
   "cat": "academia",
   "name": "John Polga-Hecimovich",
