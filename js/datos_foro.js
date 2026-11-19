@@ -1847,5 +1847,17 @@ const FICHAS_EX = [
   "orgId": "Misión de Colombia ante la OEA",
   "org": "Misión de Colombia ante la OEA",
   "dep": ""
+ },
+ {
+  "id": "ruiz-diez",
+  "cat": "embajada",
+  "name": "Cristina Ruíz Diez",
+  "fn": "Cristina",
+  "ln": "Ruíz Diez",
+  "title": "Pasante",
+  "title_en": "Intern",
+  "orgId": "Embajada de Colombia",
+  "org": "Embajada de Colombia",
+  "dep": ""
  }
 ];
