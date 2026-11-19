@@ -569,6 +569,7 @@
   // foro que viven en Torio sin ser nodos del organigrama (clave «ex|<id>»).
   const CONTACTOS_EX = {
     "gonzalez-bogota": [{"k": "Correo de contacto", "v": "jgonzalez@colombiaemb.org"}],
+    "velez": [{"k": "Correo de contacto", "v": "valentinavelezc2@gmail.com"}],
     beasley: [{ k: 'Correo oficial', v: 'John.A.Beasley@usdoj.gov' }],
     barbulescu: [{ k: 'Correo oficial', v: 'Ruxandra.Barbulescu@usdoj.gov' }],
     kocheulov: [{ k: 'Correo oficial', v: 'Vladimir.Kocheulov@usdoj.gov' }],
