@@ -1109,7 +1109,7 @@
   // ---------- Matriz en Excel de las personas de la carpeta ----------
   // Siempre en inglés, con las 10 columnas del formato de Juan Pablo:
   // Prefix | Name | Last Name | Job Title | Office | Organization |
-  // Organization Type | E-mail | Other Contact | QR
+  // Organization Type | E-mail | Teléfono | QR
   // La última columna es el enlace del QR de check-in (se genera en cada
   // descarga a partir del nombre; no es la imagen del QR, que va en la
   // matriz definitiva del evento).
@@ -1171,7 +1171,7 @@
     const other = [];
     const ct = contactOf(p);
     if (ct) ct.forEach(r => {
-      if (/@/.test(r.v) && /correo oficial/i.test(r.k)) email = r.v;
+      if (/@/.test(r.v) && !email) email = r.v;
       else other.push(r.v);
     });
     return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p)];
@@ -1181,7 +1181,7 @@
     const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const colL = i => String.fromCharCode(65 + i);
     const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
-    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Other Contact', 'QR'];
+    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Teléfono', 'QR'];
     const sheetXml = (h, rs) => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
       rowXml(h, 1) + rs.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
