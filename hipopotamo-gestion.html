@@ -415,7 +415,8 @@ $('btnConfirmAll').addEventListener('click', () => {
     renderTodo();
   } else {
     armConfirmAll = true;
-    $('btnConfirmAll').textContent = '¿Seguro? Confirmar todos';
+    const nPend = efectivos().filter(g => estadoDe(g.id) === 'pendiente').length;
+    $('btnConfirmAll').textContent = '¿Seguro? Confirmar ' + nPend + (nPend === 1 ? ' pendiente' : ' pendientes');
     setTimeout(() => { if (armConfirmAll) { armConfirmAll = false; $('btnConfirmAll').textContent = '✓ Confirmar todos'; } }, 5000);
   }
 });
