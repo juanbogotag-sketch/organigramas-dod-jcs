@@ -14,6 +14,7 @@
   header .watermark { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); height: 190%; opacity: .10; pointer-events: none; }
   header h1 { font-size: clamp(22px, 4.5vw, 34px); font-weight: 800; letter-spacing: .2px; position: relative; }
   header p { margin-top: 6px; font-size: 13.5px; color: #c8d5e6; font-weight: 600; position: relative; }
+  .volver { display: inline-block; color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 14px; border: 1.5px solid rgba(255,255,255,.45); border-radius: 999px; margin-bottom: 14px; position: relative; background: rgba(255,255,255,.08); }
   .conn { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; position: relative; }
   .conn .dot { width: 9px; height: 9px; border-radius: 50%; background: #e0a800; }
   .conn.on .dot { background: #2ecc71; }
@@ -69,6 +70,7 @@
 <div class="tricolor"></div>
 <header>
   <img class="watermark" id="escudo" alt="">
+  <a class="volver" href="eventos.html">← Volver a Eventos</a>
   <h1>Life After the Hippopotamus</h1>
   <p>Control de asistencia · Embajada de Colombia en Estados Unidos</p>
   <div class="conn" id="conn"><span class="dot"></span><span id="connTxt">Conectando…</span></div>
