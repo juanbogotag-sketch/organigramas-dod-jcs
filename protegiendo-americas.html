@@ -427,7 +427,8 @@ $('elimLista').addEventListener('click', e => {
 async function descargarXlsx() {
   const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const colL = i => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
-  const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
+  const cellXml = (c, i, r, s) => '<c r="' + colL(i) + r + '" t="inlineStr"' + (s != null ? ' s="' + s + '"' : '') + '><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>';
+  const rowXml = (cells, r, s) => '<row r="' + r + '"' + (r === 1 ? ' ht="94.5" customHeight="1"' : '') + '>' + cells.map((c, i) => cellXml(c, i, r, s)).join('') + '</row>';
   const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo']);
   const list = efectivos();
   const sheetsXml = [], sheetTags = [], rels = [];
@@ -441,15 +442,19 @@ async function descargarXlsx() {
       if (g.agregado) extra = (extra ? extra + ' · ' : '') + 'Agregado en la página';
       return [g.pre, g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra];
     });
-    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' + rowXml(heads, 1) + rows.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>');
+    const widths = (PROT_WIDTHS[sh.key] || []).concat([16, 42]);
+    const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
     sheetTags.push('<sheet name="' + xesc(sh.name) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
     rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
   });
   const z = new JSZip();
   let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
   PROT_SHEETS.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
   ct += '</Types>';
   z.file('[Content_Types].xml', ct);
+  z.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><name val="Arial"/><sz val="12"/><color rgb="FF000000"/></font><font><name val="Arial"/><sz val="12"/><b/><color rgb="FFFFFFFF"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor rgb="FF000000"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="1" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment wrapText="1" vertical="top" horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
   z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
   z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheetTags.join('') + '</sheets></workbook>');
   z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels.join('') + '</Relationships>');
