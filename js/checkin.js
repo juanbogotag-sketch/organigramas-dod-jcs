@@ -1,11 +1,12 @@
 /* Check-in «Protegiendo las Américas» — herramienta del personal.
  *
  * SEGURIDAD (léase antes de tocar este archivo): la verificación del token
- * es SOLO en el cliente: el token está escrito en este JS, que cualquiera
- * puede leer si abre el código fuente de la página. Es una barrera
- * práctica contra el auto-marcado (el invitado que escanea su QR no conoce
- * el token y el QR no lo contiene), NO seguridad bancaria. No ponga aquí
- * nada más sensible que el token de personal.
+ * es SOLO en el cliente. El token en texto claro NO está en este archivo:
+ * solo se guarda su hash SHA-256, y el token lo conoce Juan Pablo, que lo
+ * comparte solo con personas de su confianza. Es una barrera práctica
+ * contra el auto-marcado (el invitado que escanea su QR no conoce el token
+ * y el QR no lo contiene), NO seguridad bancaria. No ponga aquí nada más
+ * sensible que ese hash.
  *
  * Flujo: QR -> checkin.html?g=<id> -> pide token de personal ->
  * muestra el perfil -> «Marcar asistencia» guarda check + hora en este
@@ -20,7 +21,10 @@
 
   // Token de personal. Lo conoce Juan Pablo y lo comparte solo con personas
   // de su confianza. NO aparece en el QR ni en la URL.
-  var STAFF_TOKEN = "americas-5620";
+  // Hash SHA-256 del token de personal. El token en texto claro lo conoce
+// Juan Pablo y lo comparte solo con personas de su confianza. NO aparece
+// en el QR ni en la URL ni en este archivo.
+var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca7f1fee16";
 
   var STORE_KEY = "orgs_checkin_v1";
   var SESSION_KEY = "orgs_checkin_staff_v1";
@@ -234,6 +238,18 @@
     $("btnNo").onclick = function () { mark(gid, guest, "no"); };
   }
 
+  function tokenOk(val) {
+    try {
+      if (!window.crypto || !crypto.subtle || !window.TextEncoder) return Promise.resolve(false);
+      return crypto.subtle.digest("SHA-256", new TextEncoder().encode(val)).then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) {
+          return ("0" + b.toString(16)).slice(-2);
+        }).join("");
+        return hex === STAFF_TOKEN_HASH;
+      }).catch(function () { return false; });
+    } catch (e) { return Promise.resolve(false); }
+  }
+
   function init() {
     updateCounter();
     renderList();
@@ -243,14 +259,16 @@
     } else {
       $("gateForm").addEventListener("submit", function (ev) {
         ev.preventDefault();
-        if ($("tokenInput").value.trim() === STAFF_TOKEN) {
-          sessionStorage.setItem(SESSION_KEY, "ok");
-          $("gateError").hidden = true;
-          showGuest(gid);
-        } else {
-          $("gateError").hidden = false;
-          $("tokenInput").select();
-        }
+        tokenOk($("tokenInput").value.trim()).then(function (ok) {
+          if (ok) {
+            sessionStorage.setItem(SESSION_KEY, "ok");
+            $("gateError").hidden = true;
+            showGuest(gid);
+          } else {
+            $("gateError").hidden = false;
+            $("tokenInput").select();
+          }
+        });
       });
     }
     $("btnList").addEventListener("click", function () {
