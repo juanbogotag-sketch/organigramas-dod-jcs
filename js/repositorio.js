@@ -905,75 +905,13 @@
   // ---------- Crear evento ----------
   // La matriz del evento se arma con los perfiles de la carpeta (los mismos
   // que «Generar matriz en Excel») más las personas externas que se agregan
-  // aquí. La descarga trae dos pestañas: «Matriz» (seleccionados + externos,
-  // con las mismas 10 columnas) y «Lista del evento» (los 60 invitados de
-  // la matriz definitiva de «Protegiendo las Américas»).
-  // Lista de invitados del evento «Protegiendo las Américas» (3 dic 2026):
-  // idéntica a GUESTS en js/checkin.js y a la matriz definitiva.
-  // [id, nombre, cargo, organización, correo]
-const EVENTO_LIST = [
-  ["ev|gonzalez-bogota", "Juan Pablo González Bogotá", "Pasante", "Embajada de Colombia en Washington", "jgonzalez@colombiaemb.org"],
-  ["ev|o-brien-daniel", "Daniel O'Brien", "Acting Assistant US Trade Representative for the Western Hemisphere", "Office of the US Trade Representative (USTR)", "daniel.c.obrien@ustr.eop.gov"],
-  ["ev|silva-raquel", "Raquel Silva", "Director for Colombia & Chile", "Office of the US Trade Representative (USTR)", "Raquel.R.Silva@ustr.eop.gov"],
-  ["ev|peterson-julia", "Julia Peterson", "Supervisory International Trade Specialist", "US Customs and Border Protection (USCBP)", "JULIA.PETERSON@cbp.dhs.gov"],
-  ["ev|madigan-keith", "Keith Madigan", "International Trade Analyst", "US Customs and Border Protection (USCBP)", "keith.madigan@cbp.dhs.gov"],
-  ["ev|klepek-james", "James Klepek", "Lead Trade Policy Officer for Colombia", "US Department of Agriculture (USDA)", "james.klepek@usda.gov"],
-  ["ev|hubler-tyler", "Tyler Hubler", "Lead Trade Policy Officer for the Western Hemisphere Division", "US Department of Agriculture (USDA)", "Tyler.Hubler@usda.gov"],
-  ["ev|hieskill-sarah", "Sarah Hieskill", "Trade Director, Andean Region", "US Department of Agriculture (USDA)", "sarah.r.hieskill@usda.gov"],
-  ["ev|godley-michael", "Michael Godley", "Desk Officer for Colombia and Ecuador", "US Department of Commerce (DOC)", "Michael.Godley@trade.gov"],
-  ["ev|stetson-richard", "Richard Stetson", "International Trade Specialist", "US Department of Commerce (DOC)", "richard.stetson@trade.gov"],
-  ["ev|arboleda-nelson", "Nelson Arboleda", "Director of the Office of the Americas", "US Department of Health and Human Services", "nelson.arboleda@hhs.gov"],
-  ["ev|klein-mackenzie", "Mackenzie Klein", "Public Health Program Specialist", "US Department of Health and Human Services", "Mackenzie.Klein@hhs.gov"],
-  ["ev|dewindt-katrin", "Katrin DeWindt", "Academic Exchange Specialist", "US Department of State (DOS)", "DeWindtKA@state.gov"],
-  ["ev|mickelson-daniel", "Daniel Mickelson", "Chief of Sports Diplomacy", "US Department of State (DOS)", "mickelsonde@state.gov"],
-  ["ev|abraham-july", "July Abraham", "Executive Director", "US Department of Transportation", "Julie.Abraham@dot.gov"],
-  ["ev|madell-mary-lisa", "Mary Lisa Madell", "Deputy Director", "US Department of Transportation", "MaryLisa.Madell@dot.gov"],
-  ["ev|frazier-bearden-lori", "Lori Frazier Bearden", "Deputy Undersecretary", "US Department of Labor", "Contact-ILAB@dol.gov"],
-  ["ev|laco-marek", "Marek Laco", "Acting Assistant Secretary", "US Department of Labor", "ETAPagemaster@dol.gov"],
-  ["ev|cummings-tim", "Tim Cummings", "Acting Assistant Secretary / Deputy Assistant Secretary", "US Department of Labor", "OCIACongressionalNotification@dol.gov"],
-  ["ev|keeling-david-l", "David L. Keeling", "Assistant Secretary of Labor for Occupational Safety and Health", "US Department of Labor", "info@osha.gov"],
-  ["ev|demarzo-benjamin", "Benjamin DeMarzo", "Assistant Secretary for Congressional and Intergovernmental Relations", "US Department of Housing and Urban Development (HUD)", ""],
-  ["ev|kurtz-ronald", "Ronald Kurtz", "Assistant Secretary for Community Planning and Development", "US Department of Housing and Urban Development (HUD)", ""],
-  ["ev|fernandez-claudette", "Claudette Fernandez", "General Deputy Assistant Secretary for Community Planning and Development", "US Department of Housing and Urban Development (HUD)", ""],
-  ["ev|richardson-todd", "Todd Richardson", "General Deputy Assistant Secretary for Policy Development and Research", "US Department of Housing and Urban Development (HUD)", ""],
-  ["ev|ormsby-jesse", "Jesse Ormsby", "Associate Director for South America", "US Department of Justice", "Jesse.Ormsby@usdoj.gov"],
-  ["ev|barbulescu-sandra", "Sandra Barbulescu", "Trial Attorney", "US Department of Justice", "Ruxandra.Barbulescu@usdoj.gov"],
-  ["ev|kocheulov-vladimir", "Vladimir Kocheulov", "Trial Attorney", "US Department of Justice", "Vladimir.Kocheulov@usdoj.gov"],
-  ["ev|york-aaron", "Aaron York", "Trial Attorney", "US Department of Justice", "Aaron.E.York@usdoj.gov"],
-  ["ev|lee-courtney", "Courtney Lee", "Trial Attorney", "US Department of Justice", "Courtney.Lee2@usdoj.gov"],
-  ["ev|hui-dennis", "Dennis Hui", "Trial Attorney", "US Department of Justice", "Dennis.Hui2@usdoj.gov"],
-  ["ev|beasley-john", "John Beasley", "Senior Trial Attorney", "US Department of Justice", "John.A.Beasley@usdoj.gov"],
-  ["ev|bodner-amy", "Amy Bodner", "International Affairs Specialist", "US Department of Justice", "Amy.Bodner@usdoj.gov"],
-  ["ev|fuse-marisa", "Marisa Fuse", "International Affairs Specialist", "US Department of Justice", "Marisa.Fuse@usdoj.gov"],
-  ["ev|thomas-estelle", "Estelle Thomas", "International Affairs Specialist", "US Department of Justice", "Clotilde.Alexandra-Estelle.Thomas@usdoj.gov"],
-  ["ev|zegar-allison", "Allison Zegar", "International Affairs Specialist", "US Department of Justice", "Allison.Zegar@usdoj.gov"],
-  ["ev|hollinshead-samantha", "Samantha Hollinshead", "International Affairs Specialist", "US Department of Justice", "Samantha.Hollinshead@usdoj.gov"],
-  ["ev|burgos-isabella", "Isabella Burgos", "Student Intern", "US Department of Justice", "Isabella.Burgos@usdoj.gov"],
-  ["ev|stackhouse-timothy", "Timothy Stackhouse", "Extradition Specialist", "US Department of State (DOS)", "StackhouseT@state.gov"],
-  ["ev|boone-chase-logan", "Chase Logan Boone", "Colombia Country Director", "Department of War", "chase.l.boone.civ@mail.mil"],
-  ["ev|kit-ellen", "Ellen Kit", "Western Hemisphere /Colombia", "Department of War", "ellen.e.kitt.civ@mail.mil"],
-  ["ev|besosa-miguel", "Miguel Besosa", "Western Hemisphere /Colombia", "Department of War", "miguel.a.besosa.ctr@mail.mil"],
-  ["ev|bello-mauricio", "Mauricio Bello", "Western Hemisphere /Colombia", "Department of War", "mauricio.bello@dodiis.mil"],
-  ["ev|wilson-joshua-b", "Joshua B. Wilson", "Director", "Department of War", "joshua.b.wilson.mil@us.navy.mil"],
-  ["ev|spalding-luc-p", "Luc P. Spalding.", "Attaché Liaison Officer for the Western Hemispher", "Department of War", "luc.p.spalding.mil@us.navy.mil"],
-  ["ev|grady-dana-w", "Dana W Grady", "Regional Advisor for Latin America", "Department of Homeland Security (DHS)", "Dana.W.Grady@uscg.mil"],
-  ["ev|norkiewicz-collin", "Collin Norkiewicz", "Country Director", "Air Force", "Collin.norkiewicz@us.af.mil"],
-  ["ev|jacquez-alissa-m", "Alissa M. Jacquez", "Foreign Military Support Specialist", "Army", "Alissa.m.jacquez.civ@army.mil"],
-  ["ev|ortiz-michael", "Michael Ortiz", "Deputy Director for Colombia", "Department of Justice - DEA", "michael.c.ortiz@dea.gov"],
-  ["ev|cannavo-nicole", "Nicole Cannavo", "Colombian Liaison", "Federal Bureau of Investigation (FBI)", "nmcannavo@fbi.gov"],
-  ["ev|roncone-nita-l", "Nita L Roncone", "Senior Policy Advisor", "Office of National Drug Control Policy (ONDCP)", "Nita_V_Lalla@ondcp.eop.gov"],
-  ["ev|kroger-kaleb", "Kaleb Kroger", "Colombia Team Lead", "Department of State", "KrogerKB@state.gov"],
-  ["ev|de-jesus-blasini-patricia", "Patricia De Jesus Blasini", "Colombia Team", "Department of State", "DeJesusP@state.gov"],
-  ["ev|fishman-kyle", "Kyle Fishman", "Colombia Team", "Department of State", "FishmanKA@state.gov"],
-  ["ev|carrera-madalen", "Madalen Carrera", "Colombia Program Officer", "Department of State", "CarreraM2@state.gov"],
-  ["ev|varela-juan", "Juan Varela", "", "", ""],
-  ["ev|meade-kathia-l", "Kathia L. Meade", "Unit Chief", "Federal Bureau of Investigation (FBI)", "klmeade@fbi.gov"],
-  ["ev|velasco-simon", "Simon Velasco", "Program Analyst", "Department of Homeland Security (DHS)", "simon.velasco@hq.dhs.gov"],
-  ["ev|polga-hecimovich-john", "John Polga-Hecimovich", "Assistant Professor", "U.S. Naval Academy", "polgahec@usna.edu"],
-  ["ev|arnold-jessica", "Jessica Arnold", "Foreign Affairs Officer", "Department of State", "ArnoldJM@state.gov"],
-  ["ev|underwood-james", "James Underwood", "Supervisory Special Agent", "Federal Bureau of Investigation (FBI)", "jtunderwood@fbi.gov"],
-];
-
+  // aquí. La descarga trae UNA sola pestaña, «Matriz» (seleccionados +
+  // externos, con las mismas 10 columnas, QR incluido). El QR se genera en
+  // cada descarga a partir del nombre del invitado (ev|<apellido>-<nombre>);
+  // no se pre-genera ningún QR para los perfiles del Repositorio. La
+  // segunda pestaña, la lista de asistencia del evento, se hará después,
+  // cuando Juan Pablo la pida.
+  
   // Personas externas (sin perfil en el Repositorio) para el evento.
   // Se guardan en este dispositivo para no perderlas al recargar.
   let externals = [];
@@ -1038,18 +976,131 @@ const EVENTO_LIST = [
     externals = []; saveExternals(); paintExternals();
     $('#evMsg').textContent = 'Personas externas vaciadas.';
   });
+  // --- Invitados externos desde un archivo (.csv o .xlsx) ---
+  // Columnas reconocidas (ES o EN): Nombre, Apellido, Cargo, Oficina,
+  // Organización, Tipo, Correo, Otro contacto. Si la primera fila no trae
+  // encabezados conocidos, se asume el orden de la matriz del Repositorio.
+  function normHead(h) {
+    return String(h || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+  }
+  function rowToExternal(cells, heads) {
+    const pick = (...names) => {
+      if (!heads) return '';
+      for (const n of names) { const i = heads.indexOf(n); if (i >= 0 && cells[i]) return String(cells[i]).trim(); }
+      return '';
+    };
+    let r;
+    if (heads) {
+      r = { fn: pick('nombre', 'name', 'first name'), ln: pick('apellido', 'last name', 'lastname'), title: pick('cargo', 'job title', 'title'), office: pick('oficina', 'office'), org: pick('organizacion', 'organization'), type: pick('tipo de organizacion', 'organization type', 'type'), email: pick('correo', 'e mail', 'email'), other: pick('otro contacto', 'other contact', 'other') };
+    } else {
+      r = { fn: cells[1] || '', ln: cells[2] || '', title: cells[3] || '', office: cells[4] || '', org: cells[5] || '', type: cells[6] || '', email: cells[7] || '', other: cells[8] || '' };
+    }
+    r.fn = String(r.fn || '').trim(); r.ln = String(r.ln || '').trim();
+    if (!r.fn || !r.ln) return null;
+    return r;
+  }
+  function parseCsv(txt) {
+    const rows = []; let row = [], cur = '', q = false;
+    for (let i = 0; i < txt.length; i++) {
+      const c = txt[i];
+      if (q) {
+        if (c === '"') { if (txt[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+        else cur += c;
+      } else if (c === '"') q = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cur); cur = ''; if (row.some(v => String(v).trim() !== '')) rows.push(row); row = []; }
+      else cur += c;
+    }
+    if (cur !== '' || row.length) { row.push(cur); if (row.some(v => String(v).trim() !== '')) rows.push(row); }
+    return rows;
+  }
+  function headsOf(firstRow) {
+    const heads = firstRow.map(normHead);
+    const known = ['nombre', 'apellido', 'cargo', 'oficina', 'organizacion', 'correo', 'name', 'last name', 'job title', 'office', 'organization', 'e mail', 'email'];
+    return heads.some(h => known.indexOf(h) >= 0) ? heads : null;
+  }
+  async function parseXlsx(file) {
+    const zip = await JSZip.loadAsync(file);
+    const sheet = zip.file('xl/worksheets/sheet1.xml');
+    if (!sheet) throw new Error('sin hoja');
+    let shared = [];
+    const ss = zip.file('xl/sharedStrings.xml');
+    if (ss) {
+      const doc = new DOMParser().parseFromString(await ss.async('string'), 'application/xml');
+      shared = Array.prototype.map.call(doc.querySelectorAll('si'), function (si) { return si.textContent; });
+    }
+    const doc = new DOMParser().parseFromString(await sheet.async('string'), 'application/xml');
+    const rows = [];
+    doc.querySelectorAll('row').forEach(function (tr) {
+      const cells = [];
+      tr.querySelectorAll('c').forEach(function (c) {
+        const t = c.getAttribute('t');
+        const v = c.querySelector('v');
+        const is = c.querySelector('is t');
+        let val = '';
+        if (t === 's' && v) val = shared[parseInt(v.textContent, 10)] || '';
+        else if (is) val = is.textContent;
+        else if (v) val = v.textContent;
+        cells.push(val);
+      });
+      if (cells.some(function (v) { return String(v).trim() !== ''; })) rows.push(cells);
+    });
+    return rows;
+  }
+  function addExternalsFromRows(rows, fname) {
+    if (!rows.length) { $('#exFileMsg').textContent = 'El archivo no trae filas con datos.'; return; }
+    const heads = headsOf(rows[0]);
+    const data = heads ? rows.slice(1) : rows;
+    let added = 0, dup = 0;
+    data.forEach(function (cells) {
+      const x = rowToExternal(cells, heads);
+      if (!x) return;
+      const key = (x.email ? x.email.toLowerCase() : (x.fn + ' ' + x.ln).toLowerCase());
+      const exists = externals.some(function (e) { return (e.email ? e.email.toLowerCase() : (e.fn + ' ' + e.ln).toLowerCase()) === key; });
+      if (exists) { dup++; return; }
+      externals.push(x); added++;
+    });
+    saveExternals(); paintExternals(); paintEventoResumen();
+    $('#exFileMsg').textContent = added
+      ? 'Archivo «' + fname + '»: ' + added + ' persona(s) externa(s) agregada(s)' + (dup ? ' (' + dup + ' ya estaban en la lista).' : '.')
+      : 'El archivo no trajo personas nuevas (revisa que tenga Nombre y Apellido).';
+  }
+  $('#exFileBtn').addEventListener('click', () => $('#exFile').click());
+  $('#exFile').addEventListener('change', async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    $('#exFileMsg').textContent = 'Leyendo «' + f.name + '»…';
+    try {
+      const rows = /\.xlsx?$/i.test(f.name) ? await parseXlsx(f) : parseCsv(await f.text());
+      addExternalsFromRows(rows, f.name);
+    } catch (err) {
+      $('#exFileMsg').textContent = 'No se pudo leer el archivo. Prueba con un .csv o un .xlsx con las columnas de la matriz.';
+    }
+    e.target.value = '';
+  });
+  $('#evInt').addEventListener('click', () => {
+    $('#evModal').hidden = true;
+    if (!selMode) $('#selFab').click();
+  });
+  $('#evExtBtn').addEventListener('click', () => {
+    const sec = $('#exSec');
+    if (sec && sec.scrollIntoView) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('#exFile').click();
+  });
   $('#evDl').addEventListener('click', async () => {
+    const name = $('#evName').value.trim();
+    if (!name) { $('#evMsg').textContent = 'Ponle un nombre al evento antes de descargar la lista.'; $('#evName').focus(); return; }
     const seen = new Set();
     const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(p => p && !seen.has(p.key) && seen.add(p.key));
     const rows = items.map(matrixRow).concat(externals.map(externalRow));
     if (!rows.length) { $('#evMsg').textContent = 'Selecciona al menos un perfil de la carpeta o agrega una persona externa.'; return; }
     $('#evMsg').textContent = 'Generando la matriz del evento…';
     try {
-      const guestRows = EVENTO_LIST.map(g => [g[0], g[1], g[2], g[3], g[4], '']);
-      const blob = await buildXlsx(rows, undefined, { name: 'Lista del evento', head: ['ID', 'Nombre', 'Cargo', 'Organización', 'E-mail', 'Asistencia'], rows: guestRows });
+      const blob = await buildXlsx(rows);
       const now = new Date(), p2 = n => String(n).padStart(2, '0');
-      offerFile(blob, 'Matriz_Evento_Protegiendo_las_Americas_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx', $('#evDlA'));
-      $('#evMsg').textContent = 'Matriz del evento lista: ' + rows.length + ' personas en la matriz (' + items.length + ' del Repositorio y ' + externals.length + ' externas) + lista de ' + EVENTO_LIST.length + ' invitados.';
+      const slug = (slugTxt(name) || 'evento').replace(/-/g, '_');
+      offerFile(blob, 'Matriz_Evento_' + slug + '_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx', $('#evDlA'));
+      $('#evMsg').textContent = 'Matriz del evento lista: ' + rows.length + ' personas (' + items.length + ' del Repositorio y ' + externals.length + ' externas), cada una con su QR generado en la descarga.';
     } catch (e) {
       $('#evMsg').textContent = 'No se pudo generar la matriz del evento.';
     }
@@ -1134,8 +1185,8 @@ const EVENTO_LIST = [
     const sheetXml = (h, rs) => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
       rowXml(h, 1) + rs.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
-    // Pestaña 1: la matriz. Pestaña 2 (opcional, solo en «Crear evento»):
-    // la lista de invitados del evento.
+    // Pestaña 1: la matriz. Pestaña 2 (opcional, para la lista de
+    // asistencia que se hará después, cuando Juan Pablo la pida).
     const sheets = [{ name: 'Matriz', xml: sheetXml(head, rows) }];
     if (sheet2) sheets.push({ name: sheet2.name, xml: sheetXml(sheet2.head, sheet2.rows) });
     const z = new JSZip();
