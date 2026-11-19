@@ -39,6 +39,25 @@
     } catch (e) {}
   }
 
+
+  // Avisa a Juan Pablo por correo (FormSubmit) cuando una persona ya
+  // registrada vuelve a entrar. Asunto distinto al del registro, para que
+  // el filtro de Gmail lo lleve a la etiqueta «Ingresos». El propietario
+  // no se reporta. No bloquea la entrada si falla la red.
+  function reportarIngreso(nombre, correo, sitio) {
+    try {
+      if (localStorage.getItem('orgs_owner_v1') === '1') return;
+      fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: nombre, email: correo, pagina: sitio,
+          _subject: 'Ingreso de visitante — ' + sitio,
+          _template: 'table', _captcha: 'false'
+        })
+      }).catch(() => {});
+    } catch (e) {}
+  }
   (function gate() {
     const g = $('#gate'), inp = $('#gname'), eml = $('#gemail'), btn = $('#gbtn');
     if (!g || !inp || !btn) return;
@@ -51,7 +70,7 @@
         for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { reg = { n: av[i].nombre, e: av[i].correo || '' }; break; }
         if (reg) localStorage.setItem('orgs_visitante', JSON.stringify(reg));
       }
-      if (reg && reg.n) return;
+      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); return; }
     } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -549,6 +568,7 @@
   // Correos de la base del evento de la Embajada (V17.11.26): personas del
   // foro que viven en Torio sin ser nodos del organigrama (clave «ex|<id>»).
   const CONTACTOS_EX = {
+    "gonzalez-bogota": [{"k": "Correo de contacto", "v": "juan.bogotag@gmail.com"}],
     beasley: [{ k: 'Correo oficial', v: 'John.A.Beasley@usdoj.gov' }],
     barbulescu: [{ k: 'Correo oficial', v: 'Ruxandra.Barbulescu@usdoj.gov' }],
     kocheulov: [{ k: 'Correo oficial', v: 'Vladimir.Kocheulov@usdoj.gov' }],
