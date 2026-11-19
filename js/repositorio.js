@@ -862,9 +862,12 @@
   });
 
   // ---------- Matriz en Excel de las personas de la carpeta ----------
-  // Siempre en inglés, con las 9 columnas del formato de Juan Pablo:
+  // Siempre en inglés, con las 10 columnas del formato de Juan Pablo:
   // Prefix | Name | Last Name | Job Title | Office | Organization |
-  // Organization Type | E-mail | Other Contact
+  // Organization Type | E-mail | Other Contact | QR
+  // La última columna es el enlace del QR de check-in (se genera en cada
+  // descarga a partir del nombre; no es la imagen del QR, que va en la
+  // matriz definitiva del evento).
   const ORG_BY_TREE = {
     dod: 'Department of War', pol: 'Department of War', jcs: 'Department of War',
     dia: 'Department of War', army: 'Department of War', af: 'Department of War', navy: 'Department of War',
@@ -898,6 +901,20 @@
     return { prefix, first: parts.join(' '), last };
   }
 
+  // QR de check-in: enlace como texto a checkin.html con el ID del evento
+  // (ev|<apellido>-<nombre>, el mismo esquema de la matriz definitiva del
+  // evento). Se genera en cada descarga a partir del nombre, sin guardarse
+  // en los datos; el QR no lleva el token de personal.
+  const CHECKIN_URL = 'https://juanbogotag-sketch.github.io/organigramas-dod-jcs/checkin.html?g=';
+  function slugTxt(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function qrUrl(p) {
+    const s = splitName(p);
+    if (!s.first || !s.last) return '';
+    return CHECKIN_URL + 'ev|' + slugTxt(s.last) + '-' + slugTxt(s.first);
+  }
+
   function matrixRow(p) {
     const s = splitName(p);
     let office = '', org = '';
@@ -912,14 +929,14 @@
       if (/@/.test(r.v) && /correo oficial/i.test(r.k)) email = r.v;
       else other.push(r.v);
     });
-    return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · ')];
+    return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p)];
   }
 
   async function buildXlsx(rows, outType) {
     const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const colL = i => String.fromCharCode(65 + i);
     const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
-    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Other Contact'];
+    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Other Contact', 'QR'];
     const sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
       rowXml(head, 1) + rows.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
