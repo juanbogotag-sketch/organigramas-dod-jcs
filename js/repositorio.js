@@ -805,7 +805,7 @@
       }).join('');
       list.querySelectorAll('.crm').forEach(b => b.addEventListener('click', () => {
         cart.splice(+b.dataset.i, 1);
-        saveCart(); renderCart(); paintCartBtn();
+        saveCart(); paintWorkspace();
       }));
     }
     $('#cartGen').disabled = !cart.length;
@@ -820,7 +820,7 @@
     if (!cur) return;
     if (inCart(cur.key)) cart = cart.filter(x => x.key !== cur.key);
     else cart.push({ key: cur.key, lang: curLang });
-    saveCart(); renderCart(); paintCartBtn();
+    saveCart(); paintWorkspace();
   });
   $('#cartFab').addEventListener('click', () => {
     const p = $('#cartPanel');
@@ -829,7 +829,7 @@
   });
   $('#cartX').addEventListener('click', () => { $('#cartPanel').hidden = true; });
   $('#cartClear').addEventListener('click', () => {
-    cart = []; saveCart(); renderCart(); paintCartBtn();
+    cart = []; saveCart(); paintWorkspace();
     $('#cartMsg').textContent = '';
   });
   let genURL = null, genFile = null;
@@ -913,7 +913,7 @@
     } else {
       cart.push({ key, lang: l });
     }
-    saveCart(); renderCart(); paintSelRows(); paintCartBtn();
+    saveCart(); paintWorkspace();
   }
   $('#groups').addEventListener('click', selTap);
   $('#gresults').addEventListener('click', selTap);
@@ -981,7 +981,7 @@
       '<button type="button" class="crm" data-i="' + i + '" aria-label="Quitar persona externa">✕</button></div>').join('');
     list.querySelectorAll('.crm').forEach(b => b.addEventListener('click', () => {
       externals.splice(+b.dataset.i, 1);
-      saveExternals(); paintExternals(); paintEventoResumen();
+      saveExternals(); paintWorkspace();
     }));
   }
   function paintEventoResumen() {
@@ -992,6 +992,18 @@
     cl.innerHTML = items.length
       ? items.map(p => '<div class="citem"><div class="cinfo"><b>' + esc(p.name) + '</b><small>' + esc(p.title || p.org) + '</small></div></div>').join('')
       : '<p class="cempty">La carpeta está vacía. Abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con +.</p>';
+  }
+  // Repinta en vivo todo lo que depende de la carpeta y de los externos:
+  // el contador del modal, la píldora del evento abierto, el botón del
+  // menú «Eventos», las marcas «✓ En la carpeta» de las tarjetas y las
+  // listas. Se llama después de CADA cambio (agregar/quitar por tarjeta,
+  // desde el diálogo del perfil, formulario o archivo de externos,
+  // vaciar carpeta o externos), para que ningún contador se quede viejo
+  // hasta pulsar «Guardar evento». No guarda nada: los cambios se guardan
+  // antes, con saveCart()/saveExternals().
+  function paintWorkspace() {
+    renderCart(); paintSelRows(); paintCartBtn(); paintExternals();
+    paintEventoResumen(); paintOpenEvent(); paintEventosBtn();
   }
   // ---------- Modal del evento: crear, abrir, guardar, cerrar ----------
   // El modal trabaja sobre el espacio activo: el evento abierto o la
@@ -1026,7 +1038,7 @@
     curEvent = { id: newEvId(), name: '', date: '', place: '', guests: [], externals: [] };
     cart = []; externals = [];
     try { localStorage.removeItem('torio_evento_abierto_v1'); } catch (e) {}
-    renderCart(); paintSelRows(); paintCartBtn();
+    paintWorkspace();
     openEvModal();
   }
   function resolverBorrador() {
@@ -1038,7 +1050,7 @@
     }
     if (draftPrev) { curEvent = draftPrev.event; cart = draftPrev.cart; externals = draftPrev.externals; draftPrev = null; }
     else curEvent = null;
-    saveOpenEvent(); renderCart(); paintSelRows(); paintCartBtn(); paintExternals(); paintEventosBtn(); paintOpenEvent();
+    saveOpenEvent(); paintWorkspace();
   }
   function closeEvModal() {
     resolverBorrador();
@@ -1066,7 +1078,7 @@
     cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
     try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
     externals = (externals || []).filter(x => x && x.fn && x.ln);
-    renderCart(); paintSelRows(); paintCartBtn(); paintExternals(); paintEventosBtn(); paintOpenEvent();
+    paintWorkspace();
     $('#evModal').hidden = true;
     $('#evMsg').textContent = '';
   }
@@ -1087,10 +1099,10 @@
     saveExternals();
     ['#exFn', '#exLn', '#exTitle', '#exOffice', '#exOrg', '#exType', '#exEmail', '#exOther'].forEach(id => { $(id).value = ''; });
     $('#evMsg').textContent = 'Persona externa agregada: ' + fn + ' ' + ln + '.';
-    paintExternals();
+    paintWorkspace();
   });
   $('#evClear').addEventListener('click', () => {
-    externals = []; saveExternals(); paintExternals();
+    externals = []; saveExternals(); paintWorkspace();
     $('#evMsg').textContent = 'Personas externas vaciadas.';
   });
   // --- Invitados externos desde un archivo (.csv o .xlsx) ---
@@ -1177,7 +1189,7 @@
       if (exists) { dup++; return; }
       externals.push(x); added++;
     });
-    saveExternals(); paintExternals(); paintEventoResumen();
+    saveExternals(); paintWorkspace();
     $('#exFileMsg').textContent = added
       ? 'Archivo «' + fname + '»: ' + added + ' persona(s) externa(s) agregada(s)' + (dup ? ' (' + dup + ' ya estaban en la lista).' : '.')
       : 'El archivo no trajo personas nuevas (revisa que tenga Nombre y Apellido).';
@@ -1247,6 +1259,23 @@
     const go = $('#evOpenGo');
     if (go) go.addEventListener('click', openEvModal);
   }
+  // Borra el evento de verdad: de la lista guardada y, si era el abierto,
+  // limpia el estado de evento abierto y devuelve el espacio de trabajo
+  // a la carpeta global.
+  function eliminarEvento(ev) {
+    const wasOpen = curEvent === ev;
+    if (wasOpen) curEvent = null;
+    events = events.filter(x => x !== ev);
+    saveEvents(); saveOpenEvent();
+    if (wasOpen) {
+      try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
+      cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
+      try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
+      externals = (externals || []).filter(x => x && x.fn && x.ln);
+    }
+    paintWorkspace(); renderEvList();
+    const m = $('#evListMsg'); if (m) m.textContent = 'Evento «' + (ev.name || 'Evento sin nombre') + '» eliminado.';
+  }
   function renderEvList() {
     const list = $('#evList');
     if (!events.length) {
@@ -1272,19 +1301,16 @@
     list.querySelectorAll('.evdel').forEach(b => b.addEventListener('click', () => {
       const ev = events.find(x => x.id === b.dataset.id);
       if (!ev) return;
-      if (!confirm('¿Eliminar el evento «' + (ev.name || 'Evento sin nombre') + '»? Se borra su lista de invitados guardada.')) return;
-      const wasOpen = curEvent === ev;
-      if (wasOpen) curEvent = null;
-      events = events.filter(x => x !== ev);
-      saveEvents(); saveOpenEvent();
-      if (wasOpen) {
-        try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
-        cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
-        try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
-        externals = (externals || []).filter(x => x && x.fn && x.ln);
-        renderCart(); paintSelRows(); paintCartBtn(); paintExternals();
-      }
-      paintEventosBtn(); paintOpenEvent(); renderEvList();
+      // Confirmación en la propia fila (no el diálogo nativo confirm(),
+      // que algunos navegadores suprimen sin dejar rastro): el botón pasa
+      // a preguntar «¿Eliminar?» con Sí / Cancelar.
+      const acts = b.closest('.evacts');
+      if (!acts) return;
+      acts.innerHTML = '<span class="evdelq">¿Eliminar «' + esc(ev.name || 'Evento sin nombre') + '»?</span>' +
+        '<button type="button" class="p evdely">Sí, eliminar</button>' +
+        '<button type="button" class="evdeln">Cancelar</button>';
+      acts.querySelector('.evdely').addEventListener('click', () => eliminarEvento(ev));
+      acts.querySelector('.evdeln').addEventListener('click', renderEvList);
     }));
   }
   function abrirEvento(ev) {
@@ -1300,8 +1326,7 @@
     cart = (ev.guests || []).filter(x => x && PEOPLE.some(p => p.key === x.key)).slice();
     externals = (ev.externals || []).filter(x => x && x.fn && x.ln).slice();
     saveOpenEvent();
-    renderCart(); paintSelRows(); paintCartBtn();
-    paintEventosBtn(); paintOpenEvent();
+    paintWorkspace();
     openEvModal();
   }
   function openEvList() {
