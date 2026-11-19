@@ -164,6 +164,7 @@ const EST_LABEL = { pendiente: 'Pendiente', confirmado: 'Confirmado', cancelado:
 
 let estados = {}, roster = {}, agregados = {};
 let filtroGrupo = 'todos', filtroEstado = 'todos';
+let armEliminar = null;
 let estadosRef = null, rosterRef = null, agregadosRef = null;
 
 function loadLocal() {
@@ -212,6 +213,8 @@ function efectivos() {
   }
   for (const k of Object.keys(agregados)) {
     const a = agregados[k];
+    const r = roster['ag_' + k];
+    if (r && r.elim) continue;
     list.push(Object.assign({ id: 'ag_' + k, agregado: true }, a));
   }
   return list;
@@ -221,6 +224,10 @@ function eliminados() {
   for (const g of PROT_INVITADOS) {
     const r = roster[g.id];
     if (r && r.elim) list.push(g);
+  }
+  for (const k of Object.keys(agregados)) {
+    const r = roster['ag_' + k];
+    if (r && r.elim) list.push(Object.assign({ id: 'ag_' + k, agregado: true }, agregados[k]));
   }
   return list;
 }
@@ -274,7 +281,7 @@ function renderLista() {
       '<button class="mini' + (e === 'cancelado' ? ' on-canc' : '') + '" data-act="cancelado" data-id="' + esc(g.id) + '">✕ Cancelado</button>' +
       '<button class="mini' + (e === 'delego' ? ' on-deleg' : '') + '" data-act="delego" data-id="' + esc(g.id) + '">⇄ Delegó</button>' +
       '<button class="mini" data-act="reemplazar" data-id="' + esc(g.id) + '">Reemplazar</button>' +
-      '<button class="mini peligro" data-act="eliminar" data-id="' + esc(g.id) + '">Eliminar</button>' +
+      '<button class="mini peligro" data-act="eliminar" data-id="' + esc(g.id) + '">' + (armEliminar === g.id ? '¿Seguro? Eliminar' : 'Eliminar') + '</button>' +
       '</div><div class="editor" hidden></div>';
     cont.appendChild(row);
   }
@@ -400,16 +407,22 @@ $('lista').addEventListener('click', e => {
   const id = b.dataset.id, act = b.dataset.act;
   const g = efectivos().find(x => x.id === id);
   if (!g) return;
+  if (act !== 'eliminar') armEliminar = null;
   if (act === 'confirmado') setEstado(id, 'confirmado', '');
   else if (act === 'cancelado') setEstado(id, 'cancelado', '');
   else if (act === 'delego') abrirDelegar(b.closest('.invitado'), g);
   else if (act === 'reemplazar') abrirReemplazo(b.closest('.invitado'), g);
   else if (act === 'eliminar') {
-    if (confirm('¿Eliminar a ' + nombreDe(g) + ' de la lista? Se puede restaurar después.')) {
+    if (armEliminar === id) {
+      armEliminar = null;
       roster[id] = { elim: true, t: Date.now() };
       saveLocal();
       if (rosterRef) rosterRef.child(id).set(roster[id]);
       clearEstado(id);
+    } else {
+      armEliminar = id;
+      renderTodo();
+      setTimeout(() => { if (armEliminar === id) { armEliminar = null; renderTodo(); } }, 5000);
     }
   }
 });
