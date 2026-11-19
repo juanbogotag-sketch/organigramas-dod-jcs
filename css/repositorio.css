@@ -480,6 +480,7 @@ body.selmode .selbar { display: flex; }
   border: 1px solid var(--line); border-radius: 6px; background: #fff;
 }
 .evacts button.p { background: var(--blue); color: #fff; border-color: var(--blue); }
+.evacts .evdelq { align-self: center; font-size: 13px; }
 #evCartList, #exList { margin-top: 8px; }
 #evMsg { font-size: 13px; color: var(--mu); margin: 12px 0 0; }
 #evModal a#evDlA {
