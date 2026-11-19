@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in — Protegiendo las Américas</title>
+<link rel="stylesheet" href="css/checkin.css?v=1">
+</head>
+<body>
+<header class="ck-head">
+  <div class="ck-head-in">
+    <div>
+      <h1>Protegiendo las Américas</h1>
+      <p class="ck-sub">Jueves 3 de diciembre de 2026 · 9:30 a. m.–12:30 p. m. · Residencia de la Embajada de Colombia en Washington</p>
+    </div>
+    <a class="ck-home" href="inicio.html">← Menú principal</a>
+  </div>
+</header>
+
+<main class="ck-main">
+  <section class="ck-card" id="gateCard">
+    <h2>Acceso del personal</h2>
+    <p>Esta página es solo para el personal de la Embajada. Escriba el token de personal para ver el perfil del invitado y marcar su asistencia.</p>
+    <form id="gateForm" autocomplete="off">
+      <label for="tokenInput">Token de personal</label>
+      <input type="password" id="tokenInput" placeholder="Token de personal" required>
+      <button type="submit" class="ck-btn ck-btn-primary">Desbloquear</button>
+      <p class="ck-error" id="gateError" hidden>Token incorrecto. Solo el personal de la Embajada puede marcar asistencia.</p>
+    </form>
+    <p class="ck-note">El token no viaja en el QR ni en la dirección de la página. Si usted es invitado y llegó a esta página con su QR, por favor entréguelo al personal en la puerta.</p>
+  </section>
+
+  <section class="ck-card" id="guestCard" hidden>
+    <div class="ck-guest">
+      <img id="guestPhoto" class="ck-photo" alt="Foto del invitado" hidden>
+      <div class="ck-photo-fallback" id="guestInitials" aria-hidden="true"></div>
+      <div>
+        <h2 id="guestName">—</h2>
+        <p class="ck-title" id="guestTitle">—</p>
+        <p class="ck-org" id="guestOrg">—</p>
+        <p class="ck-id">ID de registro: <code id="guestId">—</code></p>
+      </div>
+    </div>
+    <div class="ck-status" id="statusBox" hidden></div>
+    <div class="ck-actions">
+      <button type="button" class="ck-btn ck-btn-primary" id="btnYes">✓ Marcar asistencia</button>
+      <button type="button" class="ck-btn ck-btn-ghost" id="btnNo">No asistió</button>
+    </div>
+    <p class="ck-note" id="markNote">Al marcar, queda registrado el check y la hora exacta de llegada (hora de Washington).</p>
+  </section>
+
+  <section class="ck-card" id="unknownCard" hidden>
+    <h2>Invitado no encontrado</h2>
+    <p>No se encontró ningún invitado con el ID <code id="unknownId">—</code>. Verifique el QR o el enlace y vuelva a intentarlo.</p>
+  </section>
+
+  <section class="ck-card">
+    <h2>Contador de llegadas</h2>
+    <p class="ck-count"><strong id="countArrived">0</strong> de <span id="countTotal">0</span> han llegado</p>
+    <p class="ck-note">Conteo de este dispositivo. El registro central se lleva con los correos de asistencia que se envían al marcar (y con la pestaña «Asistencia» de la matriz del evento).</p>
+    <div class="ck-actions">
+      <button type="button" class="ck-btn" id="btnList">Ver lista de asistencia</button>
+      <button type="button" class="ck-btn" id="btnCsv">Descargar lista (CSV)</button>
+    </div>
+    <div id="listBox" hidden>
+      <table class="ck-table">
+        <thead><tr><th>Nombre</th><th>Asistencia</th><th>Hora de llegada</th></tr></thead>
+        <tbody id="listBody"></tbody>
+      </table>
+      <p class="ck-note" id="listEmpty">Aún no hay marcas en este dispositivo.</p>
+    </div>
+  </section>
+
+  <p class="ck-foot">Check-in del personal · Protegiendo las Américas · Embajada de Colombia en Washington</p>
+</main>
+
+<script src="js/checkin.js?v=1"></script>
+</body>
+</html>
