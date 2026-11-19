@@ -1333,7 +1333,7 @@
     renderEvList();
     $('#evListModal').hidden = false;
   }
-  $('#btnEventos').addEventListener('click', openEvList);
+  $('#btnEventos').addEventListener('click', () => { location.href = 'eventos.html'; });
   $('#evListX').addEventListener('click', () => { $('#evListModal').hidden = true; });
   $('#evListModal').addEventListener('click', e => { if (e.target === $('#evListModal')) $('#evListModal').hidden = true; });
   $('#evListNew').addEventListener('click', () => { $('#evListModal').hidden = true; if (curEvent) openEventoNuevo(); else openEvModal(); });
