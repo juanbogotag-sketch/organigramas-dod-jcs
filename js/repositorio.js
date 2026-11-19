@@ -289,6 +289,17 @@
     }
     renderList();
   }
+  function rowHtml(p) {
+    return '<div class="row" data-key="' + esc(p.key) + '">' +
+      (p.photo ? '<img class="ph" src="' + p.photo + '" alt="">' : '<div class="phx">' + esc(initials(p.name)) + '</div>') +
+      '<div class="info"><div class="nm">' + esc(p.name) + '</div>' +
+      (p.title ? '<div class="ti">' + esc(p.title) + '</div>' : '') +
+      '<div class="og">' + esc(p.org) + (p.dep ? ' · Depende de: ' + esc(p.dep) : '') + '</div>' +
+      (p.es ? '<p class="fp">' + esc(firstPara(p.es)) + '</p>' : '<p class="fp"><em>Sin perfil todavía.</em></p>') +
+      '</div>' +
+      '<div class="selbar"><button type="button" data-l="es">ES</button><button type="button" data-l="en">EN</button><button type="button" data-l="both">BOTH</button></div>' +
+      '<button type="button" class="ver" data-key="' + esc(p.key) + '">Ver o descargar</button></div>';
+  }
   function renderList() {
     const all = inCat(curCat);
     const nq = norm($('#q').value);
@@ -305,17 +316,7 @@
       const tid = (curCat === 'ejecutivo' && folks[0]) ? folks[0].orgId : '';
       html += '<div class="gname"><span>' + esc(org) + ' (' + folks.length + ')</span>' +
         (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
-      folks.forEach(p => {
-        html += '<div class="row" data-key="' + esc(p.key) + '">' +
-          (p.photo ? '<img class="ph" src="' + p.photo + '" alt="">' : '<div class="phx">' + esc(initials(p.name)) + '</div>') +
-          '<div class="info"><div class="nm">' + esc(p.name) + '</div>' +
-          (p.title ? '<div class="ti">' + esc(p.title) + '</div>' : '') +
-          '<div class="og">' + esc(p.org) + (p.dep ? ' · Depende de: ' + esc(p.dep) : '') + '</div>' +
-          (p.es ? '<p class="fp">' + esc(firstPara(p.es)) + '</p>' : '<p class="fp"><em>Sin perfil todavía.</em></p>') +
-          '</div>' +
-          '<div class="selbar"><button type="button" data-l="es">ES</button><button type="button" data-l="en">EN</button><button type="button" data-l="both">BOTH</button></div>' +
-          '<button type="button" class="ver" data-key="' + esc(p.key) + '">Ver o descargar</button></div>';
-      });
+      folks.forEach(p => { html += rowHtml(p); });
     });
     $('#groups').innerHTML = html;
     const empty = $('#empty');
@@ -338,6 +339,41 @@
   $('#q').addEventListener('input', () => renderList());
   $('#fsub').addEventListener('change', onSubChange);
   $('#fsub2').addEventListener('change', () => renderList());
+
+  // ---------- Búsqueda general en el menú de categorías ----------
+  // Busca en TODOS los perfiles (todas las categorías), no solo en la
+  // categoría abierta. Insensible a acentos, como la búsqueda por categoría.
+  // Desde 2 letras; los resultados se agrupan por categoría y organización
+  // y cada tarjeta abre el perfil igual que en la lista por categoría.
+  function renderGlobal() {
+    const box = $('#gresults');
+    const q = norm($('#qg').value.trim());
+    if (q.length < 2) { box.innerHTML = ''; return; }
+    const catLabel = id => (CATS.find(c => c.id === id) || {}).label || id;
+    const hits = PEOPLE.filter(p => p.visible && norm(p.name + ' ' + (p.title || '') + ' ' + (p.title_en || '') + ' ' + p.org + ' ' + (p.dep || '') + ' ' + catLabel(p.cat)).includes(q));
+    if (!hits.length) {
+      box.innerHTML = '<p id="gempty">Ningún perfil coincide con la búsqueda.</p>';
+      return;
+    }
+    let html = '<p class="gcount">' + hits.length + (hits.length === 1 ? ' perfil' : ' perfiles') + ' en todas las categorías</p>';
+    CATS.forEach(c => {
+      const folks = hits.filter(p => p.cat === c.id);
+      if (!folks.length) return;
+      const orgs = [];
+      folks.forEach(p => { if (!orgs.includes(p.org)) orgs.push(p.org); });
+      orgs.forEach(org => {
+        const of = folks.filter(p => p.org === org);
+        const tid = (c.id === 'ejecutivo' && of[0]) ? of[0].orgId : '';
+        html += '<div class="gname"><span>' + esc(catLabel(c.id)) + ' · ' + esc(org) + ' (' + of.length + ')</span>' +
+          (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
+        of.forEach(p => { html += rowHtml(p); });
+      });
+    });
+    box.innerHTML = html;
+    box.querySelectorAll('.ver').forEach(b => b.addEventListener('click', () => openProfile(b.dataset.key)));
+    paintSelRows();
+  }
+  $('#qg').addEventListener('input', renderGlobal);
 
   // ---------- Sugerencias (el envío llega al Gmail de Juan Pablo vía FormSubmit) ----------
   const sug = $('#sug');
@@ -742,6 +778,8 @@
     if (!cart.length) $('#cartOpts').hidden = true;
     const dl = $('#cartDl'); if (dl) dl.hidden = true;
     const cs = $('#cartShare'); if (cs) cs.hidden = true;
+    const evm = $('#evModal');
+    if (evm && !evm.hidden) paintEventoResumen();
   }
   $('#madd').addEventListener('click', () => {
     if (!cur) return;
@@ -760,17 +798,17 @@
     $('#cartMsg').textContent = '';
   });
   let genURL = null, genFile = null;
-  function offerFile(blob, name) {
+  function offerFile(blob, name, linkEl) {
     if (genURL) URL.revokeObjectURL(genURL);
     genURL = URL.createObjectURL(blob);
     genFile = new File([blob], name, { type: blob.type || 'application/octet-stream' });
-    const a = $('#cartDl');
+    const a = linkEl || $('#cartDl');
     a.href = genURL;
     a.setAttribute('download', name);
     a.textContent = '⬇ Descargar: ' + name;
     a.hidden = false;
     const cs = $('#cartShare');
-    if (cs && navigator.canShare && navigator.canShare({ files: [genFile] })) cs.hidden = false;
+    if (!linkEl && cs && navigator.canShare && navigator.canShare({ files: [genFile] })) cs.hidden = false;
     if (!/iPhone|iPad|iPod/.test(navigator.userAgent || '')) a.click();
   }
   $('#cartZip').addEventListener('click', async () => {
@@ -805,7 +843,7 @@
   let selMode = false;
   function inCartLang(key, lang) { return cart.some(x => x.key === key && x.lang === lang); }
   function paintSelRows() {
-    document.querySelectorAll('#groups .row').forEach(r => {
+    document.querySelectorAll('#groups .row, #gresults .row').forEach(r => {
       const k = r.dataset.key;
       r.classList.toggle('sel', !!k && inCart(k));
       r.querySelectorAll('.selbar button').forEach(b => {
@@ -822,7 +860,7 @@
     document.body.classList.toggle('selmode', selMode);
     paintSelRows();
   });
-  $('#groups').addEventListener('click', e => {
+  function selTap(e) {
     if (!selMode) return;
     const btn = e.target.closest('.selbar button');
     if (!btn) return;
@@ -841,7 +879,9 @@
       cart.push({ key, lang: l });
     }
     saveCart(); renderCart(); paintSelRows(); paintCartBtn();
-  });
+  }
+  $('#groups').addEventListener('click', selTap);
+  $('#gresults').addEventListener('click', selTap);
   $('#cartGen').addEventListener('click', () => {
     const o = $('#cartOpts');
     o.hidden = !o.hidden;
@@ -859,6 +899,159 @@
       $('#cartMsg').textContent = 'Matriz lista: ' + items.length + ' personas.';
     } catch (e) {
       $('#cartMsg').textContent = 'No se pudo generar la matriz.';
+    }
+  });
+
+  // ---------- Crear evento ----------
+  // La matriz del evento se arma con los perfiles de la carpeta (los mismos
+  // que «Generar matriz en Excel») más las personas externas que se agregan
+  // aquí. La descarga trae dos pestañas: «Matriz» (seleccionados + externos,
+  // con las mismas 10 columnas) y «Lista del evento» (los 60 invitados de
+  // la matriz definitiva de «Protegiendo las Américas»).
+  // Lista de invitados del evento «Protegiendo las Américas» (3 dic 2026):
+  // idéntica a GUESTS en js/checkin.js y a la matriz definitiva.
+  // [id, nombre, cargo, organización, correo]
+const EVENTO_LIST = [
+  ["ev|gonzalez-bogota", "Juan Pablo González Bogotá", "Pasante", "Embajada de Colombia en Washington", "jgonzalez@colombiaemb.org"],
+  ["ev|o-brien-daniel", "Daniel O'Brien", "Acting Assistant US Trade Representative for the Western Hemisphere", "Office of the US Trade Representative (USTR)", "daniel.c.obrien@ustr.eop.gov"],
+  ["ev|silva-raquel", "Raquel Silva", "Director for Colombia & Chile", "Office of the US Trade Representative (USTR)", "Raquel.R.Silva@ustr.eop.gov"],
+  ["ev|peterson-julia", "Julia Peterson", "Supervisory International Trade Specialist", "US Customs and Border Protection (USCBP)", "JULIA.PETERSON@cbp.dhs.gov"],
+  ["ev|madigan-keith", "Keith Madigan", "International Trade Analyst", "US Customs and Border Protection (USCBP)", "keith.madigan@cbp.dhs.gov"],
+  ["ev|klepek-james", "James Klepek", "Lead Trade Policy Officer for Colombia", "US Department of Agriculture (USDA)", "james.klepek@usda.gov"],
+  ["ev|hubler-tyler", "Tyler Hubler", "Lead Trade Policy Officer for the Western Hemisphere Division", "US Department of Agriculture (USDA)", "Tyler.Hubler@usda.gov"],
+  ["ev|hieskill-sarah", "Sarah Hieskill", "Trade Director, Andean Region", "US Department of Agriculture (USDA)", "sarah.r.hieskill@usda.gov"],
+  ["ev|godley-michael", "Michael Godley", "Desk Officer for Colombia and Ecuador", "US Department of Commerce (DOC)", "Michael.Godley@trade.gov"],
+  ["ev|stetson-richard", "Richard Stetson", "International Trade Specialist", "US Department of Commerce (DOC)", "richard.stetson@trade.gov"],
+  ["ev|arboleda-nelson", "Nelson Arboleda", "Director of the Office of the Americas", "US Department of Health and Human Services", "nelson.arboleda@hhs.gov"],
+  ["ev|klein-mackenzie", "Mackenzie Klein", "Public Health Program Specialist", "US Department of Health and Human Services", "Mackenzie.Klein@hhs.gov"],
+  ["ev|dewindt-katrin", "Katrin DeWindt", "Academic Exchange Specialist", "US Department of State (DOS)", "DeWindtKA@state.gov"],
+  ["ev|mickelson-daniel", "Daniel Mickelson", "Chief of Sports Diplomacy", "US Department of State (DOS)", "mickelsonde@state.gov"],
+  ["ev|abraham-july", "July Abraham", "Executive Director", "US Department of Transportation", "Julie.Abraham@dot.gov"],
+  ["ev|madell-mary-lisa", "Mary Lisa Madell", "Deputy Director", "US Department of Transportation", "MaryLisa.Madell@dot.gov"],
+  ["ev|frazier-bearden-lori", "Lori Frazier Bearden", "Deputy Undersecretary", "US Department of Labor", "Contact-ILAB@dol.gov"],
+  ["ev|laco-marek", "Marek Laco", "Acting Assistant Secretary", "US Department of Labor", "ETAPagemaster@dol.gov"],
+  ["ev|cummings-tim", "Tim Cummings", "Acting Assistant Secretary / Deputy Assistant Secretary", "US Department of Labor", "OCIACongressionalNotification@dol.gov"],
+  ["ev|keeling-david-l", "David L. Keeling", "Assistant Secretary of Labor for Occupational Safety and Health", "US Department of Labor", "info@osha.gov"],
+  ["ev|demarzo-benjamin", "Benjamin DeMarzo", "Assistant Secretary for Congressional and Intergovernmental Relations", "US Department of Housing and Urban Development (HUD)", ""],
+  ["ev|kurtz-ronald", "Ronald Kurtz", "Assistant Secretary for Community Planning and Development", "US Department of Housing and Urban Development (HUD)", ""],
+  ["ev|fernandez-claudette", "Claudette Fernandez", "General Deputy Assistant Secretary for Community Planning and Development", "US Department of Housing and Urban Development (HUD)", ""],
+  ["ev|richardson-todd", "Todd Richardson", "General Deputy Assistant Secretary for Policy Development and Research", "US Department of Housing and Urban Development (HUD)", ""],
+  ["ev|ormsby-jesse", "Jesse Ormsby", "Associate Director for South America", "US Department of Justice", "Jesse.Ormsby@usdoj.gov"],
+  ["ev|barbulescu-sandra", "Sandra Barbulescu", "Trial Attorney", "US Department of Justice", "Ruxandra.Barbulescu@usdoj.gov"],
+  ["ev|kocheulov-vladimir", "Vladimir Kocheulov", "Trial Attorney", "US Department of Justice", "Vladimir.Kocheulov@usdoj.gov"],
+  ["ev|york-aaron", "Aaron York", "Trial Attorney", "US Department of Justice", "Aaron.E.York@usdoj.gov"],
+  ["ev|lee-courtney", "Courtney Lee", "Trial Attorney", "US Department of Justice", "Courtney.Lee2@usdoj.gov"],
+  ["ev|hui-dennis", "Dennis Hui", "Trial Attorney", "US Department of Justice", "Dennis.Hui2@usdoj.gov"],
+  ["ev|beasley-john", "John Beasley", "Senior Trial Attorney", "US Department of Justice", "John.A.Beasley@usdoj.gov"],
+  ["ev|bodner-amy", "Amy Bodner", "International Affairs Specialist", "US Department of Justice", "Amy.Bodner@usdoj.gov"],
+  ["ev|fuse-marisa", "Marisa Fuse", "International Affairs Specialist", "US Department of Justice", "Marisa.Fuse@usdoj.gov"],
+  ["ev|thomas-estelle", "Estelle Thomas", "International Affairs Specialist", "US Department of Justice", "Clotilde.Alexandra-Estelle.Thomas@usdoj.gov"],
+  ["ev|zegar-allison", "Allison Zegar", "International Affairs Specialist", "US Department of Justice", "Allison.Zegar@usdoj.gov"],
+  ["ev|hollinshead-samantha", "Samantha Hollinshead", "International Affairs Specialist", "US Department of Justice", "Samantha.Hollinshead@usdoj.gov"],
+  ["ev|burgos-isabella", "Isabella Burgos", "Student Intern", "US Department of Justice", "Isabella.Burgos@usdoj.gov"],
+  ["ev|stackhouse-timothy", "Timothy Stackhouse", "Extradition Specialist", "US Department of State (DOS)", "StackhouseT@state.gov"],
+  ["ev|boone-chase-logan", "Chase Logan Boone", "Colombia Country Director", "Department of War", "chase.l.boone.civ@mail.mil"],
+  ["ev|kit-ellen", "Ellen Kit", "Western Hemisphere /Colombia", "Department of War", "ellen.e.kitt.civ@mail.mil"],
+  ["ev|besosa-miguel", "Miguel Besosa", "Western Hemisphere /Colombia", "Department of War", "miguel.a.besosa.ctr@mail.mil"],
+  ["ev|bello-mauricio", "Mauricio Bello", "Western Hemisphere /Colombia", "Department of War", "mauricio.bello@dodiis.mil"],
+  ["ev|wilson-joshua-b", "Joshua B. Wilson", "Director", "Department of War", "joshua.b.wilson.mil@us.navy.mil"],
+  ["ev|spalding-luc-p", "Luc P. Spalding.", "Attaché Liaison Officer for the Western Hemispher", "Department of War", "luc.p.spalding.mil@us.navy.mil"],
+  ["ev|grady-dana-w", "Dana W Grady", "Regional Advisor for Latin America", "Department of Homeland Security (DHS)", "Dana.W.Grady@uscg.mil"],
+  ["ev|norkiewicz-collin", "Collin Norkiewicz", "Country Director", "Air Force", "Collin.norkiewicz@us.af.mil"],
+  ["ev|jacquez-alissa-m", "Alissa M. Jacquez", "Foreign Military Support Specialist", "Army", "Alissa.m.jacquez.civ@army.mil"],
+  ["ev|ortiz-michael", "Michael Ortiz", "Deputy Director for Colombia", "Department of Justice - DEA", "michael.c.ortiz@dea.gov"],
+  ["ev|cannavo-nicole", "Nicole Cannavo", "Colombian Liaison", "Federal Bureau of Investigation (FBI)", "nmcannavo@fbi.gov"],
+  ["ev|roncone-nita-l", "Nita L Roncone", "Senior Policy Advisor", "Office of National Drug Control Policy (ONDCP)", "Nita_V_Lalla@ondcp.eop.gov"],
+  ["ev|kroger-kaleb", "Kaleb Kroger", "Colombia Team Lead", "Department of State", "KrogerKB@state.gov"],
+  ["ev|de-jesus-blasini-patricia", "Patricia De Jesus Blasini", "Colombia Team", "Department of State", "DeJesusP@state.gov"],
+  ["ev|fishman-kyle", "Kyle Fishman", "Colombia Team", "Department of State", "FishmanKA@state.gov"],
+  ["ev|carrera-madalen", "Madalen Carrera", "Colombia Program Officer", "Department of State", "CarreraM2@state.gov"],
+  ["ev|varela-juan", "Juan Varela", "", "", ""],
+  ["ev|meade-kathia-l", "Kathia L. Meade", "Unit Chief", "Federal Bureau of Investigation (FBI)", "klmeade@fbi.gov"],
+  ["ev|velasco-simon", "Simon Velasco", "Program Analyst", "Department of Homeland Security (DHS)", "simon.velasco@hq.dhs.gov"],
+  ["ev|polga-hecimovich-john", "John Polga-Hecimovich", "Assistant Professor", "U.S. Naval Academy", "polgahec@usna.edu"],
+  ["ev|arnold-jessica", "Jessica Arnold", "Foreign Affairs Officer", "Department of State", "ArnoldJM@state.gov"],
+  ["ev|underwood-james", "James Underwood", "Supervisory Special Agent", "Federal Bureau of Investigation (FBI)", "jtunderwood@fbi.gov"],
+];
+
+  // Personas externas (sin perfil en el Repositorio) para el evento.
+  // Se guardan en este dispositivo para no perderlas al recargar.
+  let externals = [];
+  try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
+  externals = (externals || []).filter(x => x && x.fn && x.ln);
+  const saveExternals = () => { try { localStorage.setItem('torio_externos_v1', JSON.stringify(externals)); } catch (e) {} };
+
+  // Fila de matriz de una persona externa: las mismas 10 columnas. El QR
+  // es el enlace de check-in derivado del nombre, igual que para los
+  // perfiles del Repositorio (ev|<apellido>-<nombre>).
+  function externalRow(x) {
+    return ['', x.fn, x.ln, x.title || '', x.office || '', x.org || '', x.type || '', x.email || '', x.other || '', qrUrl({ key: 'ex|ext', fn: x.fn, ln: x.ln })];
+  }
+
+  function paintExternals() {
+    const list = $('#exList');
+    if (!externals.length) {
+      list.innerHTML = '<p class="cempty">Todavía no hay personas externas. Agrégalas con el formulario de arriba.</p>';
+      return;
+    }
+    list.innerHTML = externals.map((x, i) =>
+      '<div class="citem"><div class="cphx">' + esc(initials(x.fn + ' ' + x.ln)) + '</div>' +
+      '<div class="cinfo"><b>' + esc(x.fn + ' ' + x.ln) + '</b><small>' + esc([x.title, x.org].filter(Boolean).join(' · ') || 'Persona externa') + '</small></div>' +
+      '<button type="button" class="crm" data-i="' + i + '" aria-label="Quitar persona externa">✕</button></div>').join('');
+    list.querySelectorAll('.crm').forEach(b => b.addEventListener('click', () => {
+      externals.splice(+b.dataset.i, 1);
+      saveExternals(); paintExternals(); paintEventoResumen();
+    }));
+  }
+  function paintEventoResumen() {
+    const seen = new Set();
+    const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(p => p && !seen.has(p.key) && seen.add(p.key));
+    $('#evCartN').textContent = items.length;
+    const cl = $('#evCartList');
+    cl.innerHTML = items.length
+      ? items.map(p => '<div class="citem"><div class="cinfo"><b>' + esc(p.name) + '</b><small>' + esc(p.title || p.org) + '</small></div></div>').join('')
+      : '<p class="cempty">La carpeta está vacía. Abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con +.</p>';
+  }
+  function openEvento() {
+    paintEventoResumen();
+    paintExternals();
+    $('#evMsg').textContent = '';
+    const a = $('#evDlA'); if (a) a.hidden = true;
+    $('#evModal').hidden = false;
+  }
+  $('#btnEvento').addEventListener('click', openEvento);
+  $('#evX').addEventListener('click', () => { $('#evModal').hidden = true; });
+  $('#evModal').addEventListener('click', e => { if (e.target === $('#evModal')) $('#evModal').hidden = true; });
+  $('#exAdd').addEventListener('click', () => {
+    const v = id => $(id).value.trim();
+    const fn = v('#exFn'), ln = v('#exLn');
+    const email = v('#exEmail');
+    if (!fn || !ln) { $('#evMsg').textContent = 'Nombre y apellido son obligatorios para agregar una persona externa.'; return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('#evMsg').textContent = 'Revisa el correo: no tiene formato válido.'; return; }
+    externals.push({ fn, ln, title: v('#exTitle'), office: v('#exOffice'), org: v('#exOrg'), type: v('#exType'), email, other: v('#exOther') });
+    saveExternals();
+    ['#exFn', '#exLn', '#exTitle', '#exOffice', '#exOrg', '#exType', '#exEmail', '#exOther'].forEach(id => { $(id).value = ''; });
+    $('#evMsg').textContent = 'Persona externa agregada: ' + fn + ' ' + ln + '.';
+    paintExternals();
+  });
+  $('#evClear').addEventListener('click', () => {
+    externals = []; saveExternals(); paintExternals();
+    $('#evMsg').textContent = 'Personas externas vaciadas.';
+  });
+  $('#evDl').addEventListener('click', async () => {
+    const seen = new Set();
+    const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(p => p && !seen.has(p.key) && seen.add(p.key));
+    const rows = items.map(matrixRow).concat(externals.map(externalRow));
+    if (!rows.length) { $('#evMsg').textContent = 'Selecciona al menos un perfil de la carpeta o agrega una persona externa.'; return; }
+    $('#evMsg').textContent = 'Generando la matriz del evento…';
+    try {
+      const guestRows = EVENTO_LIST.map(g => [g[0], g[1], g[2], g[3], g[4], '']);
+      const blob = await buildXlsx(rows, undefined, { name: 'Lista del evento', head: ['ID', 'Nombre', 'Cargo', 'Organización', 'E-mail', 'Asistencia'], rows: guestRows });
+      const now = new Date(), p2 = n => String(n).padStart(2, '0');
+      offerFile(blob, 'Matriz_Evento_Protegiendo_las_Americas_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx', $('#evDlA'));
+      $('#evMsg').textContent = 'Matriz del evento lista: ' + rows.length + ' personas en la matriz (' + items.length + ' del Repositorio y ' + externals.length + ' externas) + lista de ' + EVENTO_LIST.length + ' invitados.';
+    } catch (e) {
+      $('#evMsg').textContent = 'No se pudo generar la matriz del evento.';
     }
   });
 
@@ -933,20 +1126,27 @@
     return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p)];
   }
 
-  async function buildXlsx(rows, outType) {
+  async function buildXlsx(rows, outType, sheet2) {
     const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const colL = i => String.fromCharCode(65 + i);
     const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
     const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Other Contact', 'QR'];
-    const sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    const sheetXml = (h, rs) => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
-      rowXml(head, 1) + rows.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
+      rowXml(h, 1) + rs.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
+    // Pestaña 1: la matriz. Pestaña 2 (opcional, solo en «Crear evento»):
+    // la lista de invitados del evento.
+    const sheets = [{ name: 'Matriz', xml: sheetXml(head, rows) }];
+    if (sheet2) sheets.push({ name: sheet2.name, xml: sheetXml(sheet2.head, sheet2.rows) });
     const z = new JSZip();
-    z.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>');
+    const overrides = sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('');
+    z.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' + overrides + '</Types>');
     z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
-    z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Matriz" sheetId="1" r:id="rId1"/></sheets></workbook>');
-    z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>');
-    z.file('xl/worksheets/sheet1.xml', sheet);
+    const sheetsXml = sheets.map((s, i) => '<sheet name="' + xesc(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('');
+    z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheetsXml + '</sheets></workbook>');
+    const relsXml = sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('');
+    z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + relsXml + '</Relationships>');
+    sheets.forEach((s, i) => z.file('xl/worksheets/sheet' + (i + 1) + '.xml', s.xml));
     return await z.generateAsync({ type: outType || 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   }
   renderCart();
