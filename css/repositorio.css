@@ -452,6 +452,12 @@ body.selmode .selbar { display: flex; }
   padding: 10px 12px; font-size: 14px; font-family: inherit;
   border: 1px solid var(--line); border-radius: 8px; background: #fff; width: 100%;
 }
+#evName {
+  width: 100%; box-sizing: border-box; margin-top: 8px;
+  padding: 10px 12px; font-size: 14px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 8px; background: #fff;
+}
+.evfilemsg { font-size: 13px; color: var(--mu); margin: 8px 0 0; }
 #evCartList, #exList { margin-top: 8px; }
 #evMsg { font-size: 13px; color: var(--mu); margin: 12px 0 0; }
 #evModal a#evDlA {
