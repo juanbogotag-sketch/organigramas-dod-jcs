@@ -34,6 +34,8 @@
   .evento .edato { font-size: 12px; font-weight: 600; color: #c8d5e6; margin-top: 4px; line-height: 1.45; }
   .evento .ecta { display: inline-block; margin-top: 9px; background: #e0a800; color: #0a1d38; font-size: 12px; font-weight: 800; padding: 6px 11px; border-radius: 999px; }
   .nota { text-align: center; color: #7b8aa0; font-size: 12.5px; font-weight: 600; margin-top: 18px; }
+  .crearbtn { display: block; max-width: 340px; margin: 20px auto 0; background: #0a1d38; color: #fff; text-decoration: none; text-align: center; font-weight: 800; font-size: 15px; padding: 14px 20px; border-radius: 999px; }
+  .crearbtn:hover { background: #12294d; }
 </style>
 </head>
 <body>
@@ -52,7 +54,8 @@
     <button class="navbtn" id="btnNext" type="button">Semana siguiente ▶</button>
   </div>
   <div class="semana" id="semana"></div>
-  <p class="nota">Toca un evento para abrir su checklist de asistencia.</p>
+  <a class="crearbtn" href="repositorio.html?crear=1">🎉 Crear evento</a>
+  <p class="nota">Toca un evento para abrirlo: su checklist de asistencia o su lista de invitados en el Repositorio.</p>
 </main>
 <script src="js/logo.js"></script>
 <script>
@@ -60,6 +63,19 @@
 const EVENTOS = [
   { fecha: '2026-11-19', nombre: 'Life After the Hippopotamus', hora: '6:30 – 8:00 p. m.', lugar: 'Residencia de la Embajadora de Colombia', enlace: 'hipopotamo.html', cta: '📋 Checklist de asistencia' }
 ];
+// Eventos creados en el Repositorio (este dispositivo): se leen de
+// localStorage y aparecen en el casillero del día de su fecha.
+function eventosGuardados() {
+  try {
+    const list = JSON.parse(localStorage.getItem('torio_eventos_v1') || '[]');
+    if (!Array.isArray(list)) return [];
+    return list.filter(e => e && e.id && e.date).map(e => {
+      const keys = new Set((e.guests || []).filter(g => g && g.key).map(g => g.key));
+      const ext = (e.externals || []).filter(x => x && x.fn && x.ln).length;
+      return { fecha: e.date, nombre: e.name || 'Evento sin nombre', hora: '', lugar: e.place || '', enlace: 'repositorio.html?evento=' + encodeURIComponent(e.id), cta: '✎ Abrir evento', invitados: keys.size + ext };
+    });
+  } catch (err) { return []; }
+}
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 const $ = id => document.getElementById(id);
@@ -78,18 +94,21 @@ function render() {
     ? ini.getDate() + ' – ' + fin.getDate() + ' de ' + MESES[ini.getMonth()] + ' de ' + ini.getFullYear()
     : ini.getDate() + ' de ' + MESES[ini.getMonth()] + ' – ' + fin.getDate() + ' de ' + MESES[fin.getMonth()] + ' de ' + fin.getFullYear();
   const hoyIso = iso(new Date());
+  const todos = EVENTOS.concat(eventosGuardados());
   const cont = $('semana');
   cont.innerHTML = '';
   dias.forEach((d, i) => {
     const f = iso(d);
     const esHoy = f === hoyIso;
-    const evs = EVENTOS.filter(e => e.fecha === f);
+    const evs = todos.filter(e => e.fecha === f);
     const card = document.createElement('div');
     card.className = 'dia' + (esHoy ? ' eshoy' : '');
     let html = '<div class="dnombre">' + DIAS[i] + '</div><div class="dnum">' + d.getDate() + '</div>' + (esHoy ? '<span class="hoybadge">Hoy</span>' : '');
     if (evs.length) {
       for (const e of evs) {
-        html += '<a class="evento" href="' + esc(e.enlace) + '"><div class="enombre">' + esc(e.nombre) + '</div><div class="edato">' + esc(e.hora) + '<br>' + esc(e.lugar) + '</div><span class="ecta">' + esc(e.cta) + '</span></a>';
+        const dato = [e.hora, e.lugar].filter(Boolean).map(esc).join('<br>');
+        const extra = (e.invitados != null) ? (e.invitados + (e.invitados === 1 ? ' invitado' : ' invitados')) : '';
+        html += '<a class="evento" href="' + esc(e.enlace) + '"><div class="enombre">' + esc(e.nombre) + '</div><div class="edato">' + dato + (extra ? '<br>' + esc(extra) : '') + '</div><span class="ecta">' + esc(e.cta) + '</span></a>';
       }
     } else {
       html += '<div class="sinev">Sin eventos</div>';
