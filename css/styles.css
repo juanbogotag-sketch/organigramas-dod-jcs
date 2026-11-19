@@ -1,10 +1,11 @@
 :root {
-  --bg: #f6f5f1;
+  --bg: #faf8f4;
   --sf: #fff;
-  --tx: #1b2433;
-  --mu: #6b7280;
-  --bd: #d9d6cc;
-  --ac: #1f3a5f;
+  --tx: #1c1a17;
+  --mu: #6b675f;
+  --bd: #ddd6c9;
+  --ac: #0a1d38;
+  --ac2: #1d5c63;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -24,7 +25,7 @@ html, body {
   margin: 0;
 }
 body {
-  font: 14px/1.4 Georgia, 'Times New Roman', serif;
+  font: 14px/1.4 'Montserrat', Arial, Helvetica, sans-serif;
   background: var(--bg);
   color: var(--tx);
   display: flex;
@@ -39,6 +40,8 @@ aside {
 }
 h1 {
   font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .5px;
   margin: 0 0 8px;
 }
 h3 {
@@ -52,7 +55,7 @@ button, select, input, textarea {
   color: var(--tx);
   background: var(--sf);
   border: 1px solid var(--bd);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 5px 8px;
 }
 button {
@@ -132,7 +135,7 @@ main {
   width: 190px;
   background: var(--sf);
   border: 1px solid rgba(0,0,0,.22);
-  border-radius: 4px;
+  border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0,0,0,.25);
   padding: 4px 6px;
   text-align: center;
@@ -161,7 +164,7 @@ main {
 .ttl {
   position: absolute;
   width: 190px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -917,7 +920,8 @@ body:not(.dev-mobile) #phandle:hover {
   text-align: center;
 }
 #gate h2 {
-  font-family: Georgia, serif;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 800;
   color: #0A1D38;
   margin: 0 0 8px;
   font-size: 22px;
@@ -959,6 +963,14 @@ body:not(.dev-mobile) #phandle:hover {
   opacity: .015;
 }
 #gate .gcard { position: relative; z-index: 1; }
+
+/* Franja tricolor (bandera de Colombia) en la parte superior, igual que en
+   el resto de la plataforma (Repositorio, Congreso, Embajadores, Eventos). */
+.tricolor {
+  position: fixed; top: 0; left: 0; right: 0; height: 7px; z-index: 500;
+  pointer-events: none;
+  background: linear-gradient(to right, #FCD116 0 50%, #003893 50% 75%, #CE1126 75% 100%);
+}
 
 #qwrap {
   position: absolute;
