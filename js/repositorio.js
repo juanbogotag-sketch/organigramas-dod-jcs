@@ -945,7 +945,10 @@
   // cada descarga a partir del nombre del invitado (ev|<apellido>-<nombre>);
   // no se pre-genera ningún QR para los perfiles del Repositorio. La
   // segunda pestaña, la lista de asistencia del evento, se hará después,
-  // cuando Juan Pablo la pida.
+  // cuando Juan Pablo la pida. El QR de cada invitado se resuelve primero
+  // en la lista de invitados del evento (por correo o por nombre) y, si no
+  // está, se reconstruye desde el nombre; eso cubre los apellidos
+  // compuestos, que la reconstrucción parte mal.
   
   // Personas externas (sin perfil en el Repositorio) para el evento.
   // Se guardan en este dispositivo para no perderlas al recargar.
@@ -959,10 +962,11 @@
   };
 
   // Fila de matriz de una persona externa: las mismas 10 columnas. El QR
-  // es el enlace de check-in derivado del nombre, igual que para los
-  // perfiles del Repositorio (ev|<apellido>-<nombre>).
+  // es el enlace de check-in del invitado, resuelto igual que para los
+  // perfiles del Repositorio (primero en la lista del evento, si no desde
+  // el nombre: ev|<apellido>-<nombre>).
   function externalRow(x) {
-    return ['', x.fn, x.ln, x.title || '', x.office || '', x.org || '', x.type || '', x.email || '', x.other || '', qrUrl({ key: 'ex|ext', fn: x.fn, ln: x.ln })];
+    return ['', x.fn, x.ln, x.title || '', x.office || '', x.org || '', x.type || '', x.email || '', x.other || '', qrUrl({ key: 'ex|ext', fn: x.fn, ln: x.ln }, x.email)];
   }
 
   function paintExternals() {
@@ -1351,15 +1355,96 @@
 
   // QR de check-in: enlace como texto a checkin.html con el ID del evento
   // (ev|<apellido>-<nombre>, el mismo esquema de la matriz definitiva del
-  // evento). Se genera en cada descarga a partir del nombre, sin guardarse
-  // en los datos; el QR no lleva el token de personal.
+  // evento). Se genera en cada descarga, sin guardarse en los datos; el QR
+  // no lleva el token de personal. El ID se resuelve primero en la lista de
+  // invitados de «Protegiendo las Américas» (por correo y, si no, por nombre
+  // normalizado) y solo si no hay correspondencia se reconstruye desde el
+  // nombre: eso cubre los apellidos compuestos, que la reconstrucción parte
+  // mal (González Bogotá, Frazier Bearden, De Jesus Blasini).
   const CHECKIN_URL = 'https://juanbogotag-sketch.github.io/organigramas-dod-jcs/checkin.html?g=';
+  // Invitados de «Protegiendo las Américas» (js/checkin.js GUESTS, 3 dic
+  // 2026): [correo, nombre normalizado, id ev|]. 5 invitados no tienen
+  // correo y se identifican solo por el nombre.
+  const EV_GUESTS = [
+  ["jgonzalez@colombiaemb.org", "juan pablo gonzalez bogota", "ev|gonzalez-bogota"],
+  ["daniel.c.obrien@ustr.eop.gov", "daniel o'brien", "ev|o-brien-daniel"],
+  ["raquel.r.silva@ustr.eop.gov", "raquel silva", "ev|silva-raquel"],
+  ["julia.peterson@cbp.dhs.gov", "julia peterson", "ev|peterson-julia"],
+  ["keith.madigan@cbp.dhs.gov", "keith madigan", "ev|madigan-keith"],
+  ["james.klepek@usda.gov", "james klepek", "ev|klepek-james"],
+  ["tyler.hubler@usda.gov", "tyler hubler", "ev|hubler-tyler"],
+  ["sarah.r.hieskill@usda.gov", "sarah hieskill", "ev|hieskill-sarah"],
+  ["michael.godley@trade.gov", "michael godley", "ev|godley-michael"],
+  ["richard.stetson@trade.gov", "richard stetson", "ev|stetson-richard"],
+  ["nelson.arboleda@hhs.gov", "nelson arboleda", "ev|arboleda-nelson"],
+  ["mackenzie.klein@hhs.gov", "mackenzie klein", "ev|klein-mackenzie"],
+  ["dewindtka@state.gov", "katrin dewindt", "ev|dewindt-katrin"],
+  ["mickelsonde@state.gov", "daniel mickelson", "ev|mickelson-daniel"],
+  ["julie.abraham@dot.gov", "july abraham", "ev|abraham-july"],
+  ["marylisa.madell@dot.gov", "mary lisa madell", "ev|madell-mary-lisa"],
+  ["contact-ilab@dol.gov", "lori frazier bearden", "ev|frazier-bearden-lori"],
+  ["etapagemaster@dol.gov", "marek laco", "ev|laco-marek"],
+  ["ociacongressionalnotification@dol.gov", "tim cummings", "ev|cummings-tim"],
+  ["info@osha.gov", "david l. keeling", "ev|keeling-david-l"],
+  ["", "benjamin demarzo", "ev|demarzo-benjamin"],
+  ["", "ronald kurtz", "ev|kurtz-ronald"],
+  ["", "claudette fernandez", "ev|fernandez-claudette"],
+  ["", "todd richardson", "ev|richardson-todd"],
+  ["jesse.ormsby@usdoj.gov", "jesse ormsby", "ev|ormsby-jesse"],
+  ["ruxandra.barbulescu@usdoj.gov", "sandra barbulescu", "ev|barbulescu-sandra"],
+  ["vladimir.kocheulov@usdoj.gov", "vladimir kocheulov", "ev|kocheulov-vladimir"],
+  ["aaron.e.york@usdoj.gov", "aaron york", "ev|york-aaron"],
+  ["courtney.lee2@usdoj.gov", "courtney lee", "ev|lee-courtney"],
+  ["dennis.hui2@usdoj.gov", "dennis hui", "ev|hui-dennis"],
+  ["john.a.beasley@usdoj.gov", "john beasley", "ev|beasley-john"],
+  ["amy.bodner@usdoj.gov", "amy bodner", "ev|bodner-amy"],
+  ["marisa.fuse@usdoj.gov", "marisa fuse", "ev|fuse-marisa"],
+  ["clotilde.alexandra-estelle.thomas@usdoj.gov", "estelle thomas", "ev|thomas-estelle"],
+  ["allison.zegar@usdoj.gov", "allison zegar", "ev|zegar-allison"],
+  ["samantha.hollinshead@usdoj.gov", "samantha hollinshead", "ev|hollinshead-samantha"],
+  ["isabella.burgos@usdoj.gov", "isabella burgos", "ev|burgos-isabella"],
+  ["stackhouset@state.gov", "timothy stackhouse", "ev|stackhouse-timothy"],
+  ["chase.l.boone.civ@mail.mil", "chase logan boone", "ev|boone-chase-logan"],
+  ["ellen.e.kitt.civ@mail.mil", "ellen kit", "ev|kit-ellen"],
+  ["miguel.a.besosa.ctr@mail.mil", "miguel besosa", "ev|besosa-miguel"],
+  ["mauricio.bello@dodiis.mil", "mauricio bello", "ev|bello-mauricio"],
+  ["joshua.b.wilson.mil@us.navy.mil", "joshua b. wilson", "ev|wilson-joshua-b"],
+  ["luc.p.spalding.mil@us.navy.mil", "luc p. spalding.", "ev|spalding-luc-p"],
+  ["dana.w.grady@uscg.mil", "dana w grady", "ev|grady-dana-w"],
+  ["collin.norkiewicz@us.af.mil", "collin norkiewicz", "ev|norkiewicz-collin"],
+  ["alissa.m.jacquez.civ@army.mil", "alissa m. jacquez", "ev|jacquez-alissa-m"],
+  ["michael.c.ortiz@dea.gov", "michael ortiz", "ev|ortiz-michael"],
+  ["nmcannavo@fbi.gov", "nicole cannavo", "ev|cannavo-nicole"],
+  ["nita_v_lalla@ondcp.eop.gov", "nita l roncone", "ev|roncone-nita-l"],
+  ["krogerkb@state.gov", "kaleb kroger", "ev|kroger-kaleb"],
+  ["dejesusp@state.gov", "patricia de jesus blasini", "ev|de-jesus-blasini-patricia"],
+  ["fishmanka@state.gov", "kyle fishman", "ev|fishman-kyle"],
+  ["carreram2@state.gov", "madalen carrera", "ev|carrera-madalen"],
+  ["", "juan varela", "ev|varela-juan"],
+  ["klmeade@fbi.gov", "kathia l. meade", "ev|meade-kathia-l"],
+  ["simon.velasco@hq.dhs.gov", "simon velasco", "ev|velasco-simon"],
+  ["polgahec@usna.edu", "john polga-hecimovich", "ev|polga-hecimovich-john"],
+  ["arnoldjm@state.gov", "jessica arnold", "ev|arnold-jessica"],
+  ["jtunderwood@fbi.gov", "james underwood", "ev|underwood-james"],
+  ];
+  const EV_ID_BY_EMAIL = {};
+  const EV_ID_BY_NAME = {};
+  EV_GUESTS.forEach(g => { if (g[0]) EV_ID_BY_EMAIL[g[0]] = g[2]; EV_ID_BY_NAME[g[1]] = g[2]; });
+  function evIdFor(name, email) {
+    const em = String(email || '').trim().toLowerCase();
+    if (em && EV_ID_BY_EMAIL[em]) return EV_ID_BY_EMAIL[em];
+    const nm = norm(name || '').replace(/\s+/g, ' ').trim();
+    if (nm && EV_ID_BY_NAME[nm]) return EV_ID_BY_NAME[nm];
+    return '';
+  }
   function slugTxt(s) {
     return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
-  function qrUrl(p) {
+  function qrUrl(p, email) {
     const s = splitName(p);
     if (!s.first || !s.last) return '';
+    const id = evIdFor(s.first + ' ' + s.last, email);
+    if (id) return CHECKIN_URL + id;
     return CHECKIN_URL + 'ev|' + slugTxt(s.last) + '-' + slugTxt(s.first);
   }
 
@@ -1377,7 +1462,7 @@
       if (/@/.test(r.v) && !email) email = r.v;
       else other.push(r.v);
     });
-    return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p)];
+    return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p, email)];
   }
 
   async function buildXlsx(rows, outType, sheet2) {
