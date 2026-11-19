@@ -8,8 +8,10 @@
  * y el QR no lo contiene), NO seguridad bancaria. No ponga aquí nada más
  * sensible que ese hash.
  *
- * Flujo: QR -> checkin.html?g=<id> -> pide token de personal ->
- * muestra el perfil -> «Marcar asistencia» guarda check + hora en este
+ * Flujo: QR -> checkin.html?g=<id> -> se ven solo el nombre, la fecha
+ * y el lugar del evento y el acceso del personal -> con el token se muestra
+ * el perfil, el contador, la lista de asistencia y la descarga ->
+ * «Marcar asistencia» guarda check + hora en este
  * dispositivo (localStorage orgs_checkin_v1) y envía un ping silencioso
  * por FormSubmit (asunto «Asistencia — Protegiendo las Américas») para el
  * registro central por correo. El contador cuenta los marcados en ESTE
@@ -609,6 +611,12 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
   function showGuest(gid) {
     var guest = GUESTS[gid];
     $("gateCard").hidden = true;
+    // Solo después del token: contador, lista de asistencia y descarga.
+    // Antes del token solo se ven el nombre, la fecha y el lugar del evento
+    // y el acceso del personal; esa información es solo del personal.
+    $("staffCard").hidden = false;
+    updateCounter();
+    renderList();
     if (!guest) {
       $("unknownId").textContent = gid || "(sin ID en la dirección)";
       $("unknownCard").hidden = false;
@@ -646,8 +654,6 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
   }
 
   function init() {
-    updateCounter();
-    renderList();
     var gid = getGuestId();
     if (sessionStorage.getItem(SESSION_KEY) === "ok") {
       showGuest(gid);
