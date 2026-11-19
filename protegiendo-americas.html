@@ -653,17 +653,18 @@ if (FB_CONFIG && window.firebase) {
   try {
     firebase.initializeApp(FB_CONFIG);
     const db = firebase.database();
-    estadosRef = db.ref('asistencia/protegiendo-americas/estados');
-    rosterRef = db.ref('asistencia/protegiendo-americas/roster');
-    agregadosRef = db.ref('asistencia/protegiendo-americas/agregados');
+    estadosRef = db.ref('asistencia/hipopotamo/protegiendo-americas/estados');
+    rosterRef = db.ref('asistencia/hipopotamo/protegiendo-americas/roster');
+    agregadosRef = db.ref('asistencia/hipopotamo/protegiendo-americas/agregados');
+    let fbDenegado = false; function onFbErr(e) { fbDenegado = true; const c = $('conn'); if (c) c.className = 'conn'; const t = $('connTxt'); if (t) t.textContent = 'Sin acceso a la nube \u00b7 los cambios se guardan solo en este dispositivo'; }
     db.ref('.info/connected').on('value', s => {
-      const on = !!s.val();
+      const on = !!s.val(); if (fbDenegado) return;
       $('conn').className = 'conn' + (on ? ' on' : '');
       $('connTxt').textContent = on ? 'En línea · sincronizando en vivo' : 'Sin conexión · los cambios se guardan en este dispositivo';
     });
-    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); });
-    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); });
-    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); });
+    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); }, onFbErr);
+    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); }, onFbErr);
+    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); }, onFbErr);
   } catch (e) {
     $('connTxt').textContent = 'Sin conexión · los cambios se guardan en este dispositivo';
   }
