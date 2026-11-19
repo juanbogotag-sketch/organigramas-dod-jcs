@@ -862,11 +862,11 @@
   });
   function selTap(e) {
     if (!selMode) return;
-    const btn = e.target.closest('.selbar button');
-    if (!btn) return;
     const row = e.target.closest('.row');
     if (!row || !row.dataset.key) return;
-    const key = row.dataset.key, l = btn.dataset.l;
+    if (e.target.closest('.ver')) return;
+    const btn = e.target.closest('.selbar button');
+    const key = row.dataset.key, l = btn ? btn.dataset.l : 'both';
     if (l === 'both') {
       if (inCartLang(key, 'es') && inCartLang(key, 'en')) cart = cart.filter(x => x.key !== key);
       else {
