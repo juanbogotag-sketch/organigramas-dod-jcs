@@ -926,21 +926,6 @@ const PERFILES_EX = [
   "es": "María Consuelo Araújo Castro es embajadora extraordinaria y plenipotenciaria de Colombia ante los Estados Unidos desde septiembre de 2026, designada por el presidente Abelardo de la Espriella. Se posesionó el 4 de septiembre de 2026 y presentó copias de sus cartas credenciales ante la jefa de Protocolo del Departamento de Estado de los Estados Unidos, Monica Crowley, el 10 de septiembre. Sucede a Daniel García-Peña y trabaja con el ministro de Relaciones Exteriores, Omar Bula, en una agenda de seguridad, comercio, migración y cooperación bilateral.\n\nNacida en Valledupar, Cesar, el 27 de octubre de 1971, es profesional en Finanzas y Relaciones Internacionales de la Universidad Externado de Colombia, especialista en Gobierno, Gerencia y Asuntos Públicos de la misma universidad y con formación en alta dirección en INALDE.\n\nInició su carrera en Bogotá como directora del Jardín Botánico José Celestino Mutis (1998-2001) y del Instituto Distrital de Recreación y Deporte (2001-2002). En 2002 llegó al Gobierno nacional como ministra de Cultura, cartera que ocupó hasta enero de 2006; designada embajadora en México, cargo que no llegó a ocupar, asumió como ministra de Relaciones Exteriores en agosto de ese año.\n\nRenunció en febrero de 2007, en medio de las investigaciones abiertas contra su padre y su hermano, de cuya inocencia se declaró convencida. Tras su salida dirigió los posgrados de la Facultad de Finanzas, Gobierno y Relaciones Internacionales de la Universidad Externado y, desde 2010, presidió la minera Gran Colombia Gold.\n\nVolvió al servicio público como secretaria de Integración Social de Bogotá (2016-2018) y gerente general de TransMilenio (2018-2020), y después fue panelista del programa Mañanas Blu de Blu Radio. En febrero de 2026 asumió la presidencia ejecutiva de la Cámara Colombiana de la Infraestructura, cargo que ocupaba cuando fue designada embajadora en Washington.\n\nOriunda de Valledupar, pertenece a una familia de larga tradición política en el Cesar: su padre, Álvaro Araújo Noguera, fue alto funcionario nacional, y su tía, Consuelo Araújo Noguera, «La Cacica», fue ministra de Cultura. Conocida como «Conchi», está casada con el fotógrafo argentino Ricardo Mazalán y es madre de Susana.",
   "en": "María Consuelo Araújo Castro has served as Ambassador Extraordinary and Plenipotentiary of Colombia to the United States since September 2026, appointed by President Abelardo de la Espriella. She took office on September 4, 2026, and presented copies of her credentials to Monica Crowley, Chief of Protocol of the United States Department of State, on September 10. She succeeds Daniel García-Peña as ambassador and works with Minister of Foreign Affairs Omar Bula on an agenda of security, trade, migration and bilateral cooperation.\n\nBorn in Valledupar, Cesar, on October 27, 1971, she holds a degree in Finance and International Relations from Universidad Externado de Colombia, a postgraduate qualification in Government, Management and Public Affairs from the same university, and management training at INALDE Business School.\n\nShe began in Bogotá as director of the José Celestino Mutis Botanical Garden (1998-2001) and of the District Institute of Recreation and Sports (IDRD) (2001-2002). In 2002 she joined the national government as Minister of Culture, serving until January 2006; nominated ambassador to Mexico, a post she never took up, she was appointed Minister of Foreign Affairs in August of that year.\n\nShe resigned in February 2007, amid investigations opened against her father and brother, whose innocence she publicly defended. After leaving office she directed postgraduate programs at the Faculty of Finance, Government and International Relations of Universidad Externado de Colombia and, from 2010, led the mining company Gran Colombia Gold.\n\nShe returned to public service as Secretary for Social Integration of Bogotá (2016-2018) and General Manager of TransMilenio (2018-2020), and later became a panelist on Blu Radio's Mañanas Blu program. In February 2026 she became Executive President of the Colombian Chamber of Infrastructure (CCI), the post she held when she was appointed ambassador to Washington.\n\nA native of Valledupar, she comes from a family with a long political tradition in Cesar: her father, Álvaro Araújo Noguera, was a senior national official, and her aunt, Consuelo Araújo Noguera, known as \"La Cacica,\" served as Minister of Culture. Known to all as \"Conchi,\" she is married to Argentine photographer Ricardo Mazalán and is the mother of Susana."
 }
-,
- {
-  "id": "velez",
-  "cat": "embajada",
-  "name": "Valentina Vélez",
-  "fn": "Valentina",
-  "ln": "Vélez",
-  "title": "Pasante",
-  "title_en": "Intern",
-  "orgId": "Embajada de Colombia",
-  "org": "Embajada de Colombia",
-  "dep": "Embajada de Colombia en Washington",
-  "es": "Valentina Vélez es pasante en la Embajada de Colombia en Washington, donde forma parte del equipo de la misión diplomática colombiana ante los Estados Unidos.\n\nComo pasante, trabaja en la sede de la Embajada en la capital estadounidense, junto al equipo que atiende la relación bilateral entre Colombia y los Estados Unidos.",
-  "en": "Valentina Vélez is an intern at the Embassy of Colombia in Washington, where she is part of the team of Colombia's diplomatic mission to the United States.\n\nAs an intern, she works at the Embassy's headquarters in the U.S. capital, alongside the team that handles the bilateral relationship between Colombia and the United States."
-}
 ];
 const FICHAS_EX = [
  {
@@ -1773,6 +1758,18 @@ const FICHAS_EX = [
   "ln": "Urrea",
   "title": "Agregado de Policía",
   "title_en": "Police Attaché",
+  "orgId": "Embajada de Colombia",
+  "org": "Embajada de Colombia",
+  "dep": ""
+ },
+ {
+  "id": "velez",
+  "cat": "embajada",
+  "name": "Valentina Vélez",
+  "fn": "Valentina",
+  "ln": "Vélez",
+  "title": "Pasante",
+  "title_en": "Intern",
   "orgId": "Embajada de Colombia",
   "org": "Embajada de Colombia",
   "dep": ""
