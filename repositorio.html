@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=31">
+  <link rel="stylesheet" href="css/repositorio.css?v=32">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -43,24 +43,22 @@
     <p id="subtitle">Base de datos de perfiles</p>
     <div class="hlinks">
       <a class="homebtn" href="inicio.html">← Menú principal</a>
-      <button type="button" class="hbtn" id="btnLeg" onclick="location.href='congreso.html'">Ver Congreso</button>
     </div>
   </header>
 
   <main>
     <section id="home">
-      <div class="cols">
-        <div class="col" id="colL"></div>
-        <div class="col" id="colR"></div>
-      </div>
-      <div class="colsB"><div class="colB" id="colB"></div></div>
       <div class="homesch">
         <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
           aria-label="Buscar en todos los perfiles">
       </div>
       <div id="gresults"></div>
+      <div class="cols">
+        <div class="col" id="colL"></div>
+        <div class="col" id="colR"></div>
+      </div>
+      <div class="colsB"><div class="colB" id="colB"></div></div>
       <div class="evrow">
-        <button id="btnEvento" type="button" class="p evbtn">🎉 Crear evento</button>
         <button id="btnEventos" type="button" class="p evbtn evbtn2">📅 Eventos</button>
       </div>
       <div id="evOpen" class="evopen" hidden></div>
@@ -72,7 +70,7 @@
       <button id="back" type="button">← Volver a las categorías</button>
       <div class="cathead">
         <h2 id="catTitle"></h2>
-        <a id="catExtra" class="vorg" href="congreso.html" hidden>Ver la página del Congreso (comités y presidentes) →</a>
+        <a id="catExtra" class="vorg" href="congreso.html" hidden>Ver Congreso →</a>
       </div>
       <div class="frow">
         <input id="q" type="search" placeholder="Buscar por nombre, cargo u organización…" autocomplete="off"
@@ -243,7 +241,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=36"></script>
+  <script src="js/repositorio.js?v=37"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
