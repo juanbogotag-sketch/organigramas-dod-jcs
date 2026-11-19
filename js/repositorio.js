@@ -1026,6 +1026,9 @@
     if (curEvent) { $('#evName').value = curEvent.name || ''; $('#evDate').value = curEvent.date || ''; $('#evPlace').value = curEvent.place || ''; }
     else { $('#evName').value = ''; $('#evDate').value = ''; $('#evPlace').value = ''; }
     $('#evCloseEv').hidden = !(curEvent && events.indexOf(curEvent) >= 0);
+    const del = $('#evDelete');
+    del.hidden = !(curEvent && events.indexOf(curEvent) >= 0);
+    del.dataset.armed = ''; del.classList.remove('armed'); del.textContent = '🗑️ Eliminar evento';
     updateEvTitle();
     paintEventoResumen();
     paintExternals();
@@ -1069,6 +1072,7 @@
     saveEvents(); saveOpenEvent(); draftPrev = null;
     paintEventosBtn(); paintOpenEvent(); updateEvTitle();
     $('#evCloseEv').hidden = false;
+    $('#evDelete').hidden = false;
     $('#evMsg').textContent = 'Evento guardado: ' + f.name + ' (' + eventGuestCount(curEvent) + ' invitados). Lo verás en el menú «Eventos».';
   }
   function cerrarEvento() {
@@ -1087,6 +1091,21 @@
   ['#evName', '#evDate', '#evPlace'].forEach(sel => $(sel).addEventListener('input', syncEvFieldsToEvent));
   $('#evSave').addEventListener('click', guardarEvento);
   $('#evCloseEv').addEventListener('click', cerrarEvento);
+  $('#evDelete').addEventListener('click', () => {
+    const b = $('#evDelete');
+    if (!curEvent || events.indexOf(curEvent) < 0) return;
+    // Confirmación en el propio botón (no el diálogo nativo confirm(),
+    // que algunos navegadores suprimen sin dejar rastro).
+    if (!b.dataset.armed) {
+      b.dataset.armed = '1';
+      b.classList.add('armed');
+      b.textContent = '¿Eliminar «' + (curEvent.name || 'Evento sin nombre') + '»? Toca de nuevo';
+      return;
+    }
+    const ev = curEvent;
+    eliminarEvento(ev);
+    closeEvModal();
+  });
   $('#evListBtn').addEventListener('click', () => { closeEvModal(); openEvList(); });
   $('#exAdd').addEventListener('click', () => {
     const v = id => $(id).value.trim();
@@ -1278,7 +1297,7 @@
   function renderEvList() {
     const list = $('#evList');
     if (!events.length) {
-      list.innerHTML = '<p class="cempty">Todavía no hay eventos guardados. Crea uno con el botón «Crear evento» y guárdalo para seguir trabajando en él después.</p>';
+      list.innerHTML = '<p class="cempty">Todavía no hay eventos guardados. Crea uno desde el menú «Eventos» y guárdalo para seguir trabajando en él después.</p>';
       return;
     }
     const sorted = events.slice().sort((a, b) => String(a.date || '9999').localeCompare(String(b.date || '9999')) || String(a.name || '').localeCompare(String(b.name || '')));
