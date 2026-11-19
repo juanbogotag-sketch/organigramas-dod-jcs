@@ -107,7 +107,6 @@ function renderGestion() {
     cont.appendChild(card);
   }
 }
-renderGestion();
 // Eventos creados en el Repositorio (este dispositivo): se leen de
 // localStorage y aparecen en el casillero del día de su fecha.
 function eventosGuardados() {
@@ -166,6 +165,7 @@ $('btnPrev').addEventListener('click', () => { lunes.setDate(lunes.getDate() - 7
 $('btnNext').addEventListener('click', () => { lunes.setDate(lunes.getDate() + 7); render(); });
 $('btnHoy').addEventListener('click', () => { lunes = lunesDe(new Date()); render(); });
 render();
+renderGestion();
 </script>
 </body>
 </html>
