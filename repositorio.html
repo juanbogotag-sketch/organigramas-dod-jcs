@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=28">
+  <link rel="stylesheet" href="css/repositorio.css?v=29">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -164,12 +164,20 @@
     <div class="mbox">
       <button id="evX" type="button" aria-label="Cerrar">✕ Cerrar</button>
       <h2 class="sugtitle">Crear evento</h2>
-      <p class="evhint">Selecciona perfiles del Repositorio con la carpeta (abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con +) y añade aquí a las personas externas que no tienen perfil. La descarga incluye la matriz con todos ellos y, en una segunda pestaña, la lista de invitados del evento «Protegiendo las Américas».</p>
+      <div class="evsec">
+        <label for="evName"><b>Nombre del evento *</b></label>
+        <input id="evName" placeholder="Ej.: Protegiendo las Américas" autocomplete="off">
+      </div>
+      <div class="mrow">
+        <button id="evInt" type="button" class="p">👥 Invitados del Repositorio</button>
+        <button id="evExtBtn" type="button" class="p">🌍 Invitados externos</button>
+      </div>
+      <p class="evhint">Ponle un nombre al evento, elige a los invitados del Repositorio con la carpeta y añade aquí a las personas externas que no tienen perfil. Al descargar, la matriz trae un QR por cada invitado, generado en ese momento. La lista de asistencia se hará después, en una segunda pestaña.</p>
       <div class="evsec">
         <b>Perfiles seleccionados de la carpeta: <span id="evCartN">0</span></b>
         <div id="evCartList"></div>
       </div>
-      <div class="evsec">
+      <div class="evsec" id="exSec">
         <b>Persona externa (sin perfil en el Repositorio)</b>
         <div class="evform">
           <input id="exFn" placeholder="Nombre *" autocomplete="off">
@@ -182,6 +190,8 @@
           <input id="exOther" placeholder="Otro contacto" autocomplete="off">
         </div>
         <div class="mrow"><button id="exAdd" type="button" class="p">+ Agregar persona externa</button></div>
+        <div class="mrow"><button id="exFileBtn" type="button" class="p">📎 Adjuntar matriz de invitados (.csv o .xlsx)</button><input id="exFile" type="file" accept=".csv,.xlsx,.xls" hidden></div>
+        <p id="exFileMsg" class="evfilemsg"></p>
         <div id="exList"></div>
       </div>
       <p id="evMsg"></p>
@@ -205,7 +215,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=5"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=29"></script>
+  <script src="js/repositorio.js?v=30"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
