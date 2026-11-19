@@ -30,39 +30,434 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
   var SESSION_KEY = "orgs_checkin_staff_v1";
   var FORMSUBMIT_URL = "https://formsubmit.co/ajax/juan.bogotag@gmail.com";
 
-  // Invitados de la matriz de prueba (4). Datos verificados en el repo:
-  // PERFILES_EX en js/datos_foro.js (Brown, Fishman, Ormsby) y fila de
-  // prueba de Juan Pablo (no es perfil del Repositorio: id ev|...).
+  // Invitados de la matriz definitiva del evento (60): 59 personas
+  // nombradas de la base de Drive
+  // «Base_de_datos_Evento_Protecting_the_Americas_Forum._V05.11.26_actualizada.xlsx»
+  // + Juan Pablo González Bogotá (anfitrión, no está en la base).
+  // 7 filas de la base quedan fuera por no tener persona asignada
+  // (1 POR CONTACTAR + ODNI, CIA, CISA, DOE, USTDA, DFC).
   // photo: URL o data URI cuando exista; null = iniciales.
   var GUESTS = {
     "ev|gonzalez-bogota": {
       name: "Juan Pablo González Bogotá",
       title: "Pasante",
       org: "Embajada de Colombia en Washington",
-      email: "juan.bogotag@gmail.com",
+      email: "jgonzalez@colombiaemb.org",
       photo: null
     },
-    "ex|brown": {
-      name: "Stanley L. Brown",
-      title: "U.S. Ambassador to the Republic of Equatorial Guinea",
-      org: "Department of State",
+    "ev|o-brien-daniel": {
+      name: "Daniel O'Brien",
+      title: "Acting Assistant US Trade Representative for the Western Hemisphere",
+      org: "Office of the US Trade Representative (USTR)",
+      email: "daniel.c.obrien@ustr.eop.gov",
+      photo: null
+    },
+    "ev|silva-raquel": {
+      name: "Raquel Silva",
+      title: "Director for Colombia & Chile",
+      org: "Office of the US Trade Representative (USTR)",
+      email: "Raquel.R.Silva@ustr.eop.gov",
+      photo: null
+    },
+    "ev|peterson-julia": {
+      name: "Julia Peterson",
+      title: "Supervisory International Trade Specialist",
+      org: "US Customs and Border Protection (USCBP)",
+      email: "JULIA.PETERSON@cbp.dhs.gov",
+      photo: null
+    },
+    "ev|madigan-keith": {
+      name: "Keith Madigan",
+      title: "International Trade Analyst",
+      org: "US Customs and Border Protection (USCBP)",
+      email: "keith.madigan@cbp.dhs.gov",
+      photo: null
+    },
+    "ev|klepek-james": {
+      name: "James Klepek",
+      title: "Lead Trade Policy Officer for Colombia",
+      org: "US Department of Agriculture (USDA)",
+      email: "james.klepek@usda.gov",
+      photo: null
+    },
+    "ev|hubler-tyler": {
+      name: "Tyler Hubler",
+      title: "Lead Trade Policy Officer for the Western Hemisphere Division",
+      org: "US Department of Agriculture (USDA)",
+      email: "Tyler.Hubler@usda.gov",
+      photo: null
+    },
+    "ev|hieskill-sarah": {
+      name: "Sarah Hieskill",
+      title: "Trade Director, Andean Region",
+      org: "US Department of Agriculture (USDA)",
+      email: "sarah.r.hieskill@usda.gov",
+      photo: null
+    },
+    "ev|godley-michael": {
+      name: "Michael Godley",
+      title: "Desk Officer for Colombia and Ecuador",
+      org: "US Department of Commerce (DOC)",
+      email: "Michael.Godley@trade.gov",
+      photo: null
+    },
+    "ev|stetson-richard": {
+      name: "Richard Stetson",
+      title: "International Trade Specialist",
+      org: "US Department of Commerce (DOC)",
+      email: "richard.stetson@trade.gov",
+      photo: null
+    },
+    "ev|arboleda-nelson": {
+      name: "Nelson Arboleda",
+      title: "Director of the Office of the Americas",
+      org: "US Department of Health and Human Services",
+      email: "nelson.arboleda@hhs.gov",
+      photo: null
+    },
+    "ev|klein-mackenzie": {
+      name: "Mackenzie Klein",
+      title: "Public Health Program Specialist",
+      org: "US Department of Health and Human Services",
+      email: "Mackenzie.Klein@hhs.gov",
+      photo: null
+    },
+    "ev|dewindt-katrin": {
+      name: "Katrin DeWindt",
+      title: "Academic Exchange Specialist",
+      org: "US Department of State (DOS)",
+      email: "DeWindtKA@state.gov",
+      photo: null
+    },
+    "ev|mickelson-daniel": {
+      name: "Daniel Mickelson",
+      title: "Chief of Sports Diplomacy",
+      org: "US Department of State (DOS)",
+      email: "mickelsonde@state.gov",
+      photo: null
+    },
+    "ev|abraham-july": {
+      name: "July Abraham",
+      title: "Executive Director",
+      org: "US Department of Transportation",
+      email: "Julie.Abraham@dot.gov",
+      photo: null
+    },
+    "ev|madell-mary-lisa": {
+      name: "Mary Lisa Madell",
+      title: "Deputy Director",
+      org: "US Department of Transportation",
+      email: "MaryLisa.Madell@dot.gov",
+      photo: null
+    },
+    "ev|frazier-bearden-lori": {
+      name: "Lori Frazier Bearden",
+      title: "Deputy Undersecretary",
+      org: "US Department of Labor",
+      email: "Contact-ILAB@dol.gov",
+      photo: null
+    },
+    "ev|laco-marek": {
+      name: "Marek Laco",
+      title: "Acting Assistant Secretary",
+      org: "US Department of Labor",
+      email: "ETAPagemaster@dol.gov",
+      photo: null
+    },
+    "ev|cummings-tim": {
+      name: "Tim Cummings",
+      title: "Acting Assistant Secretary / Deputy Assistant Secretary",
+      org: "US Department of Labor",
+      email: "OCIACongressionalNotification@dol.gov",
+      photo: null
+    },
+    "ev|keeling-david-l": {
+      name: "David L. Keeling",
+      title: "Assistant Secretary of Labor for Occupational Safety and Health",
+      org: "US Department of Labor",
+      email: "info@osha.gov",
+      photo: null
+    },
+    "ev|demarzo-benjamin": {
+      name: "Benjamin DeMarzo",
+      title: "Assistant Secretary for Congressional and Intergovernmental Relations",
+      org: "US Department of Housing and Urban Development (HUD)",
       email: "",
       photo: null
     },
-    "ex|fishman": {
-      name: "Kyle Fishman",
-      title: "Colombia Team",
-      org: "Bureau of International Narcotics and Law Enforcement Affairs (INL)",
+    "ev|kurtz-ronald": {
+      name: "Ronald Kurtz",
+      title: "Assistant Secretary for Community Planning and Development",
+      org: "US Department of Housing and Urban Development (HUD)",
       email: "",
       photo: null
     },
-    "ex|ormsby": {
+    "ev|fernandez-claudette": {
+      name: "Claudette Fernandez",
+      title: "General Deputy Assistant Secretary for Community Planning and Development",
+      org: "US Department of Housing and Urban Development (HUD)",
+      email: "",
+      photo: null
+    },
+    "ev|richardson-todd": {
+      name: "Todd Richardson",
+      title: "General Deputy Assistant Secretary for Policy Development and Research",
+      org: "US Department of Housing and Urban Development (HUD)",
+      email: "",
+      photo: null
+    },
+    "ev|ormsby-jesse": {
       name: "Jesse Ormsby",
       title: "Associate Director for South America",
-      org: "Department of Justice (DOJ)",
+      org: "US Department of Justice",
+      email: "Jesse.Ormsby@usdoj.gov",
+      photo: null
+    },
+    "ev|barbulescu-sandra": {
+      name: "Sandra Barbulescu",
+      title: "Trial Attorney",
+      org: "US Department of Justice",
+      email: "Ruxandra.Barbulescu@usdoj.gov",
+      photo: null
+    },
+    "ev|kocheulov-vladimir": {
+      name: "Vladimir Kocheulov",
+      title: "Trial Attorney",
+      org: "US Department of Justice",
+      email: "Vladimir.Kocheulov@usdoj.gov",
+      photo: null
+    },
+    "ev|york-aaron": {
+      name: "Aaron York",
+      title: "Trial Attorney",
+      org: "US Department of Justice",
+      email: "Aaron.E.York@usdoj.gov",
+      photo: null
+    },
+    "ev|lee-courtney": {
+      name: "Courtney Lee",
+      title: "Trial Attorney",
+      org: "US Department of Justice",
+      email: "Courtney.Lee2@usdoj.gov",
+      photo: null
+    },
+    "ev|hui-dennis": {
+      name: "Dennis Hui",
+      title: "Trial Attorney",
+      org: "US Department of Justice",
+      email: "Dennis.Hui2@usdoj.gov",
+      photo: null
+    },
+    "ev|beasley-john": {
+      name: "John Beasley",
+      title: "Senior Trial Attorney",
+      org: "US Department of Justice",
+      email: "John.A.Beasley@usdoj.gov",
+      photo: null
+    },
+    "ev|bodner-amy": {
+      name: "Amy Bodner",
+      title: "International Affairs Specialist",
+      org: "US Department of Justice",
+      email: "Amy.Bodner@usdoj.gov",
+      photo: null
+    },
+    "ev|fuse-marisa": {
+      name: "Marisa Fuse",
+      title: "International Affairs Specialist",
+      org: "US Department of Justice",
+      email: "Marisa.Fuse@usdoj.gov",
+      photo: null
+    },
+    "ev|thomas-estelle": {
+      name: "Estelle Thomas",
+      title: "International Affairs Specialist",
+      org: "US Department of Justice",
+      email: "Clotilde.Alexandra-Estelle.Thomas@usdoj.gov",
+      photo: null
+    },
+    "ev|zegar-allison": {
+      name: "Allison Zegar",
+      title: "International Affairs Specialist",
+      org: "US Department of Justice",
+      email: "Allison.Zegar@usdoj.gov",
+      photo: null
+    },
+    "ev|hollinshead-samantha": {
+      name: "Samantha Hollinshead",
+      title: "International Affairs Specialist",
+      org: "US Department of Justice",
+      email: "Samantha.Hollinshead@usdoj.gov",
+      photo: null
+    },
+    "ev|burgos-isabella": {
+      name: "Isabella Burgos",
+      title: "Student Intern",
+      org: "US Department of Justice",
+      email: "Isabella.Burgos@usdoj.gov",
+      photo: null
+    },
+    "ev|stackhouse-timothy": {
+      name: "Timothy Stackhouse",
+      title: "Extradition Specialist",
+      org: "US Department of State (DOS)",
+      email: "StackhouseT@state.gov",
+      photo: null
+    },
+    "ev|boone-chase-logan": {
+      name: "Chase Logan Boone",
+      title: "Colombia Country Director",
+      org: "Department of War",
+      email: "chase.l.boone.civ@mail.mil",
+      photo: null
+    },
+    "ev|kit-ellen": {
+      name: "Ellen Kit",
+      title: "Western Hemisphere /Colombia",
+      org: "Department of War",
+      email: "ellen.e.kitt.civ@mail.mil",
+      photo: null
+    },
+    "ev|besosa-miguel": {
+      name: "Miguel Besosa",
+      title: "Western Hemisphere /Colombia",
+      org: "Department of War",
+      email: "miguel.a.besosa.ctr@mail.mil",
+      photo: null
+    },
+    "ev|bello-mauricio": {
+      name: "Mauricio Bello",
+      title: "Western Hemisphere /Colombia",
+      org: "Department of War",
+      email: "mauricio.bello@dodiis.mil",
+      photo: null
+    },
+    "ev|wilson-joshua-b": {
+      name: "Joshua B. Wilson",
+      title: "Director",
+      org: "Department of War",
+      email: "joshua.b.wilson.mil@us.navy.mil",
+      photo: null
+    },
+    "ev|spalding-luc-p": {
+      name: "Luc P. Spalding.",
+      title: "Attaché Liaison Officer for the Western Hemispher",
+      org: "Department of War",
+      email: "luc.p.spalding.mil@us.navy.mil",
+      photo: null
+    },
+    "ev|grady-dana-w": {
+      name: "Dana W Grady",
+      title: "Regional Advisor for Latin America",
+      org: "Department of Homeland Security (DHS)",
+      email: "Dana.W.Grady@uscg.mil",
+      photo: null
+    },
+    "ev|norkiewicz-collin": {
+      name: "Collin Norkiewicz",
+      title: "Country Director",
+      org: "Air Force",
+      email: "Collin.norkiewicz@us.af.mil",
+      photo: null
+    },
+    "ev|jacquez-alissa-m": {
+      name: "Alissa M. Jacquez",
+      title: "Foreign Military Support Specialist",
+      org: "Army",
+      email: "Alissa.m.jacquez.civ@army.mil",
+      photo: null
+    },
+    "ev|ortiz-michael": {
+      name: "Michael Ortiz",
+      title: "Deputy Director for Colombia",
+      org: "Department of Justice - DEA",
+      email: "michael.c.ortiz@dea.gov",
+      photo: null
+    },
+    "ev|cannavo-nicole": {
+      name: "Nicole Cannavo",
+      title: "Colombian Liaison",
+      org: "Federal Bureau of Investigation (FBI)",
+      email: "nmcannavo@fbi.gov",
+      photo: null
+    },
+    "ev|roncone-nita-l": {
+      name: "Nita L Roncone",
+      title: "Senior Policy Advisor",
+      org: "Office of National Drug Control Policy (ONDCP)",
+      email: "Nita_V_Lalla@ondcp.eop.gov",
+      photo: null
+    },
+    "ev|kroger-kaleb": {
+      name: "Kaleb Kroger",
+      title: "Colombia Team Lead",
+      org: "Department of State",
+      email: "KrogerKB@state.gov",
+      photo: null
+    },
+    "ev|de-jesus-blasini-patricia": {
+      name: "Patricia De Jesus Blasini",
+      title: "Colombia Team",
+      org: "Department of State",
+      email: "DeJesusP@state.gov",
+      photo: null
+    },
+    "ev|fishman-kyle": {
+      name: "Kyle Fishman",
+      title: "Colombia Team",
+      org: "Department of State",
+      email: "FishmanKA@state.gov",
+      photo: null
+    },
+    "ev|carrera-madalen": {
+      name: "Madalen Carrera",
+      title: "Colombia Program Officer",
+      org: "Department of State",
+      email: "CarreraM2@state.gov",
+      photo: null
+    },
+    "ev|varela-juan": {
+      name: "Juan Varela",
+      title: "",
+      org: "",
       email: "",
       photo: null
-    }
+    },
+    "ev|meade-kathia-l": {
+      name: "Kathia L. Meade",
+      title: "Unit Chief",
+      org: "Federal Bureau of Investigation (FBI)",
+      email: "klmeade@fbi.gov",
+      photo: null
+    },
+    "ev|velasco-simon": {
+      name: "Simon Velasco",
+      title: "Program Analyst",
+      org: "Department of Homeland Security (DHS)",
+      email: "simon.velasco@hq.dhs.gov",
+      photo: null
+    },
+    "ev|polga-hecimovich-john": {
+      name: "John Polga-Hecimovich",
+      title: "Assistant Professor",
+      org: "U.S. Naval Academy",
+      email: "polgahec@usna.edu",
+      photo: null
+    },
+    "ev|arnold-jessica": {
+      name: "Jessica Arnold",
+      title: "Foreign Affairs Officer",
+      org: "Department of State",
+      email: "ArnoldJM@state.gov",
+      photo: null
+    },
+    "ev|underwood-james": {
+      name: "James Underwood",
+      title: "Supervisory Special Agent",
+      org: "Federal Bureau of Investigation (FBI)",
+      email: "jtunderwood@fbi.gov",
+      photo: null
+    },
   };
 
   var $ = function (id) { return document.getElementById(id); };
