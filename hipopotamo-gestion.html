@@ -50,6 +50,14 @@
   .formbox input:focus, .formbox select:focus { border-color: #0a1d38; }
   .formbox .frow { display: flex; gap: 10px; margin-top: 12px; }
   .formbox .frow .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
+  .formbox .sep { border: none; border-top: 1px solid #c9d4e4; margin: 16px 0; }
+  .importar h3 { font-size: 15px; }
+  .importar input[type="file"] { width: 100%; font: 600 13.5px 'Montserrat', sans-serif; padding: 10px 12px; border: 2px dashed #c9d4e4; border-radius: 10px; margin: 8px 0 4px; background: #f7f9fc; }
+  #prevMatriz table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 10px; }
+  #prevMatriz th, #prevMatriz td { border: 1px solid #c9d4e4; padding: 5px 7px; text-align: left; }
+  #prevMatriz th { background: #eef1f3; }
+  #prevMatriz .impbtns { display: flex; gap: 10px; margin-top: 10px; }
+  #prevMatriz .impbtns .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
   .invitado { background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(10,29,56,.07); border-left: 5px solid #c9d4e4; }
   .invitado.conf { border-left-color: #1d7a35; }
   .invitado.canc { border-left-color: #b3261e; }
@@ -128,6 +136,13 @@
     <div class="frow">
       <button class="btn" id="aGuardar" type="button">Guardar invitado</button>
       <button class="btn sec" id="aCancelar" type="button">Cancelar</button>
+    </div>
+    <hr class="sep">
+    <div class="importar">
+      <h3>O agregar varios con una matriz</h3>
+      <p class="nota">Sube un archivo .xlsx o .csv con la lista. La matriz puede estar <b>desestructurada</b>: las columnas pueden venir en cualquier orden, con más o con menos columnas. El sistema detecta Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo y Correo por el nombre del encabezado; las columnas que no reconoce las ignora y las que faltan quedan vacías. Si la matriz no trae encabezados, se usa el orden Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo, Correo. Los invitados se agregan al grupo elegido arriba, en estado Pendiente.</p>
+      <input type="file" id="fileMatriz" accept=".xlsx,.xls,.csv">
+      <div id="prevMatriz"></div>
     </div>
   </div>
   <p class="nota">La base que llegó no traía estados: todos empiezan como <b>Pendientes</b>. Marca aquí quién confirmó, quién canceló y quién delegó. Los cambios se guardan en vivo para todos los dispositivos y también quedan guardados en este navegador.</p>
@@ -418,6 +433,149 @@ $('aGuardar').addEventListener('click', () => {
   buildChips();
   renderTodo();
 });
+// ---------- Importar invitados desde una matriz (.xlsx / .csv) ----------
+// La matriz puede estar desestructurada: columnas en cualquier orden, con
+// más o con menos columnas. Se detecta el encabezado por el nombre de cada
+// columna (Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo,
+// Correo, en español o inglés); lo que no se reconoce se ignora y lo que
+// falta queda vacío. Sin encabezado reconocido, se usa el orden estándar.
+function normHeadImp(h) { return String(h || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim(); }
+function parseCsvImp(txt) {
+  var rows = [], row = [], cur = '', q = false;
+  for (var i = 0; i < txt.length; i++) {
+    var c = txt[i];
+    if (q) {
+      if (c === '"') { if (txt[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+      else cur += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cur); cur = ''; if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row); row = []; }
+    else cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row); }
+  return rows;
+}
+async function parseXlsxImp(file) {
+  var zip = await JSZip.loadAsync(file);
+  var sheet = zip.file('xl/worksheets/sheet1.xml');
+  if (!sheet) throw new Error('sin hoja');
+  var shared = [];
+  var ss = zip.file('xl/sharedStrings.xml');
+  if (ss) {
+    var sdoc = new DOMParser().parseFromString(await ss.async('string'), 'application/xml');
+    shared = Array.prototype.map.call(sdoc.querySelectorAll('si'), function (si) { return si.textContent; });
+  }
+  var doc = new DOMParser().parseFromString(await sheet.async('string'), 'application/xml');
+  var rows = [];
+  doc.querySelectorAll('row').forEach(function (tr) {
+    var cells = [];
+    tr.querySelectorAll('c').forEach(function (c) {
+      var t = c.getAttribute('t');
+      var v = c.querySelector('v');
+      var is = c.querySelector('is t');
+      var val = '';
+      if (t === 's' && v) val = shared[parseInt(v.textContent, 10)] || '';
+      else if (is) val = is.textContent;
+      else if (v) val = v.textContent;
+      cells.push(val);
+    });
+    if (cells.some(function (v) { return String(v).trim() !== ''; })) rows.push(cells);
+  });
+  return rows;
+}
+const ALIAS_IMP = {
+  pre: ['prefix', 'prefijo', 'tratamiento', 'mr', 'ms', 'mrs', 'dr'],
+  nom: ['nombre', 'name', 'first name', 'nombres', 'primer nombre'],
+  ape: ['apellido', 'apellidos', 'last name', 'lastname', 'surname', 'family name'],
+  cargo: ['cargo', 'job title', 'title', 'puesto', 'position', 'rol', 'role'],
+  ofi: ['oficina', 'office', 'department', 'departamento', 'dept', 'division'],
+  org: ['organizacion', 'organization', 'organisation', 'company', 'empresa', 'organizacion company'],
+  tipo: ['tipo', 'tipo de organizacion', 'organization type', 'type', 'sector'],
+  mail: ['correo', 'correo electronico', 'e mail', 'email', 'email address', 'mail']
+};
+function detectarHeadsImp(rows) {
+  for (var i = 0; i < Math.min(rows.length, 10); i++) {
+    var heads = rows[i].map(normHeadImp);
+    var hits = 0;
+    heads.forEach(function (h) { for (var k in ALIAS_IMP) if (ALIAS_IMP[k].indexOf(h) >= 0) hits++; });
+    if (hits >= 2) return { idx: i, heads: heads };
+  }
+  return null;
+}
+function filaAInvitadoImp(cells, heads) {
+  var pick = function () {
+    if (!heads) return '';
+    for (var i = 0; i < arguments.length; i++) {
+      var j = heads.indexOf(arguments[i]);
+      if (j >= 0 && cells[j]) return String(cells[j]).trim();
+    }
+    return '';
+  };
+  var g;
+  if (heads) {
+    g = { pre: pick.apply(null, ALIAS_IMP.pre), nom: pick.apply(null, ALIAS_IMP.nom), ape: pick.apply(null, ALIAS_IMP.ape), cargo: pick.apply(null, ALIAS_IMP.cargo), ofi: pick.apply(null, ALIAS_IMP.ofi), org: pick.apply(null, ALIAS_IMP.org), tipo: pick.apply(null, ALIAS_IMP.tipo), mail: pick.apply(null, ALIAS_IMP.mail) };
+  } else {
+    g = { pre: cells[0] || '', nom: cells[1] || '', ape: cells[2] || '', cargo: cells[3] || '', ofi: cells[4] || '', org: cells[5] || '', tipo: cells[6] || '', mail: cells[7] || '' };
+    Object.keys(g).forEach(function (k) { g[k] = String(g[k] || '').trim(); });
+  }
+  if (!g.nom || !g.ape) return null;
+  return g;
+}
+var impPendientes = [];
+$('fileMatriz').addEventListener('change', async function (ev) {
+  var file = ev.target.files[0];
+  var prev = $('prevMatriz');
+  impPendientes = [];
+  if (!file) { prev.innerHTML = ''; return; }
+  prev.innerHTML = '<p class="nota">Leyendo «' + esc(file.name) + '»…</p>';
+  try {
+    var rows = /\.xlsx?$/i.test(file.name) ? await parseXlsxImp(file) : parseCsvImp(await file.text());
+    if (!rows.length) { prev.innerHTML = '<p class="nota">El archivo no trae filas con datos.</p>'; return; }
+    var det = detectarHeadsImp(rows);
+    var heads = det ? det.heads : null;
+    var data = det ? rows.slice(det.idx + 1) : rows;
+    var nuevos = [], dups = [];
+    var vistos = {};
+    var existentes = efectivos();
+    data.forEach(function (cells) {
+      var g = filaAInvitadoImp(cells, heads);
+      if (!g) return;
+      var key = norm(g.nom + ' ' + g.ape);
+      var dup = !!vistos[key] || existentes.some(function (e) {
+        return norm((e.nom || '') + ' ' + (e.ape || '')) === key || (g.mail && e.mail && norm(e.mail) === norm(g.mail) && norm(e.nom || '') === norm(g.nom));
+      });
+      vistos[key] = true;
+      if (dup) dups.push(g); else nuevos.push(g);
+    });
+    impPendientes = nuevos;
+    var html = '<p class="nota">«' + esc(file.name) + '»: <b>' + nuevos.length + ' invitado(s) nuevo(s)</b>' + (dups.length ? ', ' + dups.length + ' duplicado(s) que ya están en la lista y no se agregan' : '') + (heads ? ' · columnas detectadas por el encabezado.' : ' · sin encabezado reconocido: se usó el orden Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo, Correo.') + '</p>';
+    if (nuevos.length) {
+      html += '<table><tr><th>Nombre</th><th>Apellido</th><th>Organización</th><th>Correo</th></tr>' + nuevos.slice(0, 5).map(function (g) { return '<tr><td>' + esc(g.nom) + '</td><td>' + esc(g.ape) + '</td><td>' + esc(g.org) + '</td><td>' + esc(g.mail) + '</td></tr>'; }).join('') + '</table>' + (nuevos.length > 5 ? '<p class="nota">…y ' + (nuevos.length - 5) + ' más.</p>' : '');
+      html += '<div class="impbtns"><button class="btn" id="btnImpConfirm" type="button">Importar ' + nuevos.length + ' invitado(s)</button><button class="btn sec" id="btnImpCancel" type="button">Cancelar</button></div>';
+    }
+    prev.innerHTML = html;
+    var bc = $('btnImpConfirm');
+    if (bc) bc.addEventListener('click', function () {
+      var t = Date.now();
+      var grupo = $('aGrupo').value;
+      impPendientes.forEach(function (g, i) {
+        var id = 'ag_' + t + '_' + i;
+        agregados[id] = { g: grupo, pre: g.pre, nom: g.nom, ape: g.ape, cargo: g.cargo, ofi: g.ofi, org: g.org, tipo: g.tipo, mail: g.mail, t: t };
+        if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
+      });
+      saveLocal();
+      renderTodo();
+      $('fileMatriz').value = '';
+      prev.innerHTML = '<p class="nota">Se agregaron ' + impPendientes.length + ' invitado(s) a la lista.</p>';
+      impPendientes = [];
+    });
+    var bx = $('btnImpCancel');
+    if (bx) bx.addEventListener('click', function () { $('fileMatriz').value = ''; prev.innerHTML = ''; impPendientes = []; });
+  } catch (err) {
+    prev.innerHTML = '<p class="nota">No se pudo leer el archivo. Prueba con un .csv o un .xlsx con las columnas de la matriz.</p>';
+  }
+});
+
 $('btnXlsx').addEventListener('click', () => { descargarXlsx().catch(() => alert('No se pudo generar el Excel. Inténtalo de nuevo.')); });
 $('btnConfirmAll').addEventListener('click', () => {
   if (armConfirmAll) {
@@ -501,7 +659,7 @@ async function descargarXlsx() {
       while (base.length < 10) base.push('');
       return base.concat([EST_LABEL[e], extra]);
     });
-    const widths = (PROT_WIDTHS[sh.key] || []).concat([16, 42]);
+    const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
     sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
     sheetTags.push('<sheet name="' + xesc(sh.name) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
@@ -514,7 +672,7 @@ async function descargarXlsx() {
   ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
   ct += '</Types>';
   z.file('[Content_Types].xml', ct);
-  z.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><name val="Arial"/><sz val="12"/><color rgb="FF000000"/></font><font><name val="Arial"/><sz val="12"/><b/><color rgb="FF000000"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor rgb="FF000000"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color auto="1"/></left><right style="thin"><color auto="1"/></right><top style="thin"><color auto="1"/></top><bottom style="thin"><color auto="1"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1" applyBorder="1"><alignment wrapText="1" vertical="top"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment wrapText="1" vertical="top" horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
+  z.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><name val="Arial"/><sz val="12"/><color rgb="FF000000"/></font><font><name val="Arial"/><sz val="12"/><b/><color rgb="FFFFFFFF"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor rgb="FF000000"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color auto="1"/></left><right style="thin"><color auto="1"/></right><top style="thin"><color auto="1"/></top><bottom style="thin"><color auto="1"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1" applyBorder="1"><alignment wrapText="1" vertical="top"/></xf><xf numFmtId="0" fontId="1" fillId="1" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment wrapText="1" vertical="top" horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
   z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
   z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheetTags.join('') + '</sheets></workbook>');
   z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels.join('') + '</Relationships>');
