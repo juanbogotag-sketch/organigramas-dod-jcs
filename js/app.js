@@ -1497,6 +1497,29 @@ window.__APP_FN = function () {
   } else {
     const ms = $('#modeselect');
     if (ms) ms.hidden = false;
+
+    // Visitante que ya se registró y vuelve a entrar: aviso de ingreso
+    // (asunto distinto al del registro, etiqueta «Ingresos» en Gmail).
+    // El propietario no se reporta. No bloquea la carga si falla la red.
+    if (!IS_OWNER && YA_REGISTRADO) {
+      try {
+        const v = localStorage.getItem('orgs_visitante') || '';
+        let reg = null;
+        if (v.charAt(0) === '{') { const o = JSON.parse(v); reg = { n: o.n || '', e: o.e || '' }; }
+        else if (v) reg = { n: v, e: '' };
+        if (reg && reg.n) {
+          fetch('https://formsubmit.co/ajax/juan.bogotag@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              name: reg.n, email: reg.e, pagina: 'Organigrama',
+              _subject: 'Ingreso de visitante — Organigrama',
+              _template: 'table', _captcha: 'false'
+            })
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
   }
 
   document.body.classList.add('view');
