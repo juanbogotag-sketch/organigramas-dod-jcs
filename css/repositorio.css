@@ -231,6 +231,8 @@ a.vorg { text-decoration: none; cursor: pointer; }
   padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 14px;
 }
 .mrow button.p { background: var(--blue); color: #fff; border-color: var(--blue); }
+.mrow button.danger { color: #b3261e; border-color: #b3261e; }
+.mrow button.danger.armed { background: #b3261e; color: #fff; }
 .mrow button:disabled { opacity: .45; cursor: default; }
 .mrow a#mdl {
   border: 1px solid var(--blue); background: var(--blue); color: #fff; border-radius: 6px;
