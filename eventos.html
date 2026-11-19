@@ -40,6 +40,17 @@
   .evbtns .crearbtn { flex: 1 1 220px; margin: 0; }
   .crearbtn.sec { background: #fff; color: #0a1d38; border: 2px solid #0a1d38; }
   .crearbtn.sec:hover { background: #eef1f3; }
+  .gestion { margin-top: 30px; }
+  .gestion h2 { font-size: clamp(18px, 3.6vw, 22px); font-weight: 800; color: #0a1d38; }
+  .gestion .gsub { font-size: 13px; font-weight: 600; color: #5a6b82; margin: 5px 0 14px; line-height: 1.5; }
+  .gtarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .gtarjeta { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 2px 8px rgba(10,29,56,.07); border-top: 4px solid #e0a800; display: flex; flex-direction: column; }
+  .gtarjeta .gfecha { font-size: 11.5px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #8a6d00; }
+  .gtarjeta .gnombre { font-size: 16.5px; font-weight: 800; color: #0a1d38; margin-top: 5px; line-height: 1.3; }
+  .gtarjeta .gdatos { font-size: 12.5px; font-weight: 600; color: #5a6b82; margin-top: 6px; line-height: 1.5; }
+  .gtarjeta .gentrar { margin-top: auto; padding-top: 13px; }
+  .gtarjeta .gentrar a { display: block; text-align: center; background: #0a1d38; color: #fff; text-decoration: none; font-weight: 800; font-size: 14px; padding: 11px 14px; border-radius: 999px; }
+  .gtarjeta .gentrar a:hover { background: #12294d; }
 </style>
 </head>
 <body>
@@ -62,6 +73,11 @@
     <a class="crearbtn" href="repositorio.html?crear=1">🎉 Crear evento</a>
     <a class="crearbtn sec" href="proyectos.html">📁 Proyectos de eventos</a>
   </div>
+  <section class="gestion">
+    <h2>Gestión de invitados de eventos</h2>
+    <p class="gsub">Entra a cada evento para confirmar, cancelar, delegar y actualizar su checklist de asistencia.</p>
+    <div class="gtarjetas" id="gestionLista"></div>
+  </section>
   <p class="nota">Toca un evento para abrirlo: su checklist de asistencia o su lista de invitados en el Repositorio.</p>
 </main>
 <script src="js/logo.js"></script>
@@ -71,6 +87,27 @@ const EVENTOS = [
   { fecha: '2026-11-19', nombre: 'Life After the Hippopotamus', hora: '6:30 – 8:00 p. m.', lugar: 'Residencia de la Embajadora de Colombia', enlace: 'hipopotamo.html', cta: '📋 Checklist de asistencia' },
   { fecha: '2026-12-09', nombre: 'Protegiendo las Américas', hora: '9:30 a. m. – 12:30 p. m.', lugar: 'Residencia de la Embajadora de Colombia', enlace: 'protegiendo-americas.html', cta: '✎ Gestionar invitados' }
 ];
+// Gestión de invitados: eventos con página de gestión. Para agregar uno:
+// nombre, fecha (AAAA-MM-DD), hora, lugar y la página de gestión.
+const GESTION = [
+  { fecha: '2026-11-19', nombre: 'Life After the Hippopotamus', hora: '6:30 – 8:00 p. m.', lugar: 'Residencia de la Embajadora de Colombia', enlace: 'hipopotamo-gestion.html' },
+  { fecha: '2026-12-09', nombre: 'Protegiendo las Américas', hora: '9:30 a. m. – 12:30 p. m.', lugar: 'Residencia de la Embajadora de Colombia', enlace: 'protegiendo-americas.html' }
+];
+function fechaLarga(f) { const p = f.split('-'); return parseInt(p[2], 10) + ' de ' + MESES[parseInt(p[1], 10) - 1] + ' de ' + p[0]; }
+function renderGestion() {
+  const hoy = iso(new Date());
+  const lista = GESTION.filter(g => g.fecha >= hoy).sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(0, 5);
+  const cont = $('gestionLista');
+  cont.innerHTML = '';
+  if (!lista.length) { cont.innerHTML = '<p class="nota">No hay eventos próximos con gestión de invitados.</p>'; return; }
+  for (const g of lista) {
+    const card = document.createElement('div');
+    card.className = 'gtarjeta';
+    card.innerHTML = '<div class="gfecha">' + esc(fechaLarga(g.fecha)) + '</div><div class="gnombre">' + esc(g.nombre) + '</div><div class="gdatos">' + esc([g.hora, g.lugar].filter(Boolean).join(' · ')) + '</div><div class="gentrar"><a href="' + esc(g.enlace) + '">Entrar →</a></div>';
+    cont.appendChild(card);
+  }
+}
+renderGestion();
 // Eventos creados en el Repositorio (este dispositivo): se leen de
 // localStorage y aparecen en el casillero del día de su fecha.
 function eventosGuardados() {
