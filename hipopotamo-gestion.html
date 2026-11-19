@@ -339,8 +339,26 @@ function setEstado(id, e, delegado) {
   saveLocal();
   if (estadosRef) estadosRef.child(id).set(estados[id]);
   renderTodo();
+  programarSyncLista();
 }
 function clearEstado(id) { setEstado(id, 'pendiente', ''); }
+
+// La checklist se actualiza sola desde el gestor: cada cambio en los
+// estados o en la lista reescribe en Firebase la lista de confirmados
+// que lee la página de asistencia. El botón hace lo mismo de inmediato.
+let syncListaTimer = null;
+function escribirListaChecklist(mostrarMsg) {
+  if (!listaRef) return;
+  const list = efectivos().filter(g => estadoDe(g.id) === 'confirmado');
+  const obj = {};
+  for (const g of list) obj[g.id] = { n: nombreDe(g), o: g.org || '' };
+  listaRef.set(obj).then(() => {
+    const now = new Date();
+    const hora = now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
+    $('msgLista').textContent = (mostrarMsg ? 'Checklist actualizada con ' + list.length + ' personas confirmadas' : 'Checklist actualizada automáticamente con ' + list.length + ' personas confirmadas') + ' · ' + hora;
+  }).catch(() => { if (mostrarMsg) $('msgLista').textContent = 'No se pudo actualizar la checklist. Revisa la conexión e inténtalo de nuevo.'; });
+}
+function programarSyncLista() { clearTimeout(syncListaTimer); syncListaTimer = setTimeout(() => escribirListaChecklist(false), 1500); }
 
 function abrirDelegar(row, g) {
   const ed = row.querySelector('.editor');
@@ -413,6 +431,7 @@ $('btnConfirmAll').addEventListener('click', () => {
     }
     saveLocal();
     renderTodo();
+    programarSyncLista();
   } else {
     armConfirmAll = true;
     const nPend = efectivos().filter(g => estadoDe(g.id) === 'pendiente').length;
@@ -421,15 +440,8 @@ $('btnConfirmAll').addEventListener('click', () => {
   }
 });
 $('btnChecklist').addEventListener('click', () => {
-  const msg = $('msgLista');
-  const list = efectivos().filter(g => estadoDe(g.id) === 'confirmado');
-  if (!listaRef) { msg.textContent = 'Sin conexión: no se pudo actualizar la checklist. Inténtalo cuando estés en línea.'; return; }
-  const obj = {};
-  for (const g of list) obj[g.id] = { n: nombreDe(g), o: g.org || '' };
-  listaRef.set(obj).then(() => {
-    const now = new Date();
-    msg.textContent = 'Checklist actualizada con ' + list.length + ' personas confirmadas · ' + now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
-  }).catch(() => { msg.textContent = 'No se pudo actualizar la checklist. Revisa la conexión e inténtalo de nuevo.'; });
+  if (!listaRef) { $('msgLista').textContent = 'Sin conexión: no se pudo actualizar la checklist. Inténtalo cuando estés en línea.'; return; }
+  escribirListaChecklist(true);
 });
 
 $('lista').addEventListener('click', e => {
@@ -465,6 +477,7 @@ $('elimLista').addEventListener('click', e => {
   saveLocal();
   if (rosterRef) rosterRef.child(id).set(roster[id]);
   renderTodo();
+  programarSyncLista();
 });
 
 // ---------- Descarga de la base (.xlsx, mismo formato de la matriz original) ----------
@@ -534,9 +547,9 @@ if (FB_CONFIG && window.firebase) {
       $('conn').className = 'conn' + (on ? ' on' : '');
       $('connTxt').textContent = on ? 'En línea · sincronizando en vivo' : 'Sin conexión · los cambios se guardan en este dispositivo';
     });
-    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); });
-    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); });
-    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); });
+    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); programarSyncLista(); });
+    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); programarSyncLista(); });
+    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); programarSyncLista(); });
   } catch (e) {
     $('connTxt').textContent = 'Sin conexión · los cambios se guardan en este dispositivo';
   }
