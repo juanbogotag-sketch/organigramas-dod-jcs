@@ -741,11 +741,46 @@
   });
   $('#zoom').addEventListener('click', () => { $('#zoom').hidden = true; });
 
+  // ---------- Eventos guardados ----------
+  // Los eventos viven en este dispositivo (localStorage), sin servidor.
+  // Cada evento guarda su nombre, fecha, lugar y sus propios invitados
+  // (perfiles del Repositorio + personas externas). El espacio de trabajo
+  // —la carpeta y las personas externas— es el del evento abierto; cuando
+  // no hay evento abierto, es la carpeta global de siempre, para una
+  // descarga rápida sin guardar nada.
+  let events = [];
+  try { events = JSON.parse(localStorage.getItem('torio_eventos_v1') || '[]'); } catch (e) { events = []; }
+  events = (events || []).filter(ev => ev && ev.id && typeof ev.id === 'string');
+  const saveEvents = () => { try { localStorage.setItem('torio_eventos_v1', JSON.stringify(events)); } catch (e) {} };
+  function newEvId() { return 'ev' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); }
+  let curEvent = null;
+  try { const oid = localStorage.getItem('torio_evento_abierto_v1'); if (oid) curEvent = events.find(ev => ev.id === oid) || null; } catch (e) {}
+  const saveOpenEvent = () => { try { if (curEvent && events.indexOf(curEvent) >= 0) localStorage.setItem('torio_evento_abierto_v1', curEvent.id); else localStorage.removeItem('torio_evento_abierto_v1'); } catch (e) {} };
+  function eventGuestCount(ev) {
+    const seen = new Set();
+    (ev.guests || []).forEach(x => { if (x && x.key) seen.add(x.key); });
+    return seen.size + (ev.externals || []).length;
+  }
+  function fmtEvDate(d) {
+    if (!d) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+    if (!m) return d;
+    const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    return (+m[3]) + ' ' + months[+m[2] - 1] + ' ' + m[1];
+  }
+  // Borrador que se está creando (todavía no está en la lista) y el espacio
+  // de trabajo anterior, para restaurarlo si se cierra sin guardar.
+  let draftPrev = null;
+
   // ---------- Carpeta de perfiles (como un carrito) ----------
   let cart = [];
-  try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
+  if (curEvent) cart = (curEvent.guests || []).slice();
+  else { try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; } }
   cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
-  const saveCart = () => { try { localStorage.setItem('torio_carpeta_v1', JSON.stringify(cart)); } catch (e) {} };
+  const saveCart = () => {
+    if (curEvent) { curEvent.guests = cart.map(x => ({ key: x.key, lang: x.lang })); saveEvents(); }
+    else { try { localStorage.setItem('torio_carpeta_v1', JSON.stringify(cart)); } catch (e) {} }
+  };
   const inCart = key => cart.some(x => x.key === key);
   function paintCartBtn() {
     const b = $('#madd');
@@ -915,9 +950,13 @@
   // Personas externas (sin perfil en el Repositorio) para el evento.
   // Se guardan en este dispositivo para no perderlas al recargar.
   let externals = [];
-  try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
+  if (curEvent) externals = (curEvent.externals || []).slice();
+  else { try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; } }
   externals = (externals || []).filter(x => x && x.fn && x.ln);
-  const saveExternals = () => { try { localStorage.setItem('torio_externos_v1', JSON.stringify(externals)); } catch (e) {} };
+  const saveExternals = () => {
+    if (curEvent) { curEvent.externals = externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '' })); saveEvents(); }
+    else { try { localStorage.setItem('torio_externos_v1', JSON.stringify(externals)); } catch (e) {} }
+  };
 
   // Fila de matriz de una persona externa: las mismas 10 columnas. El QR
   // es el enlace de check-in derivado del nombre, igual que para los
@@ -944,22 +983,96 @@
   function paintEventoResumen() {
     const seen = new Set();
     const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(p => p && !seen.has(p.key) && seen.add(p.key));
-    $('#evCartN').textContent = items.length;
+    $('#evCartN').textContent = items.length + externals.length;
     const cl = $('#evCartList');
     cl.innerHTML = items.length
       ? items.map(p => '<div class="citem"><div class="cinfo"><b>' + esc(p.name) + '</b><small>' + esc(p.title || p.org) + '</small></div></div>').join('')
       : '<p class="cempty">La carpeta está vacía. Abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con +.</p>';
   }
-  function openEvento() {
+  // ---------- Modal del evento: crear, abrir, guardar, cerrar ----------
+  // El modal trabaja sobre el espacio activo: el evento abierto o la
+  // carpeta global (descarga rápida). Los campos de nombre, fecha y lugar
+  // son los datos del evento y se guardan con él.
+  function readEvFields() {
+    return { name: $('#evName').value.trim(), date: $('#evDate').value || '', place: $('#evPlace').value.trim() };
+  }
+  function syncEvFieldsToEvent() {
+    if (!curEvent) return;
+    const f = readEvFields();
+    curEvent.name = f.name; curEvent.date = f.date; curEvent.place = f.place;
+    if (events.indexOf(curEvent) >= 0) { saveEvents(); paintEventosBtn(); paintOpenEvent(); }
+    updateEvTitle();
+  }
+  function updateEvTitle() {
+    $('#evTitle').textContent = (curEvent && events.indexOf(curEvent) >= 0 && curEvent.name) ? 'Evento: ' + curEvent.name : 'Crear evento';
+  }
+  function openEvModal() {
+    if (curEvent) { $('#evName').value = curEvent.name || ''; $('#evDate').value = curEvent.date || ''; $('#evPlace').value = curEvent.place || ''; }
+    else { $('#evName').value = ''; $('#evDate').value = ''; $('#evPlace').value = ''; }
+    $('#evCloseEv').hidden = !(curEvent && events.indexOf(curEvent) >= 0);
+    updateEvTitle();
     paintEventoResumen();
     paintExternals();
     $('#evMsg').textContent = '';
     const a = $('#evDlA'); if (a) a.hidden = true;
     $('#evModal').hidden = false;
   }
-  $('#btnEvento').addEventListener('click', openEvento);
-  $('#evX').addEventListener('click', () => { $('#evModal').hidden = true; });
-  $('#evModal').addEventListener('click', e => { if (e.target === $('#evModal')) $('#evModal').hidden = true; });
+  function openEventoNuevo() {
+    draftPrev = { event: curEvent, cart: cart.slice(), externals: externals.slice() };
+    curEvent = { id: newEvId(), name: '', date: '', place: '', guests: [], externals: [] };
+    cart = []; externals = [];
+    try { localStorage.removeItem('torio_evento_abierto_v1'); } catch (e) {}
+    renderCart(); paintSelRows(); paintCartBtn();
+    openEvModal();
+  }
+  function resolverBorrador() {
+    if (!curEvent || events.indexOf(curEvent) >= 0) return;
+    const f = readEvFields();
+    if (f.name || cart.length || externals.length) {
+      curEvent.name = f.name || 'Evento sin nombre'; curEvent.date = f.date; curEvent.place = f.place;
+      events.push(curEvent); saveEvents();
+    }
+    if (draftPrev) { curEvent = draftPrev.event; cart = draftPrev.cart; externals = draftPrev.externals; draftPrev = null; }
+    else curEvent = null;
+    saveOpenEvent(); renderCart(); paintSelRows(); paintCartBtn(); paintExternals(); paintEventosBtn(); paintOpenEvent();
+  }
+  function closeEvModal() {
+    resolverBorrador();
+    $('#evModal').hidden = true;
+  }
+  function guardarEvento() {
+    const f = readEvFields();
+    if (!f.name) { $('#evMsg').textContent = 'Ponle un nombre al evento antes de guardarlo.'; $('#evName').focus(); return; }
+    if (!curEvent) {
+      curEvent = { id: newEvId(), name: f.name, date: f.date, place: f.place, guests: cart.map(x => ({ key: x.key, lang: x.lang })), externals: externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '' })) };
+      events.push(curEvent);
+    } else {
+      curEvent.name = f.name; curEvent.date = f.date; curEvent.place = f.place;
+      if (events.indexOf(curEvent) < 0) events.push(curEvent);
+    }
+    saveEvents(); saveOpenEvent(); draftPrev = null;
+    paintEventosBtn(); paintOpenEvent(); updateEvTitle();
+    $('#evCloseEv').hidden = false;
+    $('#evMsg').textContent = 'Evento guardado: ' + f.name + ' (' + eventGuestCount(curEvent) + ' invitados). Lo verás en el menú «Eventos».';
+  }
+  function cerrarEvento() {
+    curEvent = null; draftPrev = null;
+    saveOpenEvent();
+    try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
+    cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
+    try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
+    externals = (externals || []).filter(x => x && x.fn && x.ln);
+    renderCart(); paintSelRows(); paintCartBtn(); paintExternals(); paintEventosBtn(); paintOpenEvent();
+    $('#evModal').hidden = true;
+    $('#evMsg').textContent = '';
+  }
+  $('#btnEvento').addEventListener('click', () => { if (curEvent) openEventoNuevo(); else openEvModal(); });
+  $('#evX').addEventListener('click', closeEvModal);
+  $('#evModal').addEventListener('click', e => { if (e.target === $('#evModal')) closeEvModal(); });
+  ['#evName', '#evDate', '#evPlace'].forEach(sel => $(sel).addEventListener('input', syncEvFieldsToEvent));
+  $('#evSave').addEventListener('click', guardarEvento);
+  $('#evCloseEv').addEventListener('click', cerrarEvento);
+  $('#evListBtn').addEventListener('click', () => { closeEvModal(); openEvList(); });
   $('#exAdd').addEventListener('click', () => {
     const v = id => $(id).value.trim();
     const fn = v('#exFn'), ln = v('#exLn');
@@ -1088,6 +1201,7 @@
     $('#exFile').click();
   });
   $('#evDl').addEventListener('click', async () => {
+    syncEvFieldsToEvent();
     const name = $('#evName').value.trim();
     if (!name) { $('#evMsg').textContent = 'Ponle un nombre al evento antes de descargar la lista.'; $('#evName').focus(); return; }
     const seen = new Set();
@@ -1105,6 +1219,95 @@
       $('#evMsg').textContent = 'No se pudo generar la matriz del evento.';
     }
   });
+
+  // ---------- Menú «Eventos»: eventos guardados (abiertos) ----------
+  // Cada evento muestra nombre, fecha, lugar y número de invitados
+  // (perfiles del Repositorio + externos), actualizado con la lista
+  // provisional del momento. «Abrir» carga el evento en el espacio de
+  // trabajo para agregar o quitar invitados; «Eliminar» lo borra.
+  function paintEventosBtn() {
+    const b = $('#btnEventos');
+    if (b) b.textContent = '📅 Eventos' + (events.length ? ' (' + events.length + ')' : '');
+  }
+  function paintOpenEvent() {
+    const pill = $('#evOpen');
+    if (!pill) return;
+    if (!curEvent || events.indexOf(curEvent) < 0) { pill.hidden = true; pill.innerHTML = ''; return; }
+    const ev = curEvent;
+    pill.hidden = false;
+    pill.innerHTML = '📅 Evento abierto: <b>' + esc(ev.name || 'Evento sin nombre') + '</b>' +
+      (ev.date ? ' · ' + esc(fmtEvDate(ev.date)) : '') +
+      (ev.place ? ' · ' + esc(ev.place) : '') +
+      ' · ' + eventGuestCount(ev) + ' invitados ' +
+      '<button type="button" id="evOpenGo">Abrir lista</button>';
+    const go = $('#evOpenGo');
+    if (go) go.addEventListener('click', openEvModal);
+  }
+  function renderEvList() {
+    const list = $('#evList');
+    if (!events.length) {
+      list.innerHTML = '<p class="cempty">Todavía no hay eventos guardados. Crea uno con el botón «Crear evento» y guárdalo para seguir trabajando en él después.</p>';
+      return;
+    }
+    const sorted = events.slice().sort((a, b) => String(a.date || '9999').localeCompare(String(b.date || '9999')) || String(a.name || '').localeCompare(String(b.name || '')));
+    list.innerHTML = sorted.map(ev => {
+      const open = curEvent === ev;
+      return '<div class="citem evitem">' +
+        '<div class="cinfo"><b>' + esc(ev.name || 'Evento sin nombre') + (open ? ' · abierto' : '') + '</b>' +
+        '<small>' + esc([fmtEvDate(ev.date) || 'Sin fecha', ev.place || 'Sin lugar'].join(' · ')) + '</small>' +
+        '<small>' + eventGuestCount(ev) + ' invitados</small></div>' +
+        '<div class="evacts"><button type="button" class="p evopen" data-id="' + esc(ev.id) + '">Abrir</button>' +
+        '<button type="button" class="evdel" data-id="' + esc(ev.id) + '">Eliminar</button></div></div>';
+    }).join('');
+    list.querySelectorAll('.evopen').forEach(b => b.addEventListener('click', () => {
+      const ev = events.find(x => x.id === b.dataset.id);
+      if (!ev) return;
+      $('#evListModal').hidden = true;
+      abrirEvento(ev);
+    }));
+    list.querySelectorAll('.evdel').forEach(b => b.addEventListener('click', () => {
+      const ev = events.find(x => x.id === b.dataset.id);
+      if (!ev) return;
+      if (!confirm('¿Eliminar el evento «' + (ev.name || 'Evento sin nombre') + '»? Se borra su lista de invitados guardada.')) return;
+      const wasOpen = curEvent === ev;
+      if (wasOpen) curEvent = null;
+      events = events.filter(x => x !== ev);
+      saveEvents(); saveOpenEvent();
+      if (wasOpen) {
+        try { cart = JSON.parse(localStorage.getItem('torio_carpeta_v1') || '[]'); } catch (e) { cart = []; }
+        cart = cart.filter(x => x && PEOPLE.some(p => p.key === x.key));
+        try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; }
+        externals = (externals || []).filter(x => x && x.fn && x.ln);
+        renderCart(); paintSelRows(); paintCartBtn(); paintExternals();
+      }
+      paintEventosBtn(); paintOpenEvent(); renderEvList();
+    }));
+  }
+  function abrirEvento(ev) {
+    if (curEvent && events.indexOf(curEvent) < 0) {
+      const f = readEvFields();
+      if (f.name || cart.length || externals.length) {
+        curEvent.name = f.name || 'Evento sin nombre'; curEvent.date = f.date; curEvent.place = f.place;
+        events.push(curEvent); saveEvents();
+      }
+      draftPrev = null;
+    }
+    curEvent = ev;
+    cart = (ev.guests || []).filter(x => x && PEOPLE.some(p => p.key === x.key)).slice();
+    externals = (ev.externals || []).filter(x => x && x.fn && x.ln).slice();
+    saveOpenEvent();
+    renderCart(); paintSelRows(); paintCartBtn();
+    paintEventosBtn(); paintOpenEvent();
+    openEvModal();
+  }
+  function openEvList() {
+    renderEvList();
+    $('#evListModal').hidden = false;
+  }
+  $('#btnEventos').addEventListener('click', openEvList);
+  $('#evListX').addEventListener('click', () => { $('#evListModal').hidden = true; });
+  $('#evListModal').addEventListener('click', e => { if (e.target === $('#evListModal')) $('#evListModal').hidden = true; });
+  $('#evListNew').addEventListener('click', () => { $('#evListModal').hidden = true; if (curEvent) openEventoNuevo(); else openEvModal(); });
 
   // ---------- Matriz en Excel de las personas de la carpeta ----------
   // Siempre en inglés, con las 10 columnas del formato de Juan Pablo:
@@ -1201,6 +1404,8 @@
     return await z.generateAsync({ type: outType || 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   }
   renderCart();
+  paintEventosBtn();
+  paintOpenEvent();
 
   renderCats();
 
