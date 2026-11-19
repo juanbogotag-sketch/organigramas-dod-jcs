@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Life After the Hippopotamus — Gestión de invitados · Repositorio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Montserrat', Arial, sans-serif; background: #f2f4f8; color: #16283f; }
+  .tricolor { height: 7px; background: linear-gradient(90deg, #FCD116 0 33.4%, #003893 33.4% 66.7%, #CE1126 66.7% 100%); }
+  header { background: #0a1d38; color: #fff; padding: 26px 18px 20px; position: relative; overflow: hidden; }
+  header .watermark { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); height: 190%; opacity: .10; pointer-events: none; }
+  header h1 { font-size: clamp(24px, 5vw, 34px); font-weight: 800; position: relative; }
+  header p { margin-top: 6px; font-size: 13.5px; color: #c8d5e6; font-weight: 600; position: relative; }
+  main { max-width: 1060px; margin: 0 auto; padding: 16px 14px 48px; }
+  .volver { display: inline-block; background: #0a1d38; color: #fff; text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 10px 16px; border-radius: 999px; margin-bottom: 14px; }
+  .conn { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px; margin-bottom: 14px; background: #fdecea; color: #a11; }
+  .conn.on { background: #e3f3e5; color: #1d6b2f; }
+  .conn .dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  .contadores { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 720px) { .contadores { grid-template-columns: repeat(2, 1fr); } }
+  .contador { background: #fff; border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: 0 2px 8px rgba(10,29,56,.07); border-top: 4px solid #c9d4e4; }
+  .contador .num { font-size: 30px; font-weight: 800; color: #0a1d38; line-height: 1.1; }
+  .contador .lab { font-size: 11.5px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #5a6b82; margin-top: 3px; }
+  .contador.conf { border-top-color: #1d7a35; } .contador.conf .num { color: #1d7a35; }
+  .contador.canc { border-top-color: #b3261e; } .contador.canc .num { color: #b3261e; }
+  .contador.deleg { border-top-color: #8a6d00; } .contador.deleg .num { color: #8a6d00; }
+  .contador.pend { border-top-color: #e0a800; } .contador.pend .num { color: #8a6d00; }
+  .barra { background: #fff; border-radius: 14px; padding: 14px; box-shadow: 0 2px 8px rgba(10,29,56,.07); margin-bottom: 14px; }
+  .barra input[type="search"] { width: 100%; font: 600 15px 'Montserrat', sans-serif; padding: 11px 14px; border: 2px solid #c9d4e4; border-radius: 999px; outline: none; }
+  .barra input[type="search"]:focus { border-color: #0a1d38; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { border: 2px solid #0a1d38; background: #fff; color: #0a1d38; font: 700 13px 'Montserrat', sans-serif; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+  .chip.act { background: #0a1d38; color: #fff; }
+  .chip.est.act { background: #e0a800; border-color: #e0a800; color: #0a1d38; }
+  .chips .sep { flex-basis: 100%; height: 0; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .btn { flex: 1 1 220px; font: 800 15px 'Montserrat', sans-serif; padding: 14px 18px; border-radius: 999px; cursor: pointer; text-align: center; border: 2px solid #0a1d38; background: #0a1d38; color: #fff; }
+  .btn.sec { background: #fff; color: #0a1d38; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .nota { font-size: 13px; font-weight: 600; color: #5a6b82; margin-bottom: 16px; line-height: 1.5; }
+  .formbox { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 2px 8px rgba(10,29,56,.07); margin-bottom: 16px; }
+  .formbox h3 { font-size: 16px; font-weight: 800; color: #0a1d38; margin-bottom: 12px; }
+  .formbox .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (max-width: 640px) { .formbox .grid { grid-template-columns: 1fr; } }
+  .formbox label { display: block; font-size: 12px; font-weight: 700; color: #5a6b82; margin-bottom: 4px; }
+  .formbox input, .formbox select { width: 100%; font: 600 14px 'Montserrat', sans-serif; padding: 10px 12px; border: 2px solid #c9d4e4; border-radius: 10px; outline: none; }
+  .formbox input:focus, .formbox select:focus { border-color: #0a1d38; }
+  .formbox .frow { display: flex; gap: 10px; margin-top: 12px; }
+  .formbox .frow .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
+  .invitado { background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(10,29,56,.07); border-left: 5px solid #c9d4e4; }
+  .invitado.conf { border-left-color: #1d7a35; }
+  .invitado.canc { border-left-color: #b3261e; }
+  .invitado.deleg { border-left-color: #e0a800; }
+  .invitado .top { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .invitado .quien { flex: 1 1 240px; }
+  .invitado .nombre { font-weight: 800; font-size: 16px; color: #0a1d38; }
+  .invitado .cargo { font-size: 13.5px; font-weight: 600; color: #3d4f68; margin-top: 2px; }
+  .invitado .mail { font-size: 12.5px; color: #7b8aa0; font-weight: 600; margin-top: 2px; word-break: break-all; }
+  .invitado .grupo { font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #5a6b82; }
+  .estado { font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
+  .estado.pendiente { background: #fdf3d0; color: #8a6d00; }
+  .estado.confirmado { background: #e3f3e5; color: #1d6b2f; }
+  .estado.cancelado { background: #fdecea; color: #a11; }
+  .estado.delego { background: #eef1f3; color: #0a1d38; }
+  .invitado .botones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .mini { font: 700 13px 'Montserrat', sans-serif; padding: 8px 13px; border-radius: 999px; cursor: pointer; border: 2px solid #0a1d38; background: #fff; color: #0a1d38; }
+  .mini.on-conf { background: #1d7a35; border-color: #1d7a35; color: #fff; }
+  .mini.on-canc { background: #b3261e; border-color: #b3261e; color: #fff; }
+  .mini.on-deleg { background: #e0a800; border-color: #e0a800; color: #0a1d38; }
+  .mini.peligro { border-color: #b3261e; color: #b3261e; }
+  .mini:disabled { opacity: .45; cursor: not-allowed; }
+  .invitado .editor { margin-top: 12px; background: #f2f4f8; border-radius: 10px; padding: 12px; }
+  .invitado .editor .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  @media (max-width: 640px) { .invitado .editor .grid { grid-template-columns: 1fr; } }
+  .invitado .editor label { display: block; font-size: 11.5px; font-weight: 700; color: #5a6b82; margin-bottom: 3px; }
+  .invitado .editor input { width: 100%; font: 600 13.5px 'Montserrat', sans-serif; padding: 9px 10px; border: 2px solid #c9d4e4; border-radius: 8px; outline: none; }
+  .invitado .editor .frow { display: flex; gap: 8px; margin-top: 10px; }
+  .invitado .editor .frow .mini { flex: 1; }
+  .invitado .sub { font-size: 12.5px; font-weight: 700; color: #8a6d00; margin-top: 6px; }
+  .vacio { text-align: center; color: #7b8aa0; font-weight: 600; padding: 28px 10px; }
+  .eliminados { margin-top: 22px; }
+  .eliminados summary { cursor: pointer; font-weight: 800; color: #5a6b82; font-size: 14px; }
+  .eliminados .invitado { opacity: .75; }
+  .pie { text-align: center; color: #7b8aa0; font-size: 12.5px; font-weight: 600; margin-top: 22px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="tricolor"></div>
+<header>
+  <img class="watermark" id="escudo" alt="">
+  <h1>Life After the Hippopotamus</h1>
+  <p>Jueves 19 de noviembre de 2026 · 6:30 – 8:00 p. m. · Residencia de la Embajadora de Colombia en Washington</p>
+</header>
+<main>
+  <a class="volver" href="eventos.html">← Volver a Eventos</a>
+  <span class="conn" id="conn"><span class="dot"></span><span id="connTxt">Conectando…</span></span>
+  <div class="contadores">
+    <div class="contador"><div class="num" id="stTotal">0</div><div class="lab">Total</div></div>
+    <div class="contador conf"><div class="num" id="stConf">0</div><div class="lab">Confirmados</div></div>
+    <div class="contador canc"><div class="num" id="stCanc">0</div><div class="lab">Cancelados</div></div>
+    <div class="contador deleg"><div class="num" id="stDeleg">0</div><div class="lab">Delegaron</div></div>
+    <div class="contador pend"><div class="num" id="stPend">0</div><div class="lab">Pendientes</div></div>
+  </div>
+  <div class="barra">
+    <input type="search" id="buscar" placeholder="Buscar por nombre, cargo, organización o correo…" autocomplete="off">
+    <div class="chips" id="chipsGrupo"></div>
+    <div class="chips" id="chipsEstado"></div>
+  </div>
+  <div class="acciones">
+    <button class="btn" id="btnAdd" type="button">＋ Agregar invitado</button>
+    <button class="btn sec" id="btnConfirmAll" type="button">✓ Confirmar todos</button>
+    <button class="btn sec" id="btnChecklist" type="button">📋 Actualizar la checklist de asistencia</button>
+    <button class="btn sec" id="btnXlsx" type="button">📊 Descargar base (.xlsx)</button>
+  </div>
+  <p class="nota" id="msgLista"></p>
+  <div class="formbox" id="formAdd" hidden>
+    <h3>Agregar invitado</h3>
+    <div class="grid">
+      <div><label>Grupo</label><select id="aGrupo"></select></div>
+      <div><label>Nombre *</label><input id="aNom" placeholder="Nombre"></div>
+      <div><label>Apellido *</label><input id="aApe" placeholder="Apellido"></div>
+      <div><label>Correo</label><input id="aMail" placeholder="correo@ejemplo.com" type="email"></div>
+      <div><label>Organización</label><input id="aOrg" placeholder="Organización"></div>
+    </div>
+    <div class="frow">
+      <button class="btn" id="aGuardar" type="button">Guardar invitado</button>
+      <button class="btn sec" id="aCancelar" type="button">Cancelar</button>
+    </div>
+  </div>
+  <p class="nota">La base que llegó no traía estados: todos empiezan como <b>Pendientes</b>. Marca aquí quién confirmó, quién canceló y quién delegó. Los cambios se guardan en vivo para todos los dispositivos y también quedan guardados en este navegador.</p>
+  <div id="lista"></div>
+  <details class="eliminados" id="elimSec" hidden>
+    <summary id="elimSum">Eliminados (0)</summary>
+    <div id="elimLista" style="margin-top:10px"></div>
+  </details>
+  <p class="pie">Gestión de invitados del evento · Los estados se sincronizan en vivo cuando hay conexión.<br>La checklist de asistencia se alimenta de las personas confirmadas aquí. La descarga trae las mismas columnas de la lista original, más el estado de cada persona.</p>
+</main>
+<script src="js/vendor/jszip.min.js"></script>
+<script src="js/logo.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="js/datos_hipopotamo.js"></script>
+<script>
+// ---------- Configuración (misma base en vivo del checklist del Hipopótamo) ----------
+const FB_CONFIG = {
+  apiKey: "AIzaSyD9fVRwR4VbNWxz_uRYFV00DsOt0K6m-Cc",
+  authDomain: "asistencia-eventos-cc286.firebaseapp.com",
+  databaseURL: "https://asistencia-eventos-cc286-default-rtdb.firebaseio.com",
+  projectId: "asistencia-eventos-cc286",
+  storageBucket: "asistencia-eventos-cc286.firebasestorage.app",
+  messagingSenderId: "1078332084015",
+  appId: "1:1078332084015:web:9297f883eb4ed7a767dbda"
+};
+const LS_E = 'hipo_gestion_estados_v1', LS_R = 'hipo_gestion_roster_v1', LS_A = 'hipo_gestion_agregados_v1';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades' };
+const EST_LABEL = { pendiente: 'Pendiente', confirmado: 'Confirmado', cancelado: 'Cancelado', delego: 'Delegó' };
+
+let estados = {}, roster = {}, agregados = {};
+let filtroGrupo = 'todos', filtroEstado = 'todos';
+let armEliminar = null;
+let estadosRef = null, rosterRef = null, agregadosRef = null, listaRef = null;
+let armConfirmAll = false;
+
+function loadLocal() {
+  try { estados = JSON.parse(localStorage.getItem(LS_E) || '{}') || {}; } catch (e) { estados = {}; }
+  try { roster = JSON.parse(localStorage.getItem(LS_R) || '{}') || {}; } catch (e) { roster = {}; }
+  try { agregados = JSON.parse(localStorage.getItem(LS_A) || '{}') || {}; } catch (e) { agregados = {}; }
+}
+function saveLocal() {
+  try {
+    localStorage.setItem(LS_E, JSON.stringify(estados));
+    localStorage.setItem(LS_R, JSON.stringify(roster));
+    localStorage.setItem(LS_A, JSON.stringify(agregados));
+  } catch (e) {}
+}
+// Fusión con la nube: por cada clave gana el cambio más reciente (por fecha).
+function mergeServer(local, server) {
+  server = server || {};
+  for (const k of Object.keys(server)) {
+    const sv = server[k];
+    if (sv == null) continue;
+    const lv = local[k];
+    if (!lv || (sv.t || 0) >= (lv.t || 0)) local[k] = sv;
+  }
+}
+function pushNewer(ref, local, server) {
+  if (!ref) return;
+  server = server || {};
+  for (const k of Object.keys(local)) {
+    const lv = local[k], sv = server[k];
+    if (!sv || (lv.t || 0) > (sv.t || 0)) ref.child(k).set(lv);
+  }
+}
+function nombreDe(g) { return [g.pre, g.nom, g.ape].filter(Boolean).join(' '); }
+function estadoDe(id) { return (estados[id] && estados[id].e) || 'pendiente'; }
+
+// Lista efectiva: base publicada + reemplazos + agregados, sin los eliminados.
+function efectivos() {
+  const list = [];
+  for (const g of PROT_INVITADOS) {
+    const r = roster[g.id];
+    if (r && r.elim) continue;
+    if (r && r.reemp) {
+      const rep = r.reemp;
+      const filaRep = (g.fila || []).slice(0, 10);
+      while (filaRep.length < 10) filaRep.push('');
+      filaRep[6] = rep.nom; filaRep[7] = rep.ape; filaRep[8] = rep.mail; filaRep[9] = rep.org;
+      list.push(Object.assign({}, g, { pre: rep.pre, nom: rep.nom, ape: rep.ape, cargo: rep.cargo, org: rep.org, mail: rep.mail, orig: g, reemp: true, fila: filaRep }));
+    } else list.push(Object.assign({}, g));
+  }
+  for (const k of Object.keys(agregados)) {
+    const a = agregados[k];
+    const r = roster['ag_' + k];
+    if (r && r.elim) continue;
+    list.push(Object.assign({ id: 'ag_' + k, agregado: true, fila: ['', '', '', '', '', '', a.nom, a.ape, a.mail, a.org] }, a));
+  }
+  return list;
+}
+function eliminados() {
+  const list = [];
+  for (const g of PROT_INVITADOS) {
+    const r = roster[g.id];
+    if (r && r.elim) list.push(g);
+  }
+  for (const k of Object.keys(agregados)) {
+    const r = roster['ag_' + k];
+    if (r && r.elim) list.push(Object.assign({ id: 'ag_' + k, agregado: true }, agregados[k]));
+  }
+  return list;
+}
+
+function renderContadores() {
+  const list = efectivos();
+  let c = 0, x = 0, d = 0;
+  for (const g of list) {
+    const e = estadoDe(g.id);
+    if (e === 'confirmado') c++;
+    else if (e === 'cancelado') x++;
+    else if (e === 'delego') d++;
+  }
+  $('stTotal').textContent = list.length;
+  $('stConf').textContent = c;
+  $('stCanc').textContent = x;
+  $('stDeleg').textContent = d;
+  $('stPend').textContent = list.length - c - x - d;
+}
+
+function renderLista() {
+  const q = norm($('buscar').value);
+  const list = efectivos().filter(g => {
+    if (filtroGrupo !== 'todos' && g.g !== filtroGrupo) return false;
+    const e = estadoDe(g.id);
+    if (filtroEstado !== 'todos' && e !== filtroEstado) return false;
+    if (q && !norm(nombreDe(g) + ' ' + g.cargo + ' ' + g.org + ' ' + g.mail).includes(q)) return false;
+    return true;
+  });
+  const cont = $('lista');
+  cont.innerHTML = '';
+  if (!list.length) { cont.innerHTML = '<div class="vacio">Nadie coincide con ese criterio.</div>'; return; }
+  for (const g of list) {
+    const e = estadoDe(g.id);
+    const st = estados[g.id] || {};
+    const row = document.createElement('div');
+    row.className = 'invitado' + (e === 'confirmado' ? ' conf' : e === 'cancelado' ? ' canc' : e === 'delego' ? ' deleg' : '');
+    let sub = '';
+    if (e === 'delego' && st.d) sub = '<div class="sub">Delegó en: ' + esc(st.d) + '</div>';
+    if (g.reemp && g.orig) sub += '<div class="sub">Reemplaza a: ' + esc(nombreDe(g.orig)) + '</div>';
+    if (g.agregado) sub += '<div class="sub">Agregado en la página</div>';
+    row.innerHTML =
+      '<div class="top"><div class="quien"><div class="grupo">' + esc(GRUPOS[g.g] || g.g) + '</div>' +
+      '<div class="nombre">' + esc(nombreDe(g)) + '</div>' +
+      '<div class="cargo">' + esc([g.cargo, g.org].filter(Boolean).join(' · ')) + '</div>' +
+      (g.ofi ? '<div class="cargo">' + esc(g.ofi) + '</div>' : '') +
+      (g.mail ? '<div class="mail">' + esc(g.mail) + '</div>' : '') + sub + '</div>' +
+      '<span class="estado ' + e + '">' + EST_LABEL[e] + '</span></div>' +
+      '<div class="botones">' +
+      '<button class="mini' + (e === 'confirmado' ? ' on-conf' : '') + '" data-act="confirmado" data-id="' + esc(g.id) + '">✓ Confirmado</button>' +
+      '<button class="mini' + (e === 'cancelado' ? ' on-canc' : '') + '" data-act="cancelado" data-id="' + esc(g.id) + '">✕ Cancelado</button>' +
+      '<button class="mini' + (e === 'delego' ? ' on-deleg' : '') + '" data-act="delego" data-id="' + esc(g.id) + '">⇄ Delegó</button>' +
+      '<button class="mini" data-act="reemplazar" data-id="' + esc(g.id) + '">Reemplazar</button>' +
+      '<button class="mini peligro" data-act="eliminar" data-id="' + esc(g.id) + '">' + (armEliminar === g.id ? '¿Seguro? Eliminar' : 'Eliminar') + '</button>' +
+      '</div><div class="editor" hidden></div>';
+    cont.appendChild(row);
+  }
+}
+
+function renderEliminados() {
+  const list = eliminados();
+  $('elimSec').hidden = !list.length;
+  $('elimSum').textContent = 'Eliminados (' + list.length + ')';
+  const cont = $('elimLista');
+  cont.innerHTML = '';
+  for (const g of list) {
+    const row = document.createElement('div');
+    row.className = 'invitado';
+    row.innerHTML = '<div class="top"><div class="quien"><div class="grupo">' + esc(GRUPOS[g.g] || g.g) + '</div>' +
+      '<div class="nombre">' + esc(nombreDe(g)) + '</div>' +
+      '<div class="cargo">' + esc([g.cargo, g.org].filter(Boolean).join(' · ')) + '</div></div></div>' +
+      '<div class="botones"><button class="mini" data-act="restaurar" data-id="' + esc(g.id) + '">Restaurar</button></div>';
+    cont.appendChild(row);
+  }
+}
+
+function renderTodo() { renderContadores(); renderLista(); renderEliminados(); }
+
+function buildChips() {
+  const cg = $('chipsGrupo');
+  cg.innerHTML = '';
+  const todos = [{ key: 'todos', name: 'Todos los grupos' }].concat(PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] })));
+  for (const t of todos) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip' + (filtroGrupo === t.key ? ' act' : ''); b.textContent = t.name;
+    b.addEventListener('click', () => { filtroGrupo = t.key; buildChips(); renderLista(); });
+    cg.appendChild(b);
+  }
+  const sep = document.createElement('div'); sep.className = 'sep'; cg.appendChild(sep);
+  const ce = $('chipsEstado');
+  ce.innerHTML = '';
+  const ests = [['todos', 'Todos los estados'], ['pendiente', 'Pendientes'], ['confirmado', 'Confirmados'], ['cancelado', 'Cancelados'], ['delego', 'Delegaron']];
+  for (const t of ests) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip est' + (filtroEstado === t[0] ? ' act' : ''); b.textContent = t[1];
+    b.addEventListener('click', () => { filtroEstado = t[0]; buildChips(); renderLista(); });
+    ce.appendChild(b);
+  }
+  const sel = $('aGrupo');
+  sel.innerHTML = PROT_SHEETS.map(s => '<option value="' + esc(s.key) + '">' + esc(GRUPOS[s.key]) + '</option>').join('');
+}
+
+// ---------- Acciones ----------
+function setEstado(id, e, delegado) {
+  estados[id] = { e: e, d: delegado || '', t: Date.now() };
+  saveLocal();
+  if (estadosRef) estadosRef.child(id).set(estados[id]);
+  renderTodo();
+}
+function clearEstado(id) { setEstado(id, 'pendiente', ''); }
+
+function abrirDelegar(row, g) {
+  const ed = row.querySelector('.editor');
+  const st = estados[g.id] || {};
+  ed.hidden = false;
+  ed.innerHTML = '<label>¿Quién asiste en lugar de ' + esc(nombreDe(g)) + '?</label>' +
+    '<input type="text" placeholder="Nombre de quien va en su lugar" value="' + esc(st.d || '') + '">' +
+    '<div class="frow"><button class="mini on-deleg" type="button">Guardar</button><button class="mini" type="button">Cancelar</button></div>';
+  const inp = ed.querySelector('input');
+  inp.focus();
+  ed.querySelectorAll('button')[0].addEventListener('click', () => {
+    const v = inp.value.trim();
+    if (!v) { inp.focus(); return; }
+    setEstado(g.id, 'delego', v);
+  });
+  ed.querySelectorAll('button')[1].addEventListener('click', () => { ed.hidden = true; ed.innerHTML = ''; });
+}
+
+function abrirReemplazo(row, g) {
+  const ed = row.querySelector('.editor');
+  ed.hidden = false;
+  ed.innerHTML = '<div class="grid">' +
+    '<div><label>Nombre *</label><input data-f="nom" placeholder="Nombre"></div>' +
+    '<div><label>Apellido *</label><input data-f="ape" placeholder="Apellido"></div>' +
+    '<div><label>Correo</label><input data-f="mail" placeholder="correo@ejemplo.com"></div>' +
+    '<div><label>Organización</label><input data-f="org" placeholder="Organización"></div></div>' +
+    '<div class="frow"><button class="mini" type="button">Guardar reemplazo</button><button class="mini" type="button">Cancelar</button></div>';
+  ed.querySelector('[data-f="nom"]').focus();
+  ed.querySelectorAll('button')[0].addEventListener('click', () => {
+    const val = f => ed.querySelector('[data-f="' + f + '"]').value.trim();
+    if (!val('nom') || !val('ape')) { (val('nom') ? ed.querySelector('[data-f="ape"]') : ed.querySelector('[data-f="nom"]')).focus(); return; }
+    roster[g.id] = { reemp: { pre: '', nom: val('nom'), ape: val('ape'), cargo: '', org: val('org'), mail: val('mail') }, t: Date.now() };
+    saveLocal();
+    if (rosterRef) rosterRef.child(g.id).set(roster[g.id]);
+    clearEstado(g.id);
+  });
+  ed.querySelectorAll('button')[1].addEventListener('click', () => { ed.hidden = true; ed.innerHTML = ''; });
+}
+
+$('buscar').addEventListener('input', renderLista);
+$('btnAdd').addEventListener('click', () => {
+  const f = $('formAdd');
+  f.hidden = !f.hidden;
+  if (!f.hidden) $('aNom').focus();
+});
+$('aCancelar').addEventListener('click', () => { $('formAdd').hidden = true; });
+$('aGuardar').addEventListener('click', () => {
+  const v = id => $(id).value.trim();
+  if (!v('aNom') || !v('aApe')) { (v('aNom') ? $('aApe') : $('aNom')).focus(); return; }
+  const id = 'n' + Date.now().toString(36);
+  agregados[id] = { g: $('aGrupo').value, pre: '', nom: v('aNom'), ape: v('aApe'), cargo: '', ofi: '', org: v('aOrg'), tipo: '', mail: v('aMail'), t: Date.now() };
+  saveLocal();
+  if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
+  ['aNom', 'aApe', 'aOrg', 'aMail'].forEach(x => { $(x).value = ''; });
+  $('formAdd').hidden = true;
+  filtroGrupo = agregados[id].g;
+  buildChips();
+  renderTodo();
+});
+$('btnXlsx').addEventListener('click', () => { descargarXlsx().catch(() => alert('No se pudo generar el Excel. Inténtalo de nuevo.')); });
+$('btnConfirmAll').addEventListener('click', () => {
+  if (armConfirmAll) {
+    armConfirmAll = false;
+    $('btnConfirmAll').textContent = '✓ Confirmar todos';
+    const t = Date.now();
+    for (const g of efectivos()) {
+      if (estadoDe(g.id) !== 'pendiente') continue;
+      estados[g.id] = { e: 'confirmado', d: '', t: t };
+      if (estadosRef) estadosRef.child(g.id).set(estados[g.id]);
+    }
+    saveLocal();
+    renderTodo();
+  } else {
+    armConfirmAll = true;
+    $('btnConfirmAll').textContent = '¿Seguro? Confirmar todos';
+    setTimeout(() => { if (armConfirmAll) { armConfirmAll = false; $('btnConfirmAll').textContent = '✓ Confirmar todos'; } }, 5000);
+  }
+});
+$('btnChecklist').addEventListener('click', () => {
+  const msg = $('msgLista');
+  const list = efectivos().filter(g => estadoDe(g.id) === 'confirmado');
+  if (!listaRef) { msg.textContent = 'Sin conexión: no se pudo actualizar la checklist. Inténtalo cuando estés en línea.'; return; }
+  const obj = {};
+  for (const g of list) obj[g.id] = { n: nombreDe(g), o: g.org || '' };
+  listaRef.set(obj).then(() => {
+    const now = new Date();
+    msg.textContent = 'Checklist actualizada con ' + list.length + ' personas confirmadas · ' + now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
+  }).catch(() => { msg.textContent = 'No se pudo actualizar la checklist. Revisa la conexión e inténtalo de nuevo.'; });
+});
+
+$('lista').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  const g = efectivos().find(x => x.id === id);
+  if (!g) return;
+  if (act !== 'eliminar') armEliminar = null;
+  if (act === 'confirmado') setEstado(id, 'confirmado', '');
+  else if (act === 'cancelado') setEstado(id, 'cancelado', '');
+  else if (act === 'delego') abrirDelegar(b.closest('.invitado'), g);
+  else if (act === 'reemplazar') abrirReemplazo(b.closest('.invitado'), g);
+  else if (act === 'eliminar') {
+    if (armEliminar === id) {
+      armEliminar = null;
+      roster[id] = { elim: true, t: Date.now() };
+      saveLocal();
+      if (rosterRef) rosterRef.child(id).set(roster[id]);
+      clearEstado(id);
+    } else {
+      armEliminar = id;
+      renderTodo();
+      setTimeout(() => { if (armEliminar === id) { armEliminar = null; renderTodo(); } }, 5000);
+    }
+  }
+});
+$('elimLista').addEventListener('click', e => {
+  const b = e.target.closest('[data-act="restaurar"]');
+  if (!b) return;
+  const id = b.dataset.id;
+  roster[id] = { elim: false, t: Date.now() };
+  saveLocal();
+  if (rosterRef) rosterRef.child(id).set(roster[id]);
+  renderTodo();
+});
+
+// ---------- Descarga de la base (.xlsx, mismo formato de la matriz original) ----------
+async function descargarXlsx() {
+  const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const colL = i => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  const cellXml = (c, i, r, s) => '<c r="' + colL(i) + r + '" t="inlineStr"' + (s != null ? ' s="' + s + '"' : '') + '><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>';
+  const rowXml = (cells, r, s) => '<row r="' + r + '"' + (r === 1 ? ' ht="94.5" customHeight="1"' : '') + '>' + cells.map((c, i) => cellXml(c, i, r, s)).join('') + '</row>';
+  const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo']);
+  const list = efectivos();
+  const sheetsXml = [], sheetTags = [], rels = [];
+  PROT_SHEETS.forEach((sh, si) => {
+    const rows = list.filter(g => g.g === sh.key).map(g => {
+      const e = estadoDe(g.id);
+      const st = estados[g.id] || {};
+      let extra = '';
+      if (e === 'delego' && st.d) extra = st.d;
+      if (g.reemp && g.orig) extra = (extra ? extra + ' · ' : '') + 'Reemplaza a: ' + nombreDe(g.orig);
+      if (g.agregado) extra = (extra ? extra + ' · ' : '') + 'Agregado en la página';
+      const base = (g.fila || []).slice(0, 10);
+      while (base.length < 10) base.push('');
+      return base.concat([EST_LABEL[e], extra]);
+    });
+    const widths = (PROT_WIDTHS[sh.key] || []).concat([16, 42]);
+    const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
+    sheetTags.push('<sheet name="' + xesc(sh.name) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
+    rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
+  });
+  const z = new JSZip();
+  let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
+  PROT_SHEETS.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
+  ct += '</Types>';
+  z.file('[Content_Types].xml', ct);
+  z.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><name val="Arial"/><sz val="12"/><color rgb="FF000000"/></font><font><name val="Arial"/><sz val="12"/><b/><color rgb="FFFFFFFF"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor rgb="FF000000"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf><xf numFmtId="0" fontId="1" fillId="1" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment wrapText="1" vertical="top" horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
+  z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+  z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheetTags.join('') + '</sheets></workbook>');
+  z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels.join('') + '</Relationships>');
+  sheetsXml.forEach((xml, si) => z.file('xl/worksheets/sheet' + (si + 1) + '.xml', xml));
+  const blob = await z.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const now = new Date(), p2 = n => String(n).padStart(2, '0');
+  const fname = 'Life_After_the_Hippopotamus_V' + p2(now.getDate()) + '.' + p2(now.getMonth() + 1) + '.' + p2(now.getFullYear() % 100) + '.xlsx';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+}
+
+// ---------- Inicio ----------
+if (window.LOGO_EMB) { $('escudo').src = window.LOGO_EMB; }
+loadLocal();
+buildChips();
+renderTodo();
+if (FB_CONFIG && window.firebase) {
+  try {
+    firebase.initializeApp(FB_CONFIG);
+    const db = firebase.database();
+    estadosRef = db.ref('asistencia/hipopotamo-gestion/estados');
+    rosterRef = db.ref('asistencia/hipopotamo-gestion/roster');
+    agregadosRef = db.ref('asistencia/hipopotamo-gestion/agregados');
+    listaRef = db.ref('asistencia/hipopotamo/lista');
+    db.ref('.info/connected').on('value', s => {
+      const on = !!s.val();
+      $('conn').className = 'conn' + (on ? ' on' : '');
+      $('connTxt').textContent = on ? 'En línea · sincronizando en vivo' : 'Sin conexión · los cambios se guardan en este dispositivo';
+    });
+    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); });
+    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); });
+    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); });
+  } catch (e) {
+    $('connTxt').textContent = 'Sin conexión · los cambios se guardan en este dispositivo';
+  }
+} else {
+  $('connTxt').textContent = 'Sin conexión · los cambios se guardan en este dispositivo';
+}
+</script>
+</body>
+</html>
