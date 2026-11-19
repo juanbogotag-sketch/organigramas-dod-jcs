@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=30">
+  <link rel="stylesheet" href="css/repositorio.css?v=31">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -225,6 +225,7 @@
       <button id="evListX" type="button" aria-label="Cerrar">✕ Cerrar</button>
       <h2 class="sugtitle">Eventos guardados</h2>
       <p class="evhint">Los eventos abiertos para trabajar. Toca «Abrir» para cargar un evento y agregar o quitar invitados; la cantidad de invitados se actualiza con la lista provisional del momento.</p>
+      <p id="evListMsg" class="evhint"></p>
       <div id="evList"></div>
       <div class="mrow"><button id="evListNew" type="button" class="p">🎉 Crear evento nuevo</button></div>
     </div>
@@ -242,7 +243,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=6"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=34"></script>
+  <script src="js/repositorio.js?v=35"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
