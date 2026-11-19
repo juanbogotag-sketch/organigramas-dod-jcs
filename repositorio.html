@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=27">
+  <link rel="stylesheet" href="css/repositorio.css?v=28">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -54,6 +54,14 @@
         <div class="col" id="colR"></div>
       </div>
       <div class="colsB"><div class="colB" id="colB"></div></div>
+      <div class="homesch">
+        <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
+          aria-label="Buscar en todos los perfiles">
+      </div>
+      <div id="gresults"></div>
+      <div class="evrow">
+        <button id="btnEvento" type="button" class="p evbtn">🎉 Crear evento</button>
+      </div>
       <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
       </footer>
     </section>
@@ -152,6 +160,39 @@
     </div>
   </div>
 
+  <div id="evModal" hidden role="dialog" aria-modal="true" aria-label="Crear evento">
+    <div class="mbox">
+      <button id="evX" type="button" aria-label="Cerrar">✕ Cerrar</button>
+      <h2 class="sugtitle">Crear evento</h2>
+      <p class="evhint">Selecciona perfiles del Repositorio con la carpeta (abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con +) y añade aquí a las personas externas que no tienen perfil. La descarga incluye la matriz con todos ellos y, en una segunda pestaña, la lista de invitados del evento «Protegiendo las Américas».</p>
+      <div class="evsec">
+        <b>Perfiles seleccionados de la carpeta: <span id="evCartN">0</span></b>
+        <div id="evCartList"></div>
+      </div>
+      <div class="evsec">
+        <b>Persona externa (sin perfil en el Repositorio)</b>
+        <div class="evform">
+          <input id="exFn" placeholder="Nombre *" autocomplete="off">
+          <input id="exLn" placeholder="Apellido *" autocomplete="off">
+          <input id="exTitle" placeholder="Cargo / Job Title" autocomplete="off">
+          <input id="exOffice" placeholder="Oficina / Office" autocomplete="off">
+          <input id="exOrg" placeholder="Organización / Organization" autocomplete="off">
+          <input id="exType" placeholder="Tipo de organización" autocomplete="off">
+          <input id="exEmail" type="email" placeholder="Correo / E-mail" autocomplete="off">
+          <input id="exOther" placeholder="Otro contacto" autocomplete="off">
+        </div>
+        <div class="mrow"><button id="exAdd" type="button" class="p">+ Agregar persona externa</button></div>
+        <div id="exList"></div>
+      </div>
+      <p id="evMsg"></p>
+      <div class="mrow">
+        <button id="evDl" type="button" class="p">📊 Descargar matriz del evento (.xlsx)</button>
+        <a id="evDlA" hidden></a>
+        <button id="evClear" type="button">Vaciar personas externas</button>
+      </div>
+    </div>
+  </div>
+
   <div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
     <img id="zoomImg" alt="">
     <p>Toca o haz clic para cerrar</p>
@@ -164,7 +205,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=5"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=28"></script>
+  <script src="js/repositorio.js?v=29"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
