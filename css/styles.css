@@ -1035,3 +1035,12 @@ body:not(.dev-mobile) #phandle:hover {
   margin-bottom: 12px;
 }
 #backRepo:hover { background: #1D5C63; }
+
+/* Botón grande de regreso al menú principal (inicio.html). */
+.homebtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #0a1d38; color: #fff; font-size: 16px; font-weight: 700;
+  padding: 12px 20px; border: none; border-radius: 999px; cursor: pointer;
+  font-family: inherit; text-decoration: none; line-height: 1.2;
+}
+.homebtn:hover { background: #1d5c63; color: #fff; }

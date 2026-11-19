@@ -66,4 +66,37 @@
     if (eml) eml.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
     setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
   })();
+
+  // ---------- Buscador de categorías (menú principal) ----------
+  // Mismo patrón que el buscador de portada de embajadores.html (#hq):
+  // mínimo 2 caracteres, sin tildes; cada resultado abre su categoría
+  // en repositorio.html con ?cat=<id>.
+  (function buscador() {
+    const hq = $('#hq'), hsres = $('#hsres');
+    if (!hq || !hsres) return;
+    const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const CATS = [
+      { id: 'ejecutivo', label: 'Poder Ejecutivo', hint: 'Cargos del Gobierno de EE. UU.', kw: 'ejecutivo gobierno ee uu estados unidos dod jcs guerra defensa secretario' },
+      { id: 'legislativo', label: 'Poder Legislativo', hint: 'Congreso, comités y staffers', kw: 'legislativo congreso senado camara representantes comites staffers' },
+      { id: 'judicial', label: 'Poder Judicial', hint: 'Jueces y tribunales', kw: 'judicial jueces tribunales corte suprema justicia' },
+      { id: 'centros', label: 'Centros de pensamiento', hint: 'Think tanks', kw: 'centros pensamiento think tank atlantic council' },
+      { id: 'academia', label: 'Academia y universidades', hint: 'Universidades', kw: 'academia universidad universidades profesores' },
+      { id: 'embajada', label: 'Embajada de Colombia', hint: 'Agregados de la Embajada en Washington', kw: 'embajada colombia agregados washington defensa militar' },
+      { id: 'otros', label: 'Otros', hint: 'Demás perfiles', kw: 'otros demas' }
+    ];
+    hq.addEventListener('input', () => {
+      const t = norm(hq.value.trim());
+      if (t.length < 2) { hsres.innerHTML = ''; return; }
+      const hits = CATS.filter(c => norm(c.label + ' ' + c.hint + ' ' + c.kw).includes(t));
+      hsres.innerHTML = hits.length
+        ? hits.map(c => '<button type="button" class="cat" data-cat="' + c.id + '">' +
+            '<span class="cl">' + esc(c.label) + '</span>' +
+            '<span class="cn">' + esc(c.hint) + ' →</span></button>').join('')
+        : '<p class="hslab">Sin resultados para «' + esc(hq.value.trim()) + '».</p>';
+      hsres.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => {
+        location.href = 'repositorio.html?cat=' + b.dataset.cat;
+      }));
+    });
+  })();
 })();

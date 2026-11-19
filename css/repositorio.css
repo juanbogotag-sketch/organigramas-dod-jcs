@@ -412,3 +412,12 @@ body.selmode .selbar { display: flex; }
 }
 .selbar button:hover { background: #eef1f3; }
 .selbar button.on { background: #2f3b4c; color: #fff; }
+
+/* Botón grande de regreso al menú principal (inicio.html). */
+.homebtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blue); color: #fff; font-size: 16px; font-weight: 700;
+  padding: 12px 20px; border: none; border-radius: 999px; cursor: pointer;
+  font-family: inherit; text-decoration: none; line-height: 1.2;
+}
+.homebtn:hover { background: var(--blue2); color: #fff; }

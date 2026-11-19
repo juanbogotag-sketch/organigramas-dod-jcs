@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=26">
+  <link rel="stylesheet" href="css/repositorio.css?v=27">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -42,7 +42,8 @@
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Base de datos de perfiles</p>
     <div class="hlinks">
-      <button type="button" class="hbtn" id="btnLeg" onclick="location.href='congreso.html'">Ir al Poder Legislativo</button>
+      <a class="homebtn" href="inicio.html">← Menú principal</a>
+      <button type="button" class="hbtn" id="btnLeg" onclick="location.href='congreso.html'">Ver Congreso</button>
     </div>
   </header>
 
@@ -163,7 +164,7 @@
   <script src="js/datos_ct.js"></script>
   <script src="js/datos_foro.js"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=23"></script>
+  <script src="js/repositorio.js?v=24"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }

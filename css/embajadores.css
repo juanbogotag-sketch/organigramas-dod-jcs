@@ -445,3 +445,12 @@ table.tab th { background: #eef2f7; color: var(--blue); }
 .repo-link { background: var(--blue); border-color: var(--blue); margin-bottom: 14px; }
 .repo-link .cl { color: #fff; }
 .repo-link .cn { color: #cdd8e6; }
+
+/* Botón grande de regreso al menú principal (inicio.html). */
+.homebtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blue); color: #fff; font-size: 16px; font-weight: 700;
+  padding: 12px 20px; border: none; border-radius: 999px; cursor: pointer;
+  font-family: inherit; text-decoration: none; line-height: 1.2;
+}
+.homebtn:hover { background: var(--blue2); color: #fff; }

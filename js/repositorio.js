@@ -914,4 +914,15 @@
   renderCart();
 
   renderCats();
+
+  // Enlace profundo desde el buscador del menú principal (inicio.html):
+  // repositorio.html?cat=<id> abre esa categoría directamente.
+  (function deepLink() {
+    try {
+      const cat = new URLSearchParams(location.search).get('cat');
+      if (!cat || !CATS.some(c => c.id === cat)) return;
+      if (cat === 'legislativo' && inCat('legislativo').length === 0) { location.href = 'congreso.html'; return; }
+      openCat(cat);
+    } catch (e) {}
+  })();
 })();
