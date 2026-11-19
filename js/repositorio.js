@@ -568,7 +568,7 @@
   // Correos de la base del evento de la Embajada (V17.11.26): personas del
   // foro que viven en Torio sin ser nodos del organigrama (clave «ex|<id>»).
   const CONTACTOS_EX = {
-    "gonzalez-bogota": [{"k": "Correo de contacto", "v": "juan.bogotag@gmail.com"}],
+    "gonzalez-bogota": [{"k": "Correo de contacto", "v": "jgonzalez@colombiaemb.org"}],
     beasley: [{ k: 'Correo oficial', v: 'John.A.Beasley@usdoj.gov' }],
     barbulescu: [{ k: 'Correo oficial', v: 'Ruxandra.Barbulescu@usdoj.gov' }],
     kocheulov: [{ k: 'Correo oficial', v: 'Vladimir.Kocheulov@usdoj.gov' }],
