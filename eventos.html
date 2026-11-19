@@ -36,6 +36,10 @@
   .nota { text-align: center; color: #7b8aa0; font-size: 12.5px; font-weight: 600; margin-top: 18px; }
   .crearbtn { display: block; max-width: 340px; margin: 20px auto 0; background: #0a1d38; color: #fff; text-decoration: none; text-align: center; font-weight: 800; font-size: 15px; padding: 14px 20px; border-radius: 999px; }
   .crearbtn:hover { background: #12294d; }
+  .evbtns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+  .evbtns .crearbtn { flex: 1 1 220px; margin: 0; }
+  .crearbtn.sec { background: #fff; color: #0a1d38; border: 2px solid #0a1d38; }
+  .crearbtn.sec:hover { background: #eef1f3; }
 </style>
 </head>
 <body>
@@ -54,7 +58,10 @@
     <button class="navbtn" id="btnNext" type="button">Semana siguiente ▶</button>
   </div>
   <div class="semana" id="semana"></div>
-  <a class="crearbtn" href="repositorio.html?crear=1">🎉 Crear evento</a>
+  <div class="evbtns">
+    <a class="crearbtn" href="repositorio.html?crear=1">🎉 Crear evento</a>
+    <a class="crearbtn sec" href="proyectos.html">📁 Proyectos de eventos</a>
+  </div>
   <p class="nota">Toca un evento para abrirlo: su checklist de asistencia o su lista de invitados en el Repositorio.</p>
 </main>
 <script src="js/logo.js"></script>
