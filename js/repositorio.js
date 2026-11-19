@@ -1082,7 +1082,6 @@
     $('#evModal').hidden = true;
     $('#evMsg').textContent = '';
   }
-  $('#btnEvento').addEventListener('click', () => { if (curEvent) openEventoNuevo(); else openEvModal(); });
   $('#evX').addEventListener('click', closeEvModal);
   $('#evModal').addEventListener('click', e => { if (e.target === $('#evModal')) closeEvModal(); });
   ['#evName', '#evDate', '#evPlace'].forEach(sel => $(sel).addEventListener('input', syncEvFieldsToEvent));
@@ -1527,6 +1526,20 @@
       if (!cat || !CATS.some(c => c.id === cat)) return;
       if (cat === 'legislativo' && inCat('legislativo').length === 0) { location.href = 'congreso.html'; return; }
       openCat(cat);
+    } catch (e) {}
+  })();
+
+  // Enlaces desde la página de Eventos (eventos.html): ?crear=1 abre el
+  // formulario de un evento nuevo; ?evento=<id> abre ese evento guardado.
+  (function deepLinkEventos() {
+    try {
+      const q = new URLSearchParams(location.search);
+      const crear = q.get('crear') === '1';
+      const eid = q.get('evento');
+      if (!crear && !eid) return;
+      if (crear) { if (curEvent) openEventoNuevo(); else openEvModal(); }
+      else if (eid) { const ev = events.find(x => x.id === eid); if (ev) abrirEvento(ev); }
+      history.replaceState(null, '', location.pathname);
     } catch (e) {}
   })();
 })();
