@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Life After the Hippopotamus — Control de asistencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Montserrat', Arial, sans-serif; background: #f2f4f8; color: #16283f; }
+  .tricolor { height: 7px; background: linear-gradient(90deg, #FCD116 0 33.4%, #003893 33.4% 66.7%, #CE1126 66.7% 100%); }
+  header { background: #0a1d38; color: #fff; padding: 26px 18px 20px; position: relative; overflow: hidden; }
+  header .watermark { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); height: 190%; opacity: .10; pointer-events: none; }
+  header h1 { font-size: clamp(22px, 4.5vw, 34px); font-weight: 800; letter-spacing: .2px; position: relative; }
+  header p { margin-top: 6px; font-size: 13.5px; color: #c8d5e6; font-weight: 600; position: relative; }
+  .conn { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; position: relative; }
+  .conn .dot { width: 9px; height: 9px; border-radius: 50%; background: #e0a800; }
+  .conn.on .dot { background: #2ecc71; }
+  .conn.off .dot { background: #e74c3c; }
+  .tablero { position: sticky; top: 0; z-index: 20; background: #f2f4f8; padding: 14px 14px 10px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 980px; margin: 0 auto; }
+  .stat { background: #fff; border-radius: 14px; padding: 12px 8px; text-align: center; box-shadow: 0 2px 10px rgba(10,29,56,.08); border-top: 4px solid #0a1d38; }
+  .stat.verde { border-top-color: #1e9e5a; }
+  .stat.ambar { border-top-color: #e0a800; }
+  .stat.azul { border-top-color: #003893; }
+  .stat.rojo { border-top-color: #CE1126; }
+  .stat b { display: block; font-size: clamp(22px, 5vw, 34px); font-weight: 800; color: #0a1d38; line-height: 1.05; }
+  .stat span { font-size: clamp(9.5px, 2.4vw, 12px); font-weight: 700; color: #5a6b82; text-transform: uppercase; letter-spacing: .4px; }
+  .barra { max-width: 980px; margin: 10px auto 0; background: #dde4ee; border-radius: 999px; height: 10px; overflow: hidden; }
+  .barra i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #1e9e5a, #27c46f); transition: width .4s ease; }
+  main { max-width: 980px; margin: 0 auto; padding: 6px 14px 40px; }
+  .controles { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 14px; }
+  .controles input[type="search"] { flex: 1 1 230px; padding: 13px 16px; border: 2px solid #c9d4e4; border-radius: 12px; font: 600 15px 'Montserrat', sans-serif; background: #fff; }
+  .controles input[type="search"]:focus { outline: none; border-color: #0a1d38; }
+  .chips { display: flex; gap: 6px; }
+  .chip { border: 2px solid #0a1d38; background: #fff; color: #0a1d38; font: 700 13px 'Montserrat', sans-serif; padding: 9px 14px; border-radius: 999px; cursor: pointer; }
+  .chip.act { background: #0a1d38; color: #fff; }
+  .btn { border: none; cursor: pointer; font: 700 13.5px 'Montserrat', sans-serif; padding: 12px 16px; border-radius: 12px; }
+  .btn-oro { background: #e0a800; color: #0a1d38; }
+  .btn-borde { background: #fff; border: 2px solid #0a1d38; color: #0a1d38; }
+  .form-extra { display: none; background: #fff; border: 2px dashed #e0a800; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .form-extra.abierto { display: block; }
+  .form-extra h3 { font-size: 14px; color: #0a1d38; margin-bottom: 10px; }
+  .form-extra .fila { display: flex; flex-wrap: wrap; gap: 8px; }
+  .form-extra input { flex: 1 1 180px; padding: 11px 13px; border: 2px solid #c9d4e4; border-radius: 10px; font: 600 14px 'Montserrat', sans-serif; }
+  h2.seccion { font-size: 15px; font-weight: 800; color: #0a1d38; margin: 18px 2px 10px; text-transform: uppercase; letter-spacing: .5px; }
+  .invitado { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(10,29,56,.06); cursor: pointer; border-left: 5px solid transparent; -webkit-tap-highlight-color: transparent; }
+  .invitado .check { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid #b9c6d8; display: flex; align-items: center; justify-content: center; font-size: 19px; color: transparent; font-weight: 800; background: #fff; }
+  .invitado.llego { border-left-color: #1e9e5a; background: #f0faf3; }
+  .invitado.llego .check { background: #1e9e5a; border-color: #1e9e5a; color: #fff; }
+  .invitado .quien { flex: 1; min-width: 0; }
+  .invitado .nombre { font-weight: 700; font-size: 15.5px; color: #0a1d38; }
+  .invitado.llego .nombre { color: #146c3c; }
+  .invitado .org { font-size: 12.5px; color: #5a6b82; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .invitado .hora { font-size: 11.5px; font-weight: 800; color: #1e9e5a; white-space: nowrap; }
+  .extra { display: flex; align-items: center; gap: 10px; background: #fff8e1; border: 1.5px solid #f0d48a; border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; }
+  .extra .quien { flex: 1; min-width: 0; }
+  .extra .nombre { font-weight: 700; font-size: 15px; color: #0a1d38; }
+  .extra .org { font-size: 12.5px; color: #5a6b82; font-weight: 600; }
+  .extra .hora { font-size: 11.5px; font-weight: 800; color: #9a7b00; white-space: nowrap; }
+  .extra button { border: none; background: #CE1126; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 15px; cursor: pointer; flex: 0 0 auto; }
+  .vacio { text-align: center; color: #5a6b82; font-weight: 600; padding: 22px 0; font-size: 14px; }
+  footer { text-align: center; color: #7b8aa0; font-size: 12px; font-weight: 600; padding: 0 16px 30px; }
+  .aviso-config { display: none; background: #fdecea; border: 1.5px solid #CE1126; color: #7c1d12; border-radius: 12px; padding: 14px; font-weight: 700; font-size: 14px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<div class="tricolor"></div>
+<header>
+  <img class="watermark" id="escudo" alt="">
+  <h1>Life After the Hippopotamus</h1>
+  <p>Control de asistencia · Embajada de Colombia en Estados Unidos</p>
+  <div class="conn" id="conn"><span class="dot"></span><span id="connTxt">Conectando…</span></div>
+</header>
+
+<div class="tablero">
+  <div class="stats">
+    <div class="stat verde"><b id="stLista">0</b><span>Llegaron (de la lista)</span></div>
+    <div class="stat ambar"><b id="stFuera">0</b><span>No estaban en lista</span></div>
+    <div class="stat azul"><b id="stTotal">0</b><span>Total llegados</span></div>
+    <div class="stat rojo"><b id="stFaltan">157</b><span>Faltan por llegar</span></div>
+  </div>
+  <div class="barra"><i id="barraFill"></i></div>
+</div>
+
+<main>
+  <div class="aviso-config" id="avisoConfig">La conexión en línea aún no está configurada: los cambios no se sincronizarán entre dispositivos.</div>
+
+  <div class="controles">
+    <input type="search" id="buscar" placeholder="Buscar invitado por nombre u organización…">
+    <div class="chips">
+      <button class="chip act" data-f="todos">Todos</button>
+      <button class="chip" data-f="faltan">Faltan</button>
+      <button class="chip" data-f="llegaron">Llegaron</button>
+    </div>
+    <button class="btn btn-oro" id="btnExtra">＋ Persona no invitada</button>
+    <button class="btn btn-borde" id="btnCsv">⬇ Reporte CSV</button>
+  </div>
+
+  <div class="form-extra" id="formExtra">
+    <h3>Registrar a alguien que no está en la lista</h3>
+    <div class="fila">
+      <input type="text" id="exNombre" placeholder="Nombre completo *">
+      <input type="text" id="exOrg" placeholder="Organización (opcional)">
+      <button class="btn btn-oro" id="btnGuardarExtra">Registrar llegada</button>
+    </div>
+  </div>
+
+  <h2 class="seccion">Invitados · <span id="cuentaLista">157</span> en la lista</h2>
+  <div id="lista"></div>
+
+  <h2 class="seccion">No estaban en la lista · <span id="cuentaExtras">0</span></h2>
+  <div id="extras"><div class="vacio">Todavía no llega nadie fuera de la lista.</div></div>
+</main>
+
+<footer>Los cambios se sincronizan en vivo en todos los dispositivos que tengan abierta esta página. Toca un invitado para marcar su llegada; tócalo de nuevo para desmarcarla.</footer>
+
+<script src="js/logo.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const INVITADOS = [{"id":"h001","n":"Miguel Abulhajat","o":"Embassy of Indonesia"},{"id":"h002","n":"Miguel Abulhajat","o":"Embassy of Indonesia"},{"id":"h003","n":"Federico Alvarez","o":"National Museum of Health and Medicine"},{"id":"h004","n":"Maryam Amouzegar","o":"Reach Media"},{"id":"h005","n":"Maria Elisa Arango","o":"N/A"},{"id":"h006","n":"Maria camila ariza","o":"Iadb"},{"id":"h007","n":"Jarrett Arnold","o":"AU"},{"id":"h008","n":"Jaylene Arnold","o":"AU"},{"id":"h009","n":"chase ashby","o":"N/A"},{"id":"h010","n":"Liz Ashe","o":"Ashe & Norton"},{"id":"h011","n":"Eva Baleitilagica","o":"Embassy of Fiji/ First Secretary"},{"id":"h012","n":"Jonathan Band","o":"policybandwidth"},{"id":"h013","n":"Sandra Beruto","o":"Vice President of the Friends of the Art Museum of the Americas"},{"id":"h014","n":"Adah Rose Bitterbaum","o":"Adah Rose Gallery"},{"id":"h015","n":"Antonio Blasco","o":"World Bank"},{"id":"h016","n":"Adriana Buenaventura","o":"AUWCL"},{"id":"h017","n":"Pamela Cardozo","o":"Personal"},{"id":"h018","n":"Jessica Cardwell","o":"Myers Appraisal"},{"id":"h019","n":"Daniela Castaneda","o":"American University"},{"id":"h020","n":"Juan Castillo","o":"PAHO/who"},{"id":"h021","n":"Maria Teresa Castro","o":"american university"},{"id":"h022","n":"Beatriz Conto","o":"OEA"},{"id":"h023","n":"Barry J. Cooper, Jr.","o":"AUWCL LL.M. Trade Law and Int’l Business candidate"},{"id":"h024","n":"Diego Corrales","o":"BIOiDEAS"},{"id":"h025","n":"Jeronimo Cortes","o":"none"},{"id":"h026","n":"User Cristina Cristina","o":"LaMegaCapital.com"},{"id":"h027","n":"Silvia Dangond","o":"Legna Communications LLC"},{"id":"h028","n":"Joan Danziger","o":"Danziger Sculpture Studio"},{"id":"h029","n":"Anamaria Daza","o":"Personal"},{"id":"h030","n":"Claudia De Gomez","o":"Independiente"},{"id":"h031","n":"Camille DeSanto","o":"Transformer"},{"id":"h032","n":"Katrin DeWindt","o":"U.S. Department of State"},{"id":"h033","n":"Melinda Estridge","o":"Long and foster"},{"id":"h034","n":"Cristina Fandino","o":"La Mega Capital"},{"id":"h035","n":"Christine Farley","o":"American University"},{"id":"h036","n":"William Farley","o":"Dept. of Labor"},{"id":"h037","n":"Petter Farstad","o":"Embassy of Norway"},{"id":"h038","n":"Sara Ferrer","o":"Georgetown Law"},{"id":"h039","n":"Heather Ferris","o":"freelancer"},{"id":"h040","n":"Leesa Fields","o":"policybandwidth"},{"id":"h041","n":"María Paola FIgueroa","o":"IIF"},{"id":"h042","n":"Fredrik Fosser","o":"Norwegian Embassy"},{"id":"h043","n":"Hadjira Foudhil","o":"USARC"},{"id":"h044","n":"Stephanie Fribourg","o":"Belgrano group"},{"id":"h045","n":"Solongo Ganbat","o":"Embassy of Mongolia, Counselor"},{"id":"h046","n":"Michael Garcia","o":"ICF"},{"id":"h047","n":"Tashina Giraud","o":"American University"},{"id":"h048","n":"Carlos Gomez","o":"Independiente"},{"id":"h049","n":"Daniela Gomez","o":"N/a"},{"id":"h050","n":"Sergio Gomez","o":"El Tiempo"},{"id":"h051","n":"Daniela Gomez Montero","o":"Georgetown University"},{"id":"h052","n":"Paris Gorham","o":"Maryland State"},{"id":"h053","n":"Gaby Grebski","o":"Oneness Family"},{"id":"h054","n":"Cristian Grueso","o":"Afro Latino Development Fund"},{"id":"h055","n":"Luis Fernando Grueso Tenorio","o":"Uniandinos en D.C."},{"id":"h056","n":"Pablo Guete","o":"Georgetown University"},{"id":"h057","n":"Tamia H","o":"Petal House Press/Banks Posie"},{"id":"h058","n":"Naoya Hashimoto","o":"ASA"},{"id":"h059","n":"Stuart Heiser","o":"Self"},{"id":"h060","n":"Adriana Henao","o":"Saphi"},{"id":"h061","n":"Tanny Ho","o":"AU Alumni"},{"id":"h062","n":"Jackie Huss","o":"National Museum of Health and Medicine"},{"id":"h063","n":"Stephanie Ibanez","o":"American University Washington College of Law"},{"id":"h064","n":"Charles Philippe Jean-Pierre","o":"CJP Gallery"},{"id":"h065","n":"Katherine Jones","o":"Public Citizen"},{"id":"h066","n":"Emerson Katz","o":"American University"},{"id":"h067","n":"David Kenkadze","o":"Embassy of Georgia to the US"},{"id":"h068","n":"Burcu Kilic","o":"TTG Forum"},{"id":"h069","n":"Bonnie Kogod","o":"Danziger Sculpture Studio"},{"id":"h070","n":"Bonnie Kogod","o":"DTSBDC"},{"id":"h071","n":"James Lau","o":"American University"},{"id":"h072","n":"Mitchell Lauren","o":"N-A"},{"id":"h073","n":"Naomi Le","o":"friend"},{"id":"h074","n":"Aria Lee","o":"Oneness family highschool"},{"id":"h075","n":"STEPHANIE LEPARMENTIER","o":"French Embassy, INPI France"},{"id":"h076","n":"Jose Linares","o":"BID"},{"id":"h077","n":"Laura Lindarte","o":"OEA"},{"id":"h078","n":"Martin Llano","o":"N/A"},{"id":"h079","n":"Martina Loncar","o":"N/A"},{"id":"h080","n":"James Love","o":"KEI"},{"id":"h081","n":"yevheniia lukianchenko","o":"Embassy of Ukraine"},{"id":"h082","n":"Peter Maybarduk","o":"Public Citizen"},{"id":"h083","n":"Litza Mayorga","o":"Asoc de Egresado de Universidad de Los Andes Uniandinos"},{"id":"h084","n":"Kirsty McDonald","o":"Self employed"},{"id":"h085","n":"Maria Jose Medina Moreno","o":"Georgetown University - Fulbrighter Colombia"},{"id":"h086","n":"Juanita Mendoza","o":"Idb"},{"id":"h087","n":"Jason Miller","o":"AU Washington College of Law"},{"id":"h088","n":"Jason Miller","o":"AU Washington College of Law"},{"id":"h089","n":"Victor Monroy","o":"The law Office of Miriam Osorio"},{"id":"h090","n":"Dennis Morales","o":"none"},{"id":"h091","n":"Isabel Morales","o":"Spectrum News"},{"id":"h092","n":"Marco Mosquera","o":"NTN24"},{"id":"h093","n":"Richard Fredy Muñoz","o":"Noticias GPS"},{"id":"h094","n":"Jack Newell","o":"Swyft Legal"},{"id":"h095","n":"Noemi Nuñez","o":"Oneness"},{"id":"h096","n":"Conor o'Regan","o":"Self"},{"id":"h097","n":"SEDAT ONAL","o":"EMBASSY OF THE REPUBLIC OF TURKIYE"},{"id":"h098","n":"Miriam Osorio","o":"The Law Office of Mirism Osorio"},{"id":"h099","n":"Robert Otoole","o":"Long and foster"},{"id":"h100","n":"Sam Painter","o":"VB Spine"},{"id":"h101","n":"Paul Pelletier Jr","o":"American University"},{"id":"h102","n":"Liza Beatriz Pena Pena","o":"Fhfa"},{"id":"h103","n":"Natalie Pien","o":"Self"},{"id":"h104","n":"Natalie Pien","o":"Self"},{"id":"h105","n":"Maria Paula Pinto","o":"IADB"},{"id":"h106","n":"Glenny Prabakaran","o":"American University Washington College of Law"},{"id":"h107","n":"Fabiola R. Delgado","o":"Independent Curator"},{"id":"h108","n":"Melissa Ramos","o":"Loudoun County Law Library"},{"id":"h109","n":"Patrick Ramos","o":"Loudoun County Law Library"},{"id":"h110","n":"Victoria Reis","o":"Transformer"},{"id":"h111","n":"Elvira Maria Restrepo","o":"George Washington University"},{"id":"h112","n":"Jayleen Reyes","o":"Oneness"},{"id":"h113","n":"Maria Eugenia Reyes","o":"Embassy of Ecuador"},{"id":"h114","n":"Manuela Reyes Restrepo","o":"Inter-American Development Bank"},{"id":"h115","n":"Paul Rieder","o":"(Spouse)"},{"id":"h116","n":"Maria Camila Rincon","o":"Foley Hoag LLP"},{"id":"h117","n":"María Camila Roa","o":"Noticias Caracol"},{"id":"h118","n":"Milena Rodriguez","o":"Dnda"},{"id":"h119","n":"Kalista Rojas","o":"American University Museum"},{"id":"h120","n":"Miller Rojas","o":"COURS OEA"},{"id":"h121","n":"Carolina Rojas Hayes","o":"IADB"},{"id":"h122","n":"Betsy Romero","o":"LAMB PCS"},{"id":"h123","n":"Fabiola Rondon Delgado","o":"Independent curator"},{"id":"h124","n":"Ximena Rozo","o":"Ximena Rozo Design"},{"id":"h125","n":"Tahniat Saulat","o":"American University"},{"id":"h126","n":"Steve Sawtelle","o":"Self"},{"id":"h127","n":"Steve Sawtelle","o":"Self"},{"id":"h128","n":"Linnea Schuster","o":"Washington College of Law"},{"id":"h129","n":"Luz Angela Serrano","o":"OEA"},{"id":"h130","n":"Jeanne Shaheen","o":"Interspace Gallery"},{"id":"h131","n":"Richard Shaheen","o":"Interspace Gallery"},{"id":"h132","n":"Jillian Sher","o":"Oneness Family High School"},{"id":"h133","n":"Maria Paola Silva","o":"CRR"},{"id":"h134","n":"Eric Sites","o":"TTG Forum"},{"id":"h135","n":"Kai Sites","o":"TTG"},{"id":"h136","n":"Liam Sites","o":"TTG"},{"id":"h137","n":"Maja Smid","o":"Embassy of Slovenia"},{"id":"h138","n":"Petar Stojanovic","o":"Embassy of Republic of Serbia"},{"id":"h139","n":"Emily Strulson","o":"Emily Strulson Studios"},{"id":"h140","n":"Belgacem Tabai","o":"Permanente Mission of Algeria"},{"id":"h141","n":"Maria Luisa Terrones Alderete","o":"."},{"id":"h142","n":"Hanna Thompson","o":"Transformer"},{"id":"h143","n":"Juan Antonio Torres","o":"OAS"},{"id":"h144","n":"Nestor Torres","o":"Embassy of Guatemala"},{"id":"h145","n":"Santiago Torres Preciado","o":"CommonSense American"},{"id":"h146","n":"Felipe Trujillo","o":"Esri Colombia"},{"id":"h147","n":"Lowe Turner","o":"American University"},{"id":"h148","n":"Luz Marina Umbasia Bernal","o":"Public Citizen"},{"id":"h149","n":"Paula Urbano","o":"Uniandes"},{"id":"h150","n":"Ana Vargas","o":"N/A"},{"id":"h151","n":"Chris Warren","o":"freelancer"},{"id":"h152","n":"Nancy Weiss","o":"American University Washington College of Law"},{"id":"h153","n":"Megan Whiteman","o":"Public Citizen"},{"id":"h154","n":"Michael Wiesman","o":"Personal"},{"id":"h155","n":"Martina Yannone","o":"Organization of American States (OAS)"},{"id":"h156","n":"Andres Zambrano","o":"N/A"},{"id":"h157","n":"Alejandra Zamora","o":"Georgetown"}];
+const FB_CONFIG = {
+    apiKey: "AIzaSyD9fVRwR4VbNWxz_uRYFV00DsOt0K6m-Cc",
+    authDomain: "asistencia-eventos-cc286.firebaseapp.com",
+    databaseURL: "https://asistencia-eventos-cc286-default-rtdb.firebaseio.com",
+    projectId: "asistencia-eventos-cc286",
+    storageBucket: "asistencia-eventos-cc286.firebasestorage.app",
+    messagingSenderId: "1078332084015",
+    appId: "1:1078332084015:web:9297f883eb4ed7a767dbda"
+  };
+
+const $ = id => document.getElementById(id);
+const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const horaFmt = t => { try { return new Date(t).toLocaleTimeString('es-US', {hour: 'numeric', minute: '2-digit'}); } catch (e) { return ''; } };
+
+if (window.LOGO_EMB) { $('escudo').src = LOGO_EMB; }
+
+let checks = {};   // id -> {t}
+let extras = {};   // pushId -> {n, o, t}
+let filtro = 'todos';
+let db = null, checksRef = null, extrasRef = null;
+
+function renderContadores() {
+  const llegaron = INVITADOS.filter(g => checks[g.id]).length;
+  const fuera = Object.keys(extras).length;
+  $('stLista').textContent = llegaron;
+  $('stFuera').textContent = fuera;
+  $('stTotal').textContent = llegaron + fuera;
+  $('stFaltan').textContent = INVITADOS.length - llegaron;
+  $('barraFill').style.width = (INVITADOS.length ? (llegaron / INVITADOS.length * 100) : 0) + '%';
+  $('cuentaExtras').textContent = fuera;
+}
+
+function renderLista() {
+  const q = norm($('buscar').value);
+  const frag = document.createDocumentFragment();
+  let visibles = 0;
+  for (const g of INVITADOS) {
+    const llego = !!checks[g.id];
+    if (filtro === 'faltan' && llego) continue;
+    if (filtro === 'llegaron' && !llego) continue;
+    if (q && !norm(g.n + ' ' + g.o).includes(q)) continue;
+    visibles++;
+    const row = document.createElement('div');
+    row.className = 'invitado' + (llego ? ' llego' : '');
+    row.innerHTML = '<div class="check">✓</div><div class="quien"><div class="nombre">' + esc(g.n) + '</div><div class="org">' + esc(g.o || '') + '</div></div>' + (llego ? '<div class="hora">' + horaFmt(checks[g.id].t) + '</div>' : '');
+    row.addEventListener('click', () => toggle(g.id));
+    frag.appendChild(row);
+  }
+  const lista = $('lista');
+  lista.innerHTML = '';
+  if (!visibles) lista.innerHTML = '<div class="vacio">Nadie coincide con ese criterio.</div>';
+  else lista.appendChild(frag);
+  $('cuentaLista').textContent = INVITADOS.length;
+}
+
+function renderExtras() {
+  const cont = $('extras');
+  const ids = Object.keys(extras).sort((a, b) => (extras[a].t || 0) - (extras[b].t || 0));
+  if (!ids.length) { cont.innerHTML = '<div class="vacio">Todavía no llega nadie fuera de la lista.</div>'; return; }
+  cont.innerHTML = '';
+  for (const id of ids) {
+    const e = extras[id];
+    const row = document.createElement('div');
+    row.className = 'extra';
+    row.innerHTML = '<div class="quien"><div class="nombre">' + esc(e.n) + '</div><div class="org">' + esc(e.o || '') + '</div></div><div class="hora">' + horaFmt(e.t) + '</div>';
+    const btn = document.createElement('button');
+    btn.textContent = '✕'; btn.title = 'Quitar de la lista';
+    btn.addEventListener('click', () => { if (extrasRef) extrasRef.child(id).remove(); });
+    row.appendChild(btn);
+    cont.appendChild(row);
+  }
+}
+
+function renderTodo() { renderContadores(); renderLista(); renderExtras(); }
+
+function toggle(id) {
+  if (!checksRef) return;
+  if (checks[id]) checksRef.child(id).remove();
+  else checksRef.child(id).set({ t: firebase.database.ServerValue.TIMESTAMP });
+}
+
+$('buscar').addEventListener('input', renderLista);
+document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('act'));
+  ch.classList.add('act'); filtro = ch.dataset.f; renderLista();
+}));
+$('btnExtra').addEventListener('click', () => { $('formExtra').classList.toggle('abierto'); $('exNombre').focus(); });
+$('btnGuardarExtra').addEventListener('click', () => {
+  const n = $('exNombre').value.trim();
+  if (!n) { $('exNombre').focus(); return; }
+  if (!extrasRef) return;
+  extrasRef.push({ n: n, o: $('exOrg').value.trim(), t: firebase.database.ServerValue.TIMESTAMP });
+  $('exNombre').value = ''; $('exOrg').value = '';
+  $('formExtra').classList.remove('abierto');
+});
+$('btnCsv').addEventListener('click', () => {
+  const filas = [['Tipo', 'Nombre', 'Organización', 'Hora de llegada']];
+  for (const g of INVITADOS) if (checks[g.id]) filas.push(['Invitado', g.n, g.o || '', horaFmt(checks[g.id].t)]);
+  for (const id of Object.keys(extras)) filas.push(['No estaba en lista', extras[id].n, extras[id].o || '', horaFmt(extras[id].t)]);
+  const csv = filas.map(f => f.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'asistencia_hippopotamus.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+
+if (FB_CONFIG && window.firebase) {
+  firebase.initializeApp(FB_CONFIG);
+  db = firebase.database();
+  checksRef = db.ref('asistencia/hipopotamo/checks');
+  extrasRef = db.ref('asistencia/hipopotamo/extras');
+  db.ref('.info/connected').on('value', s => {
+    const on = !!s.val();
+    $('conn').className = 'conn ' + (on ? 'on' : 'off');
+    $('connTxt').textContent = on ? 'En línea · sincronizando en vivo' : 'Sin conexión · reintentando…';
+  });
+  checksRef.on('value', s => { checks = s.val() || {}; renderTodo(); });
+  extrasRef.on('value', s => { extras = s.val() || {}; renderTodo(); });
+} else {
+  $('avisoConfig').style.display = 'block';
+  $('connTxt').textContent = 'Sin configurar';
+}
+renderTodo();
+</script>
+</body>
+</html>
