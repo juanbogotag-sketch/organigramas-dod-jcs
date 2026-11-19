@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Proyectos de eventos — Matrices de invitados · Repositorio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Montserrat', Arial, sans-serif; background: #f2f4f8; color: #16283f; }
+  .tricolor { height: 7px; background: linear-gradient(90deg, #FCD116 0 33.4%, #003893 33.4% 66.7%, #CE1126 66.7% 100%); }
+  header { background: #0a1d38; color: #fff; padding: 26px 18px 20px; position: relative; overflow: hidden; }
+  header .watermark { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); height: 190%; opacity: .10; pointer-events: none; }
+  header h1 { font-size: clamp(24px, 5vw, 36px); font-weight: 800; position: relative; }
+  header p { margin-top: 6px; font-size: 13.5px; color: #c8d5e6; font-weight: 600; position: relative; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px 14px 44px; }
+  .volver { display: inline-block; background: #0a1d38; color: #fff; text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 10px 16px; border-radius: 999px; margin-bottom: 16px; }
+  .volver.ghost { background: #fff; color: #0a1d38; border: 2px solid #0a1d38; }
+  h2 { font-size: clamp(18px, 4vw, 22px); font-weight: 800; color: #0a1d38; margin: 6px 0 10px; }
+  .hint { color: #5a6b82; font-size: 13.5px; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .drop { border: 2px dashed #8fa3bd; border-radius: 16px; background: #fff; padding: 26px 16px; text-align: center; cursor: pointer; }
+  .drop.over { border-color: #e0a800; background: #fdf6e0; }
+  .drop .big { font-size: 17px; font-weight: 800; color: #0a1d38; }
+  .drop .small { font-size: 13px; font-weight: 600; color: #5a6b82; margin-top: 6px; line-height: 1.5; }
+  .msg { min-height: 20px; font-size: 13.5px; font-weight: 700; color: #0a1d38; margin: 10px 0 4px; }
+  .msg.err { color: #b3261e; }
+  .rowbtns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .btn { border: none; border-radius: 999px; padding: 12px 20px; font: 700 14px 'Montserrat', sans-serif; cursor: pointer; background: #0a1d38; color: #fff; }
+  .btn.sec { background: #fff; color: #0a1d38; border: 2px solid #0a1d38; }
+  .btn.danger { background: #fff; color: #b3261e; border: 2px solid #b3261e; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .proj { background: #fff; border-radius: 14px; padding: 16px; margin-top: 12px; box-shadow: 0 2px 8px rgba(10,29,56,.07); }
+  .proj h3 { font-size: 17px; font-weight: 800; color: #0a1d38; }
+  .proj .meta { font-size: 13px; font-weight: 600; color: #5a6b82; margin-top: 4px; }
+  .proj .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .proj .acts .btn { padding: 9px 15px; font-size: 13px; }
+  .empty { text-align: center; color: #7b8aa0; font-size: 14px; font-weight: 600; padding: 26px 10px; }
+  .pname { width: 100%; font: 800 clamp(18px, 4vw, 22px) 'Montserrat', sans-serif; color: #0a1d38; border: 1px solid transparent; border-radius: 10px; padding: 6px 10px; background: transparent; }
+  .pname:focus { border-color: #8fa3bd; background: #fff; outline: none; }
+  .formgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  @media (max-width: 640px) { .formgrid { grid-template-columns: 1fr; } }
+  .formgrid label { display: block; font-size: 12.5px; font-weight: 700; color: #5a6b82; }
+  .formgrid input { display: block; width: 100%; margin-top: 4px; min-height: 44px; border: 1px solid #c9d4e4; border-radius: 10px; padding: 8px 10px; font: 600 14px 'Montserrat', sans-serif; background: #fff; }
+  .tablewrap { overflow-x: auto; margin-top: 16px; background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(10,29,56,.07); }
+  table { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 13px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #e8edf3; vertical-align: top; }
+  th { background: #0a1d38; color: #fff; font-weight: 800; font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  td { font-weight: 600; }
+  td .qr { color: #5a6b82; font-size: 11.5px; word-break: break-all; }
+  .rowact { white-space: nowrap; }
+  .mini { border: 1px solid #c9d4e4; background: #fff; border-radius: 999px; padding: 6px 11px; font: 700 12px 'Montserrat', sans-serif; cursor: pointer; color: #0a1d38; }
+  .mini.del { color: #b3261e; border-color: #b3261e; }
+  .mini.yes { background: #b3261e; color: #fff; border-color: #b3261e; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="tricolor"></div>
+<header>
+  <img class="watermark" id="escudo" alt="">
+  <h1>📁 Proyectos de eventos</h1>
+  <p>Matrices de invitados · Embajada de Colombia en Estados Unidos</p>
+</header>
+<main>
+  <a class="volver" href="eventos.html">← Volver a Eventos</a>
+
+  <!-- Lista de proyectos -->
+  <div id="listView">
+    <h2>Matrices de invitados</h2>
+    <p class="hint">Aquí se crean las matrices que después se convierten en códigos QR para el registro de entrada. Cada proyecto guarda los datos principales de sus invitados: prefijo, nombre, apellido, cargo, oficina, organización, tipo, correo, otro contacto y el enlace del QR.</p>
+    <div class="drop" id="drop" role="button" tabindex="0" aria-label="Arrastrar una matriz de Excel o CSV">
+      <div class="big">📎 Arrastra aquí una matriz de Excel (.xlsx) o CSV</div>
+      <div class="small">O toca para elegir el archivo. Se reconocen las columnas Prefix, Name, Last Name, Job Title, Office, Organization, Organization Type, E-mail, Other Contact y QR.</div>
+      <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden>
+    </div>
+    <p class="msg" id="dropMsg"></p>
+    <div class="rowbtns">
+      <button class="btn" id="btnEmpty" type="button">＋ Proyecto vacío</button>
+    </div>
+    <div id="projectList"></div>
+  </div>
+
+  <!-- Editor de un proyecto -->
+  <div id="editorView" hidden>
+    <button class="volver ghost" id="backList" type="button">← Volver a los proyectos</button>
+    <input class="pname" id="pName" type="text" maxlength="120" aria-label="Nombre del proyecto">
+    <p class="hint" id="pMeta"></p>
+    <div class="formgrid" id="rowForm">
+      <label>Prefix / Prefijo <input id="fPrefix" type="text" autocomplete="off"></label>
+      <label>First Name / Nombre * <input id="fName" type="text" autocomplete="off"></label>
+      <label>Last Name / Apellido * <input id="fLast" type="text" autocomplete="off"></label>
+      <label>Job Title / Cargo <input id="fTitle" type="text" autocomplete="off"></label>
+      <label>Office / Oficina <input id="fOffice" type="text" autocomplete="off"></label>
+      <label>Organization / Organización <input id="fOrg" type="text" autocomplete="off"></label>
+      <label>Organization Type / Tipo <input id="fType" type="text" autocomplete="off"></label>
+      <label>E-mail / Correo <input id="fEmail" type="email" autocomplete="off"></label>
+      <label>Other Contact / Otro contacto <input id="fOther" type="text" autocomplete="off"></label>
+    </div>
+    <p class="msg" id="rowMsg"></p>
+    <div class="rowbtns">
+      <button class="btn" id="rowSave" type="button">＋ Agregar persona</button>
+      <button class="btn sec" id="rowCancel" type="button" hidden>Cancelar edición</button>
+      <button class="btn sec" id="btnDownload" type="button">📊 Descargar matriz (.xlsx)</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Prefix</th><th>Name</th><th>Last Name</th><th>Job Title</th><th>Office</th><th>Organization</th><th>Type</th><th>E-mail</th><th>Other Contact</th><th>QR</th><th></th></tr></thead>
+        <tbody id="rowsBody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="rowsEmpty" hidden>Este proyecto todavía no tiene personas. Agrega la primera con el formulario de arriba o arrastra una matriz.</p>
+  </div>
+</main>
+<script src="js/vendor/jszip.min.js"></script>
+<script src="js/logo.js"></script>
+<script>
+(function () {
+  'use strict';
+  var LS_KEY = 'torio_proyectos_v1';
+  var CHECKIN = 'https://juanbogotag-sketch.github.io/organigramas-dod-jcs/checkin.html?g=';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  if (window.LOGO_EMB) { $('escudo').src = LOGO_EMB; }
+
+  function loadProjects() {
+    try { var v = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+  }
+  function saveProjects(list) { try { localStorage.setItem(LS_KEY, JSON.stringify(list)); } catch (e) {} }
+  function newId() { return 'pr' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); }
+  function normId(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function qrFor(r) {
+    if (r.qr) return r.qr;
+    var id = normId(r.lastName) + '-' + normId(r.name);
+    return id.replace(/^-+|-+$/g, '') ? CHECKIN + 'ev|' + id : '';
+  }
+  function slug(s) { return normId(s).replace(/-/g, '_') || 'proyecto'; }
+  function fmtFecha(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+  }
+
+  var projects = loadProjects();
+  var openId = null;
+  var editIdx = -1;
+
+  /* ---------- Lista de proyectos ---------- */
+  function renderList() {
+    var box = $('projectList');
+    if (!projects.length) {
+      box.innerHTML = '<p class="empty">Todavía no hay proyectos. Arrastra una matriz o crea un proyecto vacío para empezar.</p>';
+      return;
+    }
+    box.innerHTML = projects.map(function (p) {
+      return '<div class="proj"><h3>' + esc(p.name || 'Proyecto sin nombre') + '</h3>' +
+        '<div class="meta">' + p.rows.length + (p.rows.length === 1 ? ' persona' : ' personas') + (p.created ? ' · creado el ' + esc(fmtFecha(p.created)) : '') + '</div>' +
+        '<div class="acts"><button type="button" class="btn" data-open="' + esc(p.id) + '">Abrir</button>' +
+        '<button type="button" class="btn sec" data-dl="' + esc(p.id) + '">📊 Descargar matriz</button>' +
+        '<button type="button" class="btn danger" data-del="' + esc(p.id) + '">Eliminar</button></div></div>';
+    }).join('');
+    box.querySelectorAll('[data-open]').forEach(function (b) {
+      b.addEventListener('click', function () { openEditor(b.dataset.open); });
+    });
+    box.querySelectorAll('[data-dl]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var p = projects.find(function (x) { return x.id === b.dataset.dl; });
+        if (p) downloadMatrix(p);
+      });
+    });
+    box.querySelectorAll('[data-del]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var p = projects.find(function (x) { return x.id === b.dataset.del; });
+        if (!p) return;
+        if (b.dataset.armed) {
+          projects = projects.filter(function (x) { return x.id !== p.id; });
+          saveProjects(projects);
+          renderList();
+          $('dropMsg').textContent = 'Proyecto «' + (p.name || 'Proyecto sin nombre') + '» eliminado.';
+        } else {
+          b.dataset.armed = '1';
+          b.textContent = '¿Seguro? Toca de nuevo';
+        }
+      });
+    });
+  }
+
+  /* ---------- Lectura de archivos (.xlsx / .csv) ---------- */
+  function normHead(h) {
+    return String(h || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+  }
+  function parseCsv(txt) {
+    var rows = [], row = [], cur = '', q = false;
+    for (var i = 0; i < txt.length; i++) {
+      var c = txt[i];
+      if (q) {
+        if (c === '"') { if (txt[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+        else cur += c;
+      } else if (c === '"') q = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cur); cur = ''; if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row); row = []; }
+      else cur += c;
+    }
+    if (cur !== '' || row.length) { row.push(cur); if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row); }
+    return rows;
+  }
+  async function parseXlsx(file) {
+    var zip = await JSZip.loadAsync(file);
+    var sheet = zip.file('xl/worksheets/sheet1.xml');
+    if (!sheet) throw new Error('sin hoja');
+    var shared = [];
+    var ss = zip.file('xl/sharedStrings.xml');
+    if (ss) {
+      var sdoc = new DOMParser().parseFromString(await ss.async('string'), 'application/xml');
+      shared = Array.prototype.map.call(sdoc.querySelectorAll('si'), function (si) { return si.textContent; });
+    }
+    var doc = new DOMParser().parseFromString(await sheet.async('string'), 'application/xml');
+    var rows = [];
+    doc.querySelectorAll('row').forEach(function (tr) {
+      var cells = [];
+      tr.querySelectorAll('c').forEach(function (c) {
+        var t = c.getAttribute('t');
+        var v = c.querySelector('v');
+        var is = c.querySelector('is t');
+        var val = '';
+        if (t === 's' && v) val = shared[parseInt(v.textContent, 10)] || '';
+        else if (is) val = is.textContent;
+        else if (v) val = v.textContent;
+        cells.push(val);
+      });
+      if (cells.some(function (v) { return String(v).trim() !== ''; })) rows.push(cells);
+    });
+    return rows;
+  }
+  function headsOf(firstRow) {
+    var heads = firstRow.map(normHead);
+    var known = ['prefix', 'prefijo', 'nombre', 'apellido', 'cargo', 'oficina', 'organizacion', 'correo', 'name', 'last name', 'job title', 'office', 'organization', 'e mail', 'email', 'qr'];
+    return heads.some(function (h) { return known.indexOf(h) >= 0; }) ? heads : null;
+  }
+  function rowToPerson(cells, heads) {
+    var pick = function () {
+      if (!heads) return '';
+      for (var i = 0; i < arguments.length; i++) {
+        var j = heads.indexOf(arguments[i]);
+        if (j >= 0 && cells[j]) return String(cells[j]).trim();
+      }
+      return '';
+    };
+    var r;
+    if (heads) {
+      r = { prefix: pick('prefix', 'prefijo'), name: pick('nombre', 'name', 'first name'), lastName: pick('apellido', 'last name', 'lastname'), title: pick('cargo', 'job title', 'title'), office: pick('oficina', 'office'), org: pick('organizacion', 'organization'), orgType: pick('tipo de organizacion', 'organization type', 'type'), email: pick('correo', 'e mail', 'email'), other: pick('otro contacto', 'other contact', 'telefono', 'other'), qr: pick('qr', 'codigo qr') };
+    } else {
+      r = { prefix: cells[0] || '', name: cells[1] || '', lastName: cells[2] || '', title: cells[3] || '', office: cells[4] || '', org: cells[5] || '', orgType: cells[6] || '', email: cells[7] || '', other: cells[8] || '', qr: cells[9] || '' };
+    }
+    Object.keys(r).forEach(function (k) { r[k] = String(r[k] || '').trim(); });
+    if (!r.name || !r.lastName) return null;
+    return r;
+  }
+  async function handleFile(file) {
+    if (!file) return;
+    var msg = $('dropMsg');
+    msg.classList.remove('err');
+    msg.textContent = 'Leyendo «' + file.name + '»…';
+    try {
+      var rows = /\.xlsx?$/i.test(file.name) ? await parseXlsx(file) : parseCsv(await file.text());
+      if (!rows.length) { msg.textContent = 'El archivo no trae filas con datos.'; return; }
+      var heads = headsOf(rows[0]);
+      var data = heads ? rows.slice(1) : rows;
+      var persons = [];
+      data.forEach(function (cells) {
+        var r = rowToPerson(cells, heads);
+        if (r) persons.push(r);
+      });
+      if (!persons.length) { msg.textContent = 'El archivo no trajo personas (revisa que tenga Nombre y Apellido).'; return; }
+      var base = file.name.replace(/\.[^.]+$/, '');
+      var p = { id: newId(), name: base || 'Proyecto sin nombre', created: new Date().toISOString(), rows: persons };
+      projects.push(p);
+      saveProjects(projects);
+      renderList();
+      msg.textContent = 'Archivo «' + file.name + '»: ' + persons.length + ' persona(s) en el proyecto «' + p.name + '».';
+    } catch (err) {
+      msg.classList.add('err');
+      msg.textContent = 'No se pudo leer el archivo. Prueba con un .csv o un .xlsx con las columnas de la matriz.';
+    }
+  }
+
+  /* ---------- Editor de un proyecto ---------- */
+  function curProject() { return projects.find(function (x) { return x.id === openId; }); }
+  function openEditor(id) {
+    openId = id;
+    editIdx = -1;
+    resetRowForm();
+    $('listView').hidden = true;
+    $('editorView').hidden = false;
+    renderEditor();
+    window.scrollTo(0, 0);
+  }
+  function closeEditor() {
+    openId = null;
+    $('editorView').hidden = true;
+    $('listView').hidden = false;
+    renderList();
+  }
+  function resetRowForm() {
+    ['fPrefix', 'fName', 'fLast', 'fTitle', 'fOffice', 'fOrg', 'fType', 'fEmail', 'fOther'].forEach(function (id) { $(id).value = ''; });
+    $('rowSave').textContent = '＋ Agregar persona';
+    $('rowCancel').hidden = true;
+    $('rowMsg').textContent = '';
+    editIdx = -1;
+  }
+  function renderEditor() {
+    var p = curProject();
+    if (!p) { closeEditor(); return; }
+    $('pName').value = p.name || '';
+    $('pMeta').textContent = p.rows.length + (p.rows.length === 1 ? ' persona' : ' personas') + (p.created ? ' · creado el ' + fmtFecha(p.created) : '');
+    var body = $('rowsBody');
+    $('rowsEmpty').hidden = p.rows.length > 0;
+    body.innerHTML = p.rows.map(function (r, i) {
+      return '<tr><td>' + esc(r.prefix) + '</td><td>' + esc(r.name) + '</td><td>' + esc(r.lastName) + '</td><td>' + esc(r.title) + '</td><td>' + esc(r.office) + '</td><td>' + esc(r.org) + '</td><td>' + esc(r.orgType) + '</td><td>' + esc(r.email) + '</td><td>' + esc(r.other) + '</td><td><span class="qr">' + esc(qrFor(r)) + '</span></td>' +
+        '<td class="rowact"><button type="button" class="mini" data-edit="' + i + '">Editar</button> <button type="button" class="mini del" data-delrow="' + i + '">Eliminar</button></td></tr>';
+    }).join('');
+    body.querySelectorAll('[data-edit]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var r = p.rows[+b.dataset.edit];
+        if (!r) return;
+        editIdx = +b.dataset.edit;
+        $('fPrefix').value = r.prefix; $('fName').value = r.name; $('fLast').value = r.lastName;
+        $('fTitle').value = r.title; $('fOffice').value = r.office; $('fOrg').value = r.org;
+        $('fType').value = r.orgType; $('fEmail').value = r.email; $('fOther').value = r.other;
+        $('rowSave').textContent = 'Guardar cambios';
+        $('rowCancel').hidden = false;
+        $('fName').focus();
+      });
+    });
+    body.querySelectorAll('[data-delrow]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = +b.dataset.delrow;
+        if (b.dataset.armed) {
+          p.rows.splice(i, 1);
+          saveProjects(projects);
+          renderEditor();
+          $('rowMsg').textContent = 'Persona eliminada.';
+        } else {
+          b.dataset.armed = '1';
+          b.textContent = '¿Seguro?';
+          b.classList.add('yes');
+        }
+      });
+    });
+  }
+
+  /* ---------- Descarga de la matriz (.xlsx) ---------- */
+  async function downloadMatrix(p) {
+    var xesc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+    var colL = function (i) { return String.fromCharCode(65 + i); };
+    var rowXml = function (cells, r) { return '<row r="' + r + '">' + cells.map(function (c, i) { return '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>'; }).join('') + '</row>'; };
+    var head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Teléfono', 'QR'];
+    var rows = p.rows.map(function (r) { return [r.prefix, r.name, r.lastName, r.title, r.office, r.org, r.orgType, r.email, r.other, qrFor(r)]; });
+    var sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
+      rowXml(head, 1) + rows.map(function (r, i) { return rowXml(r, i + 2); }).join('') + '</sheetData></worksheet>';
+    var z = new JSZip();
+    z.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>');
+    z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+    z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Matriz" sheetId="1" r:id="rId1"/></sheets></workbook>');
+    z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>');
+    z.file('xl/worksheets/sheet1.xml', sheetXml);
+    var blob = await z.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var now = new Date();
+    var fname = 'Matriz_' + slug(p.name) + '_' + now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '.xlsx';
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  /* ---------- Eventos ---------- */
+  var drop = $('drop');
+  drop.addEventListener('click', function () { $('fileInput').click(); });
+  drop.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('fileInput').click(); } });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop', function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+  $('fileInput').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (f) handleFile(f);
+    e.target.value = '';
+  });
+  $('btnEmpty').addEventListener('click', function () {
+    var p = { id: newId(), name: 'Proyecto ' + fmtFecha(new Date().toISOString()), created: new Date().toISOString(), rows: [] };
+    projects.push(p);
+    saveProjects(projects);
+    openEditor(p.id);
+  });
+  $('backList').addEventListener('click', closeEditor);
+  $('pName').addEventListener('change', function () {
+    var p = curProject();
+    if (!p) return;
+    p.name = $('pName').value.trim() || 'Proyecto sin nombre';
+    saveProjects(projects);
+    renderList();
+  });
+  $('rowSave').addEventListener('click', function () {
+    var p = curProject();
+    if (!p) return;
+    var r = {
+      prefix: $('fPrefix').value.trim(), name: $('fName').value.trim(), lastName: $('fLast').value.trim(),
+      title: $('fTitle').value.trim(), office: $('fOffice').value.trim(), org: $('fOrg').value.trim(),
+      orgType: $('fType').value.trim(), email: $('fEmail').value.trim(), other: $('fOther').value.trim(), qr: ''
+    };
+    if (!r.name || !r.lastName) {
+      $('rowMsg').textContent = 'Faltan el nombre y el apellido.';
+      $('fName').focus();
+      return;
+    }
+    if (editIdx >= 0) {
+      r.qr = p.rows[editIdx].qr || '';
+      p.rows[editIdx] = r;
+      $('rowMsg').textContent = 'Persona actualizada.';
+    } else {
+      p.rows.push(r);
+      $('rowMsg').textContent = 'Persona agregada.';
+    }
+    saveProjects(projects);
+    resetRowForm();
+    renderEditor();
+  });
+  $('rowCancel').addEventListener('click', resetRowForm);
+  $('btnDownload').addEventListener('click', function () {
+    var p = curProject();
+    if (p) downloadMatrix(p);
+  });
+
+  renderList();
+})();
+</script>
+</body>
+</html>
