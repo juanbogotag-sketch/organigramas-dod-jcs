@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=29">
+  <link rel="stylesheet" href="css/repositorio.css?v=30">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -61,7 +61,9 @@
       <div id="gresults"></div>
       <div class="evrow">
         <button id="btnEvento" type="button" class="p evbtn">🎉 Crear evento</button>
+        <button id="btnEventos" type="button" class="p evbtn evbtn2">📅 Eventos</button>
       </div>
+      <div id="evOpen" class="evopen" hidden></div>
       <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
       </footer>
     </section>
@@ -163,18 +165,28 @@
   <div id="evModal" hidden role="dialog" aria-modal="true" aria-label="Crear evento">
     <div class="mbox">
       <button id="evX" type="button" aria-label="Cerrar">✕ Cerrar</button>
-      <h2 class="sugtitle">Crear evento</h2>
+      <h2 class="sugtitle" id="evTitle">Crear evento</h2>
       <div class="evsec">
         <label for="evName"><b>Nombre del evento *</b></label>
         <input id="evName" placeholder="Ej.: Protegiendo las Américas" autocomplete="off">
+        <div class="evform">
+          <div>
+            <label for="evDate"><b>Fecha</b></label>
+            <input id="evDate" type="date">
+          </div>
+          <div>
+            <label for="evPlace"><b>Lugar</b></label>
+            <input id="evPlace" placeholder="Ej.: Residencia de la Embajada de Colombia en Washington" autocomplete="off">
+          </div>
+        </div>
       </div>
       <div class="mrow">
         <button id="evInt" type="button" class="p">👥 Invitados del Repositorio</button>
         <button id="evExtBtn" type="button" class="p">🌍 Invitados externos</button>
       </div>
-      <p class="evhint">Ponle un nombre al evento, elige a los invitados del Repositorio con la carpeta y añade aquí a las personas externas que no tienen perfil. Para elegir perfiles, abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con + y toca la tarjeta del perfil. Al descargar, la matriz trae un QR por cada invitado, generado en ese momento. La lista de asistencia se hará después, en una segunda pestaña.</p>
+      <p class="evhint">Ponle nombre, fecha y lugar al evento, elige a los invitados del Repositorio con la carpeta y añade aquí a las personas externas que no tienen perfil. Para elegir perfiles, abre un perfil y toca «Agregar a la carpeta», o activa el modo de selección con el botón de la carpeta con + y toca la tarjeta del perfil. Con «Guardar evento» queda en el menú «Eventos» para seguir trabajando en él después. Al descargar, la matriz trae un QR por cada invitado, generado en ese momento. La lista de asistencia se hará después, en una segunda pestaña.</p>
       <div class="evsec">
-        <b>Perfiles seleccionados de la carpeta: <span id="evCartN">0</span></b>
+        <b>Invitados del evento: <span id="evCartN">0</span></b>
         <div id="evCartList"></div>
       </div>
       <div class="evsec" id="exSec">
@@ -198,8 +210,23 @@
       <div class="mrow">
         <button id="evDl" type="button" class="p">📊 Descargar matriz del evento (.xlsx)</button>
         <a id="evDlA" hidden></a>
+        <button id="evSave" type="button" class="p">💾 Guardar evento</button>
+      </div>
+      <div class="mrow">
+        <button id="evListBtn" type="button">📅 Ver eventos</button>
+        <button id="evCloseEv" type="button" hidden>Cerrar evento</button>
         <button id="evClear" type="button">Vaciar personas externas</button>
       </div>
+    </div>
+  </div>
+
+  <div id="evListModal" hidden role="dialog" aria-modal="true" aria-label="Eventos guardados">
+    <div class="mbox">
+      <button id="evListX" type="button" aria-label="Cerrar">✕ Cerrar</button>
+      <h2 class="sugtitle">Eventos guardados</h2>
+      <p class="evhint">Los eventos abiertos para trabajar. Toca «Abrir» para cargar un evento y agregar o quitar invitados; la cantidad de invitados se actualiza con la lista provisional del momento.</p>
+      <div id="evList"></div>
+      <div class="mrow"><button id="evListNew" type="button" class="p">🎉 Crear evento nuevo</button></div>
     </div>
   </div>
 
@@ -215,7 +242,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=6"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=32"></script>
+  <script src="js/repositorio.js?v=33"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
