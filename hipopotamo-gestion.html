@@ -507,6 +507,7 @@ async function descargarXlsx() {
     sheetTags.push('<sheet name="' + xesc(sh.name) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
     rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
   });
+  rels.push('<Relationship Id=\"rId' + (PROT_SHEETS.length + 1) + '\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>');
   const z = new JSZip();
   let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
   PROT_SHEETS.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
