@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=32">
+  <link rel="stylesheet" href="css/repositorio.css?v=33">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -213,6 +213,7 @@
       <div class="mrow">
         <button id="evListBtn" type="button">📅 Ver eventos</button>
         <button id="evCloseEv" type="button" hidden>Cerrar evento</button>
+        <button id="evDelete" type="button" class="danger" hidden>🗑️ Eliminar evento</button>
         <button id="evClear" type="button">Vaciar personas externas</button>
       </div>
     </div>
@@ -241,7 +242,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=37"></script>
+  <script src="js/repositorio.js?v=38"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
