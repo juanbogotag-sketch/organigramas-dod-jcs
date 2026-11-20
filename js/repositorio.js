@@ -181,7 +181,11 @@
     { id: 'otros', label: 'Otros' }
   ];
   const inCat = id => PEOPLE.filter(p => p.cat === id && p.visible);
-  $('#subtitle').textContent = 'Base de datos de perfiles · ' + PEOPLE.filter(p => p.visible).length + ' personas';
+  // 20 nov 2026 (orden de Juan): el conteo de perfiles NO va en el
+  // encabezado de la página; vive dentro del panel desplegado de Perfiles
+  // (#perfilesCount), así que solo se ve con el panel abierto.
+  const pc = $('#perfilesCount');
+  if (pc) pc.textContent = 'Base de datos de perfiles · ' + PEOPLE.filter(p => p.visible).length + ' personas';
 
   // ---------- Utilidades de texto ----------
   function firstPara(text) {
@@ -241,6 +245,7 @@
   function openCat(id) {
     curCat = id;
     $('#home').hidden = true;
+    syncFabs();
     $('#listview').hidden = false;
     $('#wm').hidden = false;
     $('#catTitle').textContent = (CATS.find(c => c.id === id) || {}).label || id;
@@ -334,6 +339,7 @@
     $('#listview').hidden = true;
     $('#wm').hidden = true;
     $('#home').hidden = false;
+    syncFabs();
     window.scrollTo(0, 0);
   });
   $('#q').addEventListener('input', () => renderList());
@@ -1541,6 +1547,109 @@
   paintOpenEvent();
 
   renderCats();
+
+  // ---------- Paneles desplegables bajo los tiles (20 nov 2026, orden de Juan) ----------
+  // Los tres tiles NO navegan: despliegan su interfaz justo debajo de la
+  // fila de botones. Solo un panel abierto a la vez; pulsar el mismo tile
+  // lo cierra. La fila de tiles queda siempre visible arriba.
+  const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView' };
+  const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones' };
+  // Botones «Crear carpeta» (carpeta y selección rápida): solo visibles
+  // con el panel de Perfiles abierto; al cerrarse el panel (o al entrar a
+  // una categoría) vuelven a ocultarse.
+  function syncFabs() {
+    const open = !$('#perfilesView').hidden && !$('#home').hidden;
+    $('#cartFab').hidden = !open;
+    $('#selFab').hidden = !open;
+  }
+  function sizeFrame(fr) {
+    try {
+      const doc = fr.contentDocument;
+      if (!doc || fr.closest('.panelView').hidden) return;
+      const h = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+      if (h > 100) fr.style.height = h + 'px';
+    } catch (err) {}
+  }
+  // Ajustes de incrustado para los iframes (mismo origen): sin enlace
+  // «volver» (llevaría a la misma página dentro del panel), enlaces a
+  // página completa, y la puerta de registro ya resuelta en esta página.
+  function frameTweaks(fr) {
+    try {
+      const doc = fr.contentDocument;
+      if (!doc) return;
+      const back = doc.querySelector('.volver, .hlinks');
+      if (back) back.style.display = 'none';
+      doc.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        if (!a.getAttribute('target') && !a.hasAttribute('download') &&
+            !href.startsWith('#') && !href.startsWith('blob:') &&
+            !href.startsWith('data:') && !href.startsWith('javascript:')) {
+          a.setAttribute('target', '_top');
+        }
+      });
+      const g = doc.getElementById('gate');
+      if (g && localStorage.getItem('orgs_visitante')) g.hidden = true;
+    } catch (err) {}
+  }
+  function setupPanelFrame(fr) {
+    const go = () => {
+      if (fr.dataset.ready) { frameTweaks(fr); sizeFrame(fr); return; }
+      fr.dataset.ready = '1';
+      frameTweaks(fr);
+      sizeFrame(fr);
+      // Reajustar tras interactuar dentro del iframe (navegación de semana,
+      // filtros, búsqueda, subida): el contenido re-renderizado cambia de
+      // alto y puede traer enlaces nuevos sin target.
+      try {
+        const doc = fr.contentDocument;
+        if (doc) {
+          doc.addEventListener('click', () => { frameTweaks(fr); setTimeout(() => sizeFrame(fr), 60); }, true);
+          doc.addEventListener('input', () => setTimeout(() => sizeFrame(fr), 60));
+        }
+      } catch (err) {}
+    };
+    try {
+      if (fr.contentDocument && fr.contentDocument.readyState === 'complete') go();
+      else fr.addEventListener('load', go, { once: true });
+    } catch (err) { fr.addEventListener('load', go, { once: true }); }
+  }
+  function showPanel(name) {
+    const cur = ['perfiles', 'eventos', 'publicaciones'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
+    const next = (cur === name) ? null : name;
+    ['perfiles', 'eventos', 'publicaciones'].forEach(k => {
+      document.getElementById(PANEL_VIEWS[k]).hidden = (k !== next);
+      document.getElementById(PANEL_TILES[k]).classList.toggle('on', k === next);
+    });
+    syncFabs();
+    if (next) {
+      const view = document.getElementById(PANEL_VIEWS[next]);
+      if (next !== 'perfiles') {
+        const fr = view.querySelector('iframe');
+        if (fr) {
+          setupPanelFrame(fr);
+          requestAnimationFrame(() => sizeFrame(fr));
+        }
+      }
+      view.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  $('#tilePerfiles').addEventListener('click', () => showPanel('perfiles'));
+  $('#tileEventos').addEventListener('click', () => showPanel('eventos'));
+  $('#tilePublicaciones').addEventListener('click', () => showPanel('publicaciones'));
+  // Armar los iframes al cargar (aunque el panel esté oculto) para que el
+  // contenido esté listo al desplegar; la altura se mide al abrir.
+  ['frameEventos', 'framePublicaciones'].forEach(id => {
+    const fr = document.getElementById(id);
+    if (fr) setupPanelFrame(fr);
+  });
+  window.addEventListener('resize', () => {
+    const open = ['eventos', 'publicaciones'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden);
+    if (open) {
+      const fr = document.getElementById(PANEL_VIEWS[open]).querySelector('iframe');
+      if (fr) sizeFrame(fr);
+    }
+  });
+  syncFabs();
 
   // Enlace profundo desde el buscador del menú principal (inicio.html):
   // repositorio.html?cat=<id> abre esa categoría directamente.
