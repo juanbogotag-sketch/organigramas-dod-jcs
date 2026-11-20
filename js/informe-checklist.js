@@ -62,17 +62,31 @@ function svgBars(data, peakI) {
   return out + '</svg>';
 }
 function svgLine(labels, vals) {
-  const w = 720, h = 200, n = vals.length, step = w / (n - 1), maxv = Math.max.apply(null, vals);
+  const w = 720, h = 200, n = vals.length, maxv = Math.max.apply(null, vals);
+  const pad = 24, span = w - pad * 2, step = n > 1 ? span / (n - 1) : 0;
   let pts = '', dots = '', labs = '', vt = '';
   vals.forEach((v, i) => {
-    const x = Math.round(i * step), y = Math.round(h - v / maxv * h);
+    const x = Math.round(pad + i * step), y = Math.round(h - v / maxv * h);
     pts += (i ? ' ' : '') + x + ',' + y;
     dots += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + NAVY + '"/>';
     vt += '<text x="' + x + '" y="' + (y - 10) + '" class="v" text-anchor="middle">' + v + '</text>';
-    labs += '<text x="' + x + '" y="' + (h + 18) + '" class="e" text-anchor="middle">' + labels[i] + '</text>';
+    const anchor = i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle';
+    labs += '<text x="' + x + '" y="' + (h + 18) + '" class="e" text-anchor="' + anchor + '">' + labels[i] + '</text>';
   });
   return '<svg viewBox="0 0 ' + w + ' ' + (h + 28) + '" class="svg"><polyline points="' + pts
     + '" fill="none" stroke="' + NAVY + '" stroke-width="3" stroke-linejoin="round"/>' + dots + vt + labs + '</svg>';
+}
+function mostrarAvisoInforme(msg) {
+  let t = document.getElementById('avisoInforme');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'avisoInforme';
+    t.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);background:#0a1d38;color:#fff;font:600 14px Montserrat,Arial,sans-serif;padding:12px 18px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;max-width:92vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  clearTimeout(t._tm);
+  t._tm = setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 7000);
 }
 
 function generarInformeChecklist(opts) {
@@ -209,15 +223,19 @@ function generarInformeChecklist(opts) {
   html += '<footer><b>Cómo se hizo este informe.</b> Fuente: la base en vivo del evento (Firebase): lista de confirmados publicada por el gestor (' + total + ' personas), marcas de llegada de la checklist (' + llegaron + ') y personas agregadas fuera de la lista (' + extrasArr.length + '). El género se infirió del primer nombre con un diccionario de nombres; los sin determinar son nombres ambiguos o poco comunes. Las organizaciones se agruparon por nombre equivalente y los valores N/A, «none» y vacíos se cuentan como «Sin organización». Las entradas de extras anotadas solo como «1» no se cuentan como personas identificadas. Informe generado el ' + esc(fechaGen) + '.</footer>'
     + '</div></body></html>';
 
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
-  else { // Si el navegador bloquea la ventana, descarga el informe como archivo.
-    const blob = new Blob([html], { type: 'text/html' });
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  let w = null;
+  try { w = window.open(url, '_blank'); } catch (e) { w = null; }
+  if (!w) {
+    // El navegador bloqueó la ventana nueva: descarga el informe y avisa en la página.
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = 'informe-asistencia-' + new Date().toISOString().slice(0, 10) + '.html';
     document.body.appendChild(a); a.click(); a.remove();
   }
+  mostrarAvisoInforme('Informe generado. Si no se abrió una pestaña nueva, revisa tus descargas.');
+  setTimeout(() => URL.revokeObjectURL(url), 300000);
 }
 function horaSuma10(hhmm) {
   const p = hhmm.split(':'); const d = new Date();
