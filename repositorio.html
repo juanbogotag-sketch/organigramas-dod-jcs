@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=33">
+  <link rel="stylesheet" href="css/repositorio.css?v=34">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -48,17 +48,32 @@
 
   <main>
     <section id="home">
-      <div class="homesch">
-        <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
-          aria-label="Buscar en todos los perfiles">
+      <div class="tiles">
+        <button id="tilePerfiles" type="button" class="tile tile-main" onclick="var pv=document.getElementById('perfilesView');pv.hidden=!pv.hidden;this.classList.toggle('on',!pv.hidden);if(!pv.hidden){pv.scrollIntoView({behavior:'smooth',block:'start'});}">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="22" cy="28" r="7"/><path d="M12 46c2-6 6-8 10-8s8 2 10 8"/><path d="M38 22h10M38 30h10M38 38h10"/></svg>
+          <span class="tlab">Repositorio de Perfiles</span>
+          <span class="tsub">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
+        </button>
+        <button id="tileEventos" type="button" class="tile" onclick="location.href='eventos.html'">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="14" width="44" height="40" rx="6"/><path d="M10 26h44M22 8v12M42 8v12"/><path d="M20 36h8M30 36h8M40 36h4M20 44h8M30 44h8"/></svg>
+          <span class="tlab">Eventos</span>
+          <span class="tsub">Crear y gestionar eventos</span>
+        </button>
       </div>
-      <div id="gresults"></div>
-      <div class="cols">
-        <div class="col" id="colL"></div>
-        <div class="col" id="colR"></div>
+      <div id="perfilesView" hidden>
+        <div class="homesch">
+          <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
+            aria-label="Buscar en todos los perfiles">
+        </div>
+        <div id="gresults"></div>
+        <div class="cols">
+          <div class="col" id="colL"></div>
+          <div class="col" id="colR"></div>
+        </div>
+        <div class="colsB"><div class="colB" id="colB"></div></div>
       </div>
-      <div class="colsB"><div class="colB" id="colB"></div></div>
-      <div class="evrow">
+      <!-- Botón «Eventos» anterior (20 nov 2026): ahora lo agrupa el botón cuadrado «Eventos» de arriba. Se mantiene oculto en el DOM porque js/repositorio.js lo usa (contador de eventos); no borrar. -->
+      <div class="evrow" hidden>
         <button id="btnEventos" type="button" class="p evbtn evbtn2">Eventos</button>
       </div>
       <div class="evrow">
@@ -245,7 +260,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=38"></script>
+  <script src="js/repositorio.js?v=39"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
