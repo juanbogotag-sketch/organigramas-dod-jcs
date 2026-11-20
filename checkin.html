@@ -27,6 +27,7 @@
       <button type="submit" class="ck-btn ck-btn-primary">Desbloquear</button>
       <p class="ck-error" id="gateError" hidden>Token incorrecto. Solo el personal de la Embajada puede marcar asistencia.</p>
     </form>
+    <p class="ck-note" id="gatePuerta" hidden>El registro de asistencia se habilita el viernes 4 de diciembre de 2026.</p>
     <p class="ck-note">El token no viaja en el QR ni en la dirección de la página. Si usted es invitado y llegó a esta página con su QR, por favor entréguelo al personal en la puerta.</p>
   </section>
 
@@ -57,6 +58,7 @@
   <section class="ck-card" id="staffCard" hidden>
     <h2>Contador de llegadas</h2>
     <p class="ck-count"><strong id="countArrived">0</strong> de <span id="countTotal">0</span> han llegado</p>
+    <p class="ck-note">Confirmados en la gestión: <strong id="countConfirmados">—</strong> (se actualiza en vivo desde la gestión de invitados).</p>
     <p class="ck-note">Conteo de este dispositivo. El registro central se lleva con los correos de asistencia que se envían al marcar (y con la pestaña «Asistencia» de la matriz del evento).</p>
     <div class="ck-actions">
       <button type="button" class="ck-btn" id="btnList">Ver lista de asistencia</button>
@@ -74,6 +76,8 @@
   <p class="ck-foot">Check-in del personal · Protegiendo las Américas · Embajada de Colombia en Washington</p>
 </main>
 
-<script src="js/checkin.js?v=4"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="js/checkin.js?v=5"></script>
 </body>
 </html>
