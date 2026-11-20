@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/embajadores.css?v=3">
-  <link rel="stylesheet" href="css/publicaciones.css?v=1">
+  <link rel="stylesheet" href="css/publicaciones.css?v=2">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0a1d38">
   <meta name="mobile-web-app-capable" content="yes">
@@ -67,6 +67,10 @@
         <label for="upDesc">Descripción</label>
         <textarea id="upDesc" rows="3" placeholder="Resumen corto de una o dos frases (opcional)…"></textarea>
         <label for="upFile">Archivo * (.pdf, .docx, .xlsx, .pptx — máximo 4 MB)</label>
+        <div id="upDrop" class="dropzone" tabindex="0" role="button" aria-label="Arrastra un archivo aquí o haz clic para elegirlo">
+          <svg class="dzicon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+          <span class="dztext">Arrastra archivos aquí o haz clic para elegir</span>
+        </div>
         <input id="upFile" type="file" accept=".pdf,.docx,.xlsx,.pptx" required>
         <div class="mrow">
           <button type="submit" class="p">Publicar</button>
@@ -87,8 +91,8 @@
   </main>
 
   <script src="js/logo.js"></script>
-  <script src="js/datos_publicaciones.js?v=1"></script>
-  <script src="js/publicaciones.js?v=1"></script>
+  <script src="js/datos_publicaciones.js?v=2"></script>
+  <script src="js/publicaciones.js?v=2"></script>
   <script src="js/inicio.js?v=3"></script>
 </body>
 
