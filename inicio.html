@@ -1,66 +1,18 @@
 <!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Repositorio · Pasantía de Juan en Washington</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/embajadores.css?v=3">
-  <meta name="theme-color" content="#0a1d38">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <title>Repositorio · Embajada de Colombia en Estados Unidos</title>
+  <!-- 20 nov 2026 (orden de Juan): se eliminó TODA la interfaz de inicio;
+       el inicio del sitio es repositorio.html (los tres botones cuadrados:
+       Repositorio de Perfiles, Eventos y Publicaciones). Esta página solo
+       redirige allí. El proyecto Embajadas y Cónsules no se desecha:
+       embajadores.html sigue en el repositorio para usarlo más adelante. -->
+  <script>try { location.replace('repositorio.html'); } catch (e) { location.href = 'repositorio.html'; }</script>
+  <meta http-equiv="refresh" content="0; url=repositorio.html">
 </head>
-
 <body>
-  <div class="tricolor" aria-hidden="true"></div>
-  <div id="gate" hidden>
-    <div class="gcard">
-      <h2>Repositorio</h2>
-      <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
-      <label for="gname">Nombre completo</label>
-      <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
-      <label for="gemail">Correo electrónico</label>
-      <input id="gemail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
-      <button id="gbtn" class="p" disabled>Entrar</button>
-    </div>
-  </div>
-
-  <header>
-    <h1>Repositorio</h1>
-    <p id="subtitle">Pasantía de Juan en Washington</p>
-  </header>
-
-  <main>
-    <section id="home">
-      <!-- Oculto por orden de Juan 2026-11-20: la entrada va directa al menú
-           de los botones cuadrados (repositorio.html). La búsqueda de
-           categorías vive ahora en repositorio.html (#qg). Restaurar
-           quitando este comentario.
-      <input id="hq" type="search" placeholder="Buscar una categoría…" autocomplete="off" aria-label="Buscar categorías">
-      <p class="hslab">Busca directamente, sin entrar al Repositorio.</p>
-      <div id="hsres"></div>
-      -->
-      <!-- Oculto por orden de Juan 2026-11-20; el proyecto Embajadas y
-           Cónsules se guarda para usarlo más adelante. Restaurar quitando
-           este comentario.
-      <button type="button" class="cat repo-link" onclick="location.href='repositorio.html'">
-        <span class="cl">Repositorio de la Embajada de Colombia en Estados Unidos</span>
-        <span class="cn">Base de datos de perfiles →</span>
-      </button>
-      <button type="button" class="cat repo-link" onclick="location.href='embajadores.html'">
-        <span class="cl">Embajadas y Consulados de Colombia en el mundo</span>
-        <span class="cn">Embajadas · Consulados · Tabulación →</span>
-      </button>
-      -->
-      <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
-      </footer>
-    </section>
-  </main>
-
-  <script src="js/logo.js"></script>
-  <script src="js/inicio.js?v=4"></script>
+  <p>Entrando al Repositorio… Si no se abre solo, <a href="repositorio.html">pulsa aquí</a>.</p>
 </body>
-
 </html>
