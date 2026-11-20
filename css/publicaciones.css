@@ -1,0 +1,81 @@
+/* Publicaciones — estilos propios sobre css/embajadores.css */
+
+.pubintro { font-size: 15px; line-height: 1.6; color: var(--ink); margin: 0 0 10px; }
+.localnote {
+  font-size: 13px; line-height: 1.5; color: var(--mu);
+  background: #fdf6e3; border: 1px solid #e8d9a8; border-radius: 8px;
+  padding: 10px 14px; margin: 0 0 20px;
+}
+
+/* Buscador */
+#pq {
+  width: 100%; padding: 11px 14px; font-size: 15px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 20px; margin-bottom: 14px;
+  background: #fff; color: var(--ink);
+}
+
+/* Filtros por temática */
+#chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip {
+  border: 1px solid var(--blue); background: #fff; color: var(--blue);
+  border-radius: 16px; padding: 6px 14px; font-size: 13.5px; font-family: inherit;
+  cursor: pointer;
+}
+.chip:hover { background: #eef2f7; }
+.chip.on { background: var(--blue); color: #fff; }
+
+/* Tarjetas de publicaciones */
+#pubList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-items: stretch; }
+.pubcard {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px;
+}
+.pubcard:hover { border-color: var(--blue2); box-shadow: 0 2px 10px rgba(10, 29, 56, .12); }
+.pubtop { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.badge {
+  display: inline-block; font-size: 11.5px; font-weight: 700; color: #fff;
+  background: var(--blue2); border-radius: 10px; padding: 2px 10px;
+}
+.badge.local { background: #CE1126; }
+.badge.tipo { background: #fff; color: var(--blue); border: 1px solid var(--blue); }
+.pubcard h3 { margin: 2px 0 0; font-size: 17px; line-height: 1.35; color: var(--blue); }
+.pubfecha { font-size: 12.5px; color: var(--mu); }
+.pubdesc { font-size: 14px; line-height: 1.55; margin: 0; flex: 1 1 auto; }
+.pubactions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.pubactions .ver {
+  text-decoration: none; display: inline-block; text-align: center;
+}
+.pubactions .del {
+  background: none; border: 1px solid var(--line); border-radius: 6px;
+  padding: 10px 14px; font-size: 13.5px; cursor: pointer; font-family: inherit; color: var(--mu);
+}
+.pubactions .del:hover { border-color: #CE1126; color: #CE1126; }
+#pubEmpty { color: var(--mu); font-size: 15px; text-align: center; padding: 30px 10px; }
+#pubEmpty[hidden] { display: none; }
+
+/* Formulario de subida */
+.pubform {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 20px 22px; margin-top: 34px;
+}
+.pubform h2 { color: var(--blue); margin: 0 0 4px; font-size: 22px; }
+.pubform .pubhint { font-size: 13.5px; color: var(--mu); margin: 0 0 16px; line-height: 1.5; }
+.pubform label { display: block; font-size: 13px; color: var(--mu); margin-bottom: 6px; }
+.pubform input[type="text"], .pubform select, .pubform textarea {
+  width: 100%; padding: 11px 12px; font-size: 15px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 8px; margin-bottom: 14px;
+  background: #fff; color: var(--ink);
+}
+.pubform textarea { resize: vertical; }
+.pubform input[type="file"] { margin-bottom: 14px; font-family: inherit; font-size: 14px; }
+.pubform .mrow { margin-top: 6px; }
+#upMsg { font-size: 13.5px; color: var(--mu); margin: 10px 0 0; }
+#upMsg.ok { color: var(--blue2); }
+#upMsg.err { color: #CE1126; }
+.pubexport { margin-top: 16px; }
+.pubexport .phexp { font-size: 13px; color: var(--mu); margin: 8px 0 0; line-height: 1.5; }
+
+@media (max-width: 640px) {
+  #pubList { grid-template-columns: 1fr; }
+  .pubform { padding: 16px; }
+}
