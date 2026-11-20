@@ -24,6 +24,15 @@ var PUBLICACIONES = [
     descripcion: 'Informe sobre la visita del secretario de Guerra de EE. UU., Pete Hegseth, a Bogotá (18 nov 2026): posiciones oficiales de ambos gobiernos, cobertura de prensa y pasos a seguir. Versión definitiva V.20.11.26 AM.',
     archivo: 'publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx',
     tipo: 'docx'
+  },
+  {
+    id: 'local-1795206625038',
+    titulo: 'Notas del encuentro entre Carlos Gónima, viceministro de Política Criminal y Justicia Restaurativa del Ministerio de Justicia y del Derecho, y personal de los comités de relaciones exteriores del Congreso de Estados Unidos',
+    tema: 'Seguridad y defensa',
+    fecha: '2026-11-20',
+    descripcion: '',
+    archivo: 'publicaciones/Notas_Gonima_Congreso_v19.11.26_PM.docx',
+    tipo: 'docx'
   }
 ];
 
