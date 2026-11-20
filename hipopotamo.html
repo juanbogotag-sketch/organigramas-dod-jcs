@@ -41,6 +41,17 @@
   .btn-oro { background: #e0a800; color: #0a1d38; }
   .btn-borde { background: #fff; border: 2px solid #0a1d38; color: #0a1d38; }
   .btn-rojo { background: #CE1126; color: #fff; }
+  /* Estado cerrado del evento */
+  #bannerCerrado { display: none; background: #fff; border: 2px solid #0a1d38; border-radius: 14px; padding: 26px 18px; text-align: center; margin: 18px 0 6px; }
+  #bannerCerrado b { display: block; font-size: 24px; color: #0a1d38; }
+  #bannerCerrado span { display: block; margin-top: 6px; color: #5a6b82; font-size: 14px; font-weight: 600; }
+  #bannerCerrado button { margin-top: 12px; background: none; border: none; color: #CE1126; font: 700 13px 'Montserrat', sans-serif; cursor: pointer; text-decoration: underline; }
+  #btnInforme { display: none; }
+  body.cerrado #btnInforme { display: inline-block; padding: 14px 22px; font-size: 15px; }
+  body.cerrado .tablero, body.cerrado #buscar, body.cerrado .chips,
+  body.cerrado #btnExtra, body.cerrado #btnCerrar, body.cerrado #formExtra,
+  body.cerrado h2.seccion, body.cerrado #lista, body.cerrado #extras { display: none; }
+  body.cerrado #bannerCerrado { display: block; }
   .form-extra { display: none; background: #fff; border: 2px dashed #e0a800; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
   .form-extra.abierto { display: block; }
   .form-extra h3 { font-size: 14px; color: #0a1d38; margin-bottom: 10px; }
@@ -88,6 +99,11 @@
 </div>
 
 <main>
+  <div id="bannerCerrado">
+    <b>Este evento está cerrado.</b>
+    <span>La lista de asistencia ya no se puede modificar.</span>
+    <button id="btnReabrir">Reabrir evento</button>
+  </div>
   <div class="aviso-config" id="avisoConfig">La conexión en línea aún no está configurada: los cambios no se sincronizarán entre dispositivos.</div>
 
   <div class="controles">
@@ -99,6 +115,7 @@
     </div>
     <button class="btn btn-oro" id="btnExtra">＋ Persona no invitada</button>
     <button class="btn btn-borde" id="btnCsv">⬇ Reporte CSV</button>
+    <button class="btn btn-oro" id="btnInforme">📊 Generar informe</button>
     <button class="btn btn-rojo" id="btnCerrar">🔒 Cerrar evento</button>
   </div>
 
@@ -145,6 +162,12 @@ if (window.LOGO_EMB) { $('escudo').src = LOGO_EMB; }
 
 let checks = {};   // id -> {t}
 let extras = {};   // pushId -> {n, o, t}
+let cerrado = false;
+let cerradoRef = null;
+
+function renderCerrado() {
+  document.body.classList.toggle('cerrado', !!cerrado);
+}
 let filtro = 'todos';
 let db = null, checksRef = null, extrasRef = null;
 
@@ -200,7 +223,7 @@ function renderExtras() {
   }
 }
 
-function renderTodo() { renderContadores(); renderLista(); renderExtras(); }
+function renderTodo() { renderContadores(); renderLista(); renderExtras(); renderCerrado(); }
 
 function toggle(id) {
   if (!checksRef) return;
@@ -236,10 +259,7 @@ $('btnCsv').addEventListener('click', () => {
 
 let armCerrar = null;
 $('btnCerrar').addEventListener('click', () => {
-  if (typeof generarInformeChecklist !== 'function') {
-    alert('El generador del informe no cargó. Recarga la página y vuelve a intentarlo.');
-    return;
-  }
+  if (!cerradoRef) { alert('Sin conexión: no se puede cerrar el evento ahora.'); return; }
   if (!armCerrar) {
     armCerrar = setTimeout(() => { armCerrar = null; $('btnCerrar').textContent = '🔒 Cerrar evento'; }, 5000);
     $('btnCerrar').textContent = '¿Seguro? Cerrar evento';
@@ -247,6 +267,13 @@ $('btnCerrar').addEventListener('click', () => {
   }
   clearTimeout(armCerrar); armCerrar = null;
   $('btnCerrar').textContent = '🔒 Cerrar evento';
+  cerradoRef.set({ t: firebase.database.ServerValue.TIMESTAMP });
+});
+$('btnInforme').addEventListener('click', () => {
+  if (typeof generarInformeChecklist !== 'function') {
+    alert('El generador del informe no cargó. Recarga la página y vuelve a intentarlo.');
+    return;
+  }
   generarInformeChecklist({
     titulo: 'Life After the Hippopotamus',
     fecha: 'Jueves 19 de noviembre de 2026',
@@ -254,6 +281,18 @@ $('btnCerrar').addEventListener('click', () => {
     lugar: 'Residencia de la Embajadora de Colombia en Washington',
     invitados: INVITADOS, checks: checks, extras: extras
   });
+});
+let armReabrir = null;
+$('btnReabrir').addEventListener('click', () => {
+  if (!cerradoRef) return;
+  if (!armReabrir) {
+    armReabrir = setTimeout(() => { armReabrir = null; $('btnReabrir').textContent = 'Reabrir evento'; }, 5000);
+    $('btnReabrir').textContent = '¿Seguro? Reabrir';
+    return;
+  }
+  clearTimeout(armReabrir); armReabrir = null;
+  $('btnReabrir').textContent = 'Reabrir evento';
+  cerradoRef.remove();
 });
 
 if (FB_CONFIG && window.firebase) {
@@ -268,6 +307,8 @@ if (FB_CONFIG && window.firebase) {
   });
   checksRef.on('value', s => { checks = s.val() || {}; renderTodo(); });
   extrasRef.on('value', s => { extras = s.val() || {}; renderTodo(); });
+  cerradoRef = db.ref('asistencia/hipopotamo/cerrado');
+  cerradoRef.on('value', s => { cerrado = !!s.val(); renderTodo(); });
   // La lista de la checklist viene de la gestión del evento (personas confirmadas).
   // Si la gestión aún no ha publicado una lista, se usa la lista original de la página.
   db.ref('asistencia/hipopotamo/lista').on('value', s => {
