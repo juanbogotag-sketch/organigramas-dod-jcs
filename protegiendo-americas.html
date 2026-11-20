@@ -123,6 +123,7 @@
     <button class="btn" id="btnAdd" type="button">＋ Agregar invitado</button>
     <button class="btn sec" id="btnXlsx" type="button">📊 Descargar base (.xlsx)</button>
   </div>
+  <p class="nota" id="msgLista"></p>
   <div class="formbox" id="formAdd" hidden>
     <h3>Agregar invitado</h3>
     <div class="grid">
@@ -182,7 +183,7 @@ const EST_LABEL = { pendiente: 'Pendiente', confirmado: 'Confirmado', cancelado:
 let estados = {}, roster = {}, agregados = {};
 let filtroGrupo = 'todos', filtroEstado = 'todos';
 let armEliminar = null;
-let estadosRef = null, rosterRef = null, agregadosRef = null;
+let estadosRef = null, rosterRef = null, agregadosRef = null, listaRef = null;
 
 function loadLocal() {
   try { estados = JSON.parse(localStorage.getItem(LS_E) || '{}') || {}; } catch (e) { estados = {}; }
@@ -353,8 +354,27 @@ function setEstado(id, e, delegado) {
   saveLocal();
   if (estadosRef) estadosRef.child(id).set(estados[id]);
   renderTodo();
+  programarSyncLista();
 }
 function clearEstado(id) { setEstado(id, 'pendiente', ''); }
+
+// La checklist del foro se actualiza sola desde el gestor: cada cambio en
+// los estados o en la lista reescribe en Firebase la lista de confirmados
+// que lee el check-in. Es el mismo patrón del Hipopótamo.
+let syncListaTimer = null;
+function escribirListaChecklist(mostrarMsg) {
+  if (!listaRef) return;
+  const list = efectivos().filter(g => estadoDe(g.id) === 'confirmado');
+  const obj = {};
+  for (const g of list) obj[g.id] = { n: nombreDe(g), o: g.org || '' };
+  listaRef.set(obj).then(() => {
+    const now = new Date();
+    const hora = now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
+    const el = $('msgLista');
+    if (el) el.textContent = (mostrarMsg ? 'Checklist actualizada con ' + list.length + ' personas confirmadas' : 'Checklist actualizada automáticamente con ' + list.length + ' personas confirmadas') + ' · ' + hora;
+  }).catch(() => { const el = $('msgLista'); if (el && mostrarMsg) el.textContent = 'No se pudo actualizar la checklist. Revisa la conexión e inténtalo de nuevo.'; });
+}
+function programarSyncLista() { clearTimeout(syncListaTimer); syncListaTimer = setTimeout(() => escribirListaChecklist(false), 1500); }
 
 function abrirDelegar(row, g) {
   const ed = row.querySelector('.editor');
@@ -415,6 +435,7 @@ $('aGuardar').addEventListener('click', () => {
   filtroGrupo = agregados[id].g;
   buildChips();
   renderTodo();
+  programarSyncLista();
 });
 // ---------- Importar invitados desde una matriz (.xlsx / .csv) ----------
 // La matriz puede estar desestructurada: columnas en cualquier orden, con
@@ -548,6 +569,7 @@ $('fileMatriz').addEventListener('change', async function (ev) {
       });
       saveLocal();
       renderTodo();
+      programarSyncLista();
       $('fileMatriz').value = '';
       prev.innerHTML = '<p class="nota">Se agregaron ' + impPendientes.length + ' invitado(s) a la lista.</p>';
       impPendientes = [];
@@ -594,6 +616,7 @@ $('elimLista').addEventListener('click', e => {
   saveLocal();
   if (rosterRef) rosterRef.child(id).set(roster[id]);
   renderTodo();
+  programarSyncLista();
 });
 
 // ---------- Descarga de la base (.xlsx, mismo formato de la matriz original) ----------
@@ -656,15 +679,19 @@ if (FB_CONFIG && window.firebase) {
     estadosRef = db.ref('asistencia/hipopotamo/protegiendo-americas/estados');
     rosterRef = db.ref('asistencia/hipopotamo/protegiendo-americas/roster');
     agregadosRef = db.ref('asistencia/hipopotamo/protegiendo-americas/agregados');
+    listaRef = db.ref('asistencia/hipopotamo/protegiendo-americas/lista');
     let fbDenegado = false; function onFbErr(e) { fbDenegado = true; const c = $('conn'); if (c) c.className = 'conn'; const t = $('connTxt'); if (t) t.textContent = 'Sin acceso a la nube \u00b7 los cambios se guardan solo en este dispositivo'; }
     db.ref('.info/connected').on('value', s => {
       const on = !!s.val(); if (fbDenegado) return;
       $('conn').className = 'conn' + (on ? ' on' : '');
       $('connTxt').textContent = on ? 'En línea · sincronizando en vivo' : 'Sin conexión · los cambios se guardan en este dispositivo';
     });
-    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); }, onFbErr);
-    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); }, onFbErr);
-    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); }, onFbErr);
+    estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
+    rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
+    agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
+    // La checklist se crea en segundo plano con el gestor: al cargar, la
+    // lista de confirmados ya queda publicada aunque nadie cambie nada.
+    escribirListaChecklist(false);
   } catch (e) {
     $('connTxt').textContent = 'Sin conexión · los cambios se guardan en este dispositivo';
   }
