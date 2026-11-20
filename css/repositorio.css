@@ -524,6 +524,21 @@ body.selmode .selbar { display: flex; }
 .tile .tsub { display: block; font-size: 12.5px; line-height: 1.45; color: #cfd8e6; }
 .tile:not(.tile-main) .tsub { color: var(--mu); }
 #perfilesView[hidden] { display: none; }
+/* Paneles desplegables de Eventos y Publicaciones (20 nov 2026, orden de
+   Juan): igual que el de Perfiles, se despliegan debajo de los tiles sin
+   navegar a otra página. Solo un panel abierto a la vez. */
+#eventosView[hidden], #publicacionesView[hidden] { display: none; }
+.panelView { margin-top: 18px; }
+.panelView:not([hidden]) { animation: panelIn .28s ease; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+.panelView iframe { width: 100%; min-height: 420px; border: 0; display: block; border-radius: 14px; background: #fff; }
+/* Botones «Crear carpeta»: ocultos hasta desplegar el panel de Perfiles
+   (20 nov 2026, orden de Juan). El display:flex de .cartfab/.selfab
+   anularía el atributo hidden, por eso la regla explícita. */
+#cartFab[hidden], #selFab[hidden] { display: none; }
+/* Conteo de perfiles dentro del panel desplegado (20 nov 2026, orden de
+   Juan): ya no va en el encabezado de la página. */
+.pcount { text-align: center; color: var(--mu); font-size: 13px; font-weight: 600; margin: 14px 0 0; }
 @media (max-width: 640px) {
   .tile { width: min(200px, 44vw); }
   .tile svg { width: 52px; height: 52px; }
