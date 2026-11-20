@@ -58,6 +58,15 @@
   #prevMatriz th { background: #eef1f3; }
   #prevMatriz .impbtns { display: flex; gap: 10px; margin-top: 10px; }
   #prevMatriz .impbtns .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
+  #prevRsvp table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 10px; }
+  #prevRsvp th, #prevRsvp td { border: 1px solid #c9d4e4; padding: 5px 7px; text-align: left; }
+  #prevRsvp th { background: #eef1f3; }
+  #prevRsvp .impbtns { display: flex; gap: 10px; margin-top: 10px; }
+  #prevRsvp .impbtns .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
+  #prevRsvp .acc-conf { color: #1d7a35; font-weight: 800; }
+  #prevRsvp .acc-canc { color: #b3261e; font-weight: 800; }
+  #prevRsvp .acc-agr { color: #0a1d38; font-weight: 800; }
+  #prevRsvp .acc-ning { color: #7b8aa0; font-weight: 700; }
   #lista { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   @media (max-width: 720px) { #lista { grid-template-columns: 1fr; } }
   .invitado { background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 0; box-shadow: 0 2px 8px rgba(10,29,56,.07); border-left: 5px solid #c9d4e4; }
@@ -147,6 +156,13 @@
       <p class="nota">Sube un archivo .xlsx o .csv con la lista. La matriz puede estar <b>desestructurada</b>: las columnas pueden venir en cualquier orden, con más o con menos columnas. El sistema detecta Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo y Correo por el nombre del encabezado; las columnas que no reconoce las ignora y las que faltan quedan vacías. Si la matriz no trae encabezados, se usa el orden Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo, Correo. Los invitados se agregan al grupo elegido arriba, en estado Pendiente.</p>
       <input type="file" id="fileMatriz" accept=".xlsx,.xls,.csv">
       <div id="prevMatriz"></div>
+    </div>
+    <hr class="sep">
+    <div class="importar">
+      <h3>O subir respuestas del formulario (RSVP)</h3>
+      <p class="nota">Sube el archivo .xlsx o .csv con las respuestas del formulario. El sistema detecta las columnas Name, Last Name, Organization, Email, «Do you confirm your assistance?», «Will you come with someone?» y el nombre del acompañante por el encabezado, en cualquier orden. Cruza cada respuesta con los invitados por correo y luego por nombre: quien coincide y dijo que sí pasa a <b>Confirmado</b> (si dijo que no, a <b>Cancelado</b>); quien no está en la lista queda como <b>Agregado</b>; cada acompañante queda con su propio registro y la nota «Acompañante de X». Revisa la vista previa y marca o desmarca cada fila antes de pulsar «Aplicar cambios». Nunca se cambia a quien ya está Cancelado o Delegó. Si vuelves a subir el mismo archivo, las filas ya aplicadas salen como «ya aplicado» y no se duplican. El archivo se procesa solo en este navegador: los correos no se suben al repositorio ni a Firebase y no aparecen en la lista de check-in.</p>
+      <input type="file" id="fileRsvp" accept=".xlsx,.xls,.csv">
+      <div id="prevRsvp"></div>
     </div>
   </div>
   <p class="nota">La base que llegó no traía estados: todos empiezan como <b>Pendientes</b>. Marca aquí quién confirmó, quién canceló y quién delegó. Los cambios se guardan en vivo para todos los dispositivos y también quedan guardados en este navegador.</p>
@@ -599,6 +615,245 @@ $('fileMatriz').addEventListener('change', async function (ev) {
     if (bx) bx.addEventListener('click', function () { $('fileMatriz').value = ''; prev.innerHTML = ''; impPendientes = []; });
   } catch (err) {
     prev.innerHTML = '<p class="nota">No se pudo leer el archivo. Prueba con un .csv o un .xlsx con las columnas de la matriz.</p>';
+  }
+});
+
+// ---------- Subir respuestas del formulario (RSVP) ----------
+// Detecta las columnas del formulario por encabezado, cruza cada fila con
+// los invitados por correo (normalizado) y luego por nombre, y propone la
+// acción por fila. Nada se aplica hasta pulsar «Aplicar cambios».
+const ALIAS_RSVP = {
+  nom: ['name'],
+  ape: ['last name'],
+  org: ['organization'],
+  mail: ['email'],
+  confirma: ['do you confirm your assistance'],
+  acomp: ['will you come with someone'],
+  nomAcomp: ['if the previous answer is yes please provide the name']
+};
+function normMailRsvp(m) { return String(m || '').toLowerCase().replace(/\s+/g, ''); }
+// Dos nombres coinciden si los tokens del más corto están todos en el más
+// largo (tolera segundos nombres o apellidos extra: «Neyder Barros» =
+// «Neyder Camillo de Barros»; «Sergio Gutierrez Lavayen» = «Sergio Rodrigo
+// Gutierrez Lavayen»). Exige 2 tokens como mínimo.
+function nombresCoinciden(a, b) {
+  var ta = norm(a || '').split(' ').filter(Boolean);
+  var tb = norm(b || '').split(' ').filter(Boolean);
+  var s = ta.length <= tb.length ? ta : tb;
+  var l = ta.length <= tb.length ? tb : ta;
+  if (s.length < 2) return false;
+  return s.every(function (t) { return l.indexOf(t) >= 0; });
+}
+function filaRsvp(cells, heads) {
+  var pick = function () {
+    if (!heads) return '';
+    for (var i = 0; i < arguments.length; i++) {
+      var j = heads.indexOf(arguments[i]);
+      if (j >= 0 && cells[j]) return String(cells[j]).trim();
+    }
+    return '';
+  };
+  if (!heads) return null;
+  var r = { nom: pick.apply(null, ALIAS_RSVP.nom), ape: pick.apply(null, ALIAS_RSVP.ape), org: pick.apply(null, ALIAS_RSVP.org), mail: pick.apply(null, ALIAS_RSVP.mail), confirma: pick.apply(null, ALIAS_RSVP.confirma).toLowerCase(), acomp: pick.apply(null, ALIAS_RSVP.acomp).toLowerCase(), nomAcomp: pick.apply(null, ALIAS_RSVP.nomAcomp) };
+  if (!r.nom || !r.ape) return null;
+  return r;
+}
+function detectarHeadsRsvp(rows) {
+  for (var i = 0; i < Math.min(rows.length, 10); i++) {
+    var heads = rows[i].map(normHeadImp);
+    var hits = 0;
+    heads.forEach(function (h) { for (var k in ALIAS_RSVP) if (ALIAS_RSVP[k].indexOf(h) >= 0) hits++; });
+    if (hits >= 2) return { idx: i, heads: heads };
+  }
+  return null;
+}
+function grupoPorOrgRsvp(org) {
+  var o = norm(org || '');
+  if (o.indexOf('embassy') >= 0 || o.indexOf('embajada') >= 0 || o.indexOf('australian federal police') >= 0) return 'agreg';
+  if (o.indexOf('university') >= 0) return 'univ';
+  if (o.indexOf('think tank') >= 0 || o.indexOf('institute') >= 0 || o.indexOf('council') >= 0 || o.indexOf('society') >= 0 || o.indexOf('america first') >= 0) return 'think';
+  return 'secdef';
+}
+function tipoPorOrgRsvp(org) {
+  var o = norm(org || '');
+  if (o.indexOf('embassy') >= 0 || o.indexOf('embajada') >= 0) return 'Diplomatic Missions';
+  if (o.indexOf('university') >= 0) return 'Academia';
+  if (o.indexOf('think tank') >= 0 || o.indexOf('institute') >= 0 || o.indexOf('council') >= 0 || o.indexOf('society') >= 0 || o.indexOf('america first') >= 0) return 'Think Tank';
+  return 'Government';
+}
+function tituloCasoRsvp(s) {
+  var t = String(s || '').replace(/\s+/g, ' ').trim();
+  var letras = t.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, '');
+  if (letras && t === t.toUpperCase()) {
+    t = t.toLowerCase().replace(/(^|[\s\-\'])([a-záéíóúüñ])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
+  }
+  return t;
+}
+function limpiarNombreRsvp(s) {
+  var t = String(s || '').replace(/\s+/g, ' ').trim();
+  t = t.replace(/^(CAPT\(N\)|CAPT|CDR|LT|COL|GEN|ADM|MR|MRS|MS|DR)\s+/i, '');
+  // Si viene todo en mayúsculas («JESUS HIGNACIO MENA GRULLON»), se
+  // pasa a formato normal («Jesus Hignacio Mena Grullon»).
+  return tituloCasoRsvp(t);
+}
+var rsvpPendientes = [];
+$('fileRsvp').addEventListener('change', async function (ev) {
+  var file = ev.target.files[0];
+  var prev = $('prevRsvp');
+  rsvpPendientes = [];
+  if (!file) { prev.innerHTML = ''; return; }
+  prev.innerHTML = '<p class="nota">Leyendo «' + esc(file.name) + '»…</p>';
+  try {
+    var rows = /\.xlsx?$/i.test(file.name) ? await parseXlsxImp(file) : parseCsvImp(await file.text());
+    if (!rows.length) { prev.innerHTML = '<p class="nota">El archivo no trae filas con datos.</p>'; return; }
+    var det = detectarHeadsRsvp(rows);
+    if (!det) { prev.innerHTML = '<p class="nota">No se reconocieron las columnas del formulario (Name, Last Name, Organization, Email, «Do you confirm your assistance?»…). Revisa el archivo.</p>'; return; }
+    var heads = det.heads;
+    var data = rows.slice(det.idx + 1);
+    var lista = efectivos();
+    var porMail = {};
+    lista.forEach(function (g) {
+      if (g.mail) porMail[normMailRsvp(g.mail)] = g;
+    });
+    function buscarPersona(nom, ape, mail) {
+      var g = null;
+      if (mail) g = porMail[normMailRsvp(mail)] || null;
+      if (!g) {
+        var q = norm(nom + ' ' + ape);
+        for (var i = 0; i < lista.length; i++) {
+          if (nombresCoinciden(q, norm((lista[i].nom || '') + ' ' + (lista[i].ape || '')))) { g = lista[i]; break; }
+        }
+      }
+      return g;
+    }
+    // De cada persona que respondió dos veces, vale solo la más reciente.
+    // Duplicado = mismo correo Y mismo nombre (los correos compartidos por
+    // parejas u oficina NO son duplicados), o el mismo nombre exacto.
+    var filas = [];
+    data.forEach(function (cells) {
+      var r = filaRsvp(cells, heads);
+      if (!r) return;
+      for (var j = 0; j < filas.length; j++) {
+        var rj = filas[j].r;
+        var mismoMail = r.mail && rj.mail && normMailRsvp(r.mail) === normMailRsvp(rj.mail);
+        var mismoNombre = norm(r.nom + ' ' + r.ape) === norm(rj.nom + ' ' + rj.ape);
+        if ((mismoMail && nombresCoinciden(r.nom + ' ' + r.ape, rj.nom + ' ' + rj.ape)) || mismoNombre) filas[j].duplicado = true;
+      }
+      filas.push({ r: r, duplicado: false });
+    });
+    var items = [];
+    function pushItem(it) { it.idx = items.length; items.push(it); return it; }
+    filas.forEach(function (f) {
+      var r = f.r;
+      var nombreR = [limpiarNombreRsvp(r.nom), limpiarNombreRsvp(r.ape)].filter(Boolean).join(' ');
+      if (f.duplicado) { pushItem({ tipo: 'nota', nombre: nombreR, org: r.org, resp: r.confirma.indexOf('yes') === 0 ? 'Sí' : 'No', accion: 'ninguna', nota: 'Respuesta duplicada: se usa la más reciente.', check: false, dis: true }); return; }
+      var g = buscarPersona(limpiarNombreRsvp(r.nom), limpiarNombreRsvp(r.ape), r.mail);
+      var si = r.confirma.indexOf('yes') === 0;
+      if (g) {
+        var e = estadoDe(g.id);
+        if (si) {
+          if (e === 'confirmado') pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'Sí', accion: 'ya', nota: 'Ya está confirmado.', check: false, dis: true });
+          else if (e === 'cancelado' || e === 'delego') pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'Sí', accion: 'protegido', nota: 'Ya está ' + (e === 'cancelado' ? 'Cancelado' : 'Delegó') + ': no se cambia.', check: false, dis: true });
+          else pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'Sí', accion: 'confirmado', nota: 'Pasa a Confirmado.', check: true, dis: false });
+        } else {
+          if (e === 'cancelado') pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'No', accion: 'ya', nota: 'Ya está cancelado.', check: false, dis: true });
+          else if (e === 'confirmado' || e === 'delego') pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'No', accion: 'protegido', nota: 'Ya está ' + (e === 'confirmado' ? 'Confirmado' : 'Delegó') + ': no se cambia.', check: false, dis: true });
+          else pushItem({ tipo: 'persona', id: g.id, nombre: nombreDe(g), org: g.org, resp: 'No', accion: 'cancelado', nota: 'Pasa a Cancelado.', check: true, dis: false });
+        }
+      } else {
+        if (si) {
+          var mailLocal = (r.mail || '').split('@')[0] || '';
+          var tokensNombre = norm(r.nom + ' ' + r.ape).split(' ').filter(Boolean);
+          var mailCoincide = tokensNombre.some(function (tk) { return mailLocal.toLowerCase().indexOf(tk) >= 0; });
+          var notaMail = mailCoincide ? '' : ' Revisar el correo: no coincide con el nombre.';
+          pushItem({ tipo: 'agregado', r: r, nombre: nombreR, org: r.org, resp: 'Sí', accion: 'agregado', nota: 'No está en la lista: queda como Agregado (' + (GRUPOS[grupoPorOrgRsvp(r.org)] || '') + ').' + notaMail, check: true, dis: false });
+        } else pushItem({ tipo: 'nota', nombre: nombreR, org: r.org, resp: 'No', accion: 'ninguna', nota: 'No está en la lista y declinó: sin acción.', check: false, dis: true });
+      }
+      // Acompañante: registro propio, salvo que responda por su cuenta.
+      if (r.acomp.indexOf('yes') === 0) {
+        var nombreA = tituloCasoRsvp(r.nomAcomp || '');
+        var grupoA = g ? g.g : grupoPorOrgRsvp(r.org);
+        var orgA = g ? g.org : r.org;
+        var inviterNombre = g ? nombreDe(g) : nombreR;
+        if (!nombreA) {
+          var yaAcompSinNombre = lista.some(function (x) { return x.ape === '(nombre pendiente)' && (x.cargo || '').indexOf('Acompañante de ' + inviterNombre) === 0; });
+          if (yaAcompSinNombre) pushItem({ tipo: 'nota', nombre: 'Acompañante de ' + inviterNombre, org: orgA, resp: 'Sí', accion: 'ya', nota: 'Acompañante sin nombre de ' + inviterNombre + ': ya está registrado.', check: false, dis: true });
+          else pushItem({ tipo: 'acompanante-sinnombre', nombre: 'Acompañante de ' + inviterNombre, inviterNombre: inviterNombre, grupo: grupoA, org: orgA, resp: 'Sí', accion: 'acompanante', nota: 'Acompañante de ' + inviterNombre + ' (nombre pendiente): registro propio.', check: true, dis: false });
+        } else {
+          var preA = '';
+          var nombreLimpio = nombreA.replace(/^(Ms\.?|Mr\.?|Mrs\.?|Dr\.?)\s+/i, function (m) { preA = m.trim().replace(/\.$/, '') + '.'; return ''; });
+          var partes = nombreLimpio.split(' ');
+          var nomA = partes.slice(0, Math.max(1, partes.length - 1)).join(' ');
+          var apeA = partes.length > 1 ? partes[partes.length - 1] : '';
+          var yaResponde = filas.some(function (f2) { return nombresCoinciden((f2.r.nom || '') + ' ' + (f2.r.ape || ''), nombreA); });
+          var yaEnLista = buscarPersona(nomA, apeA, '');
+          if (yaResponde) pushItem({ tipo: 'nota', nombre: nombreA, org: orgA, resp: 'Sí', accion: 'ninguna', nota: 'Responde por su cuenta: un solo registro.', check: false, dis: true });
+          else if (yaEnLista) {
+            var e2 = estadoDe(yaEnLista.id);
+            if (e2 === 'confirmado') pushItem({ tipo: 'nota', nombre: nombreDe(yaEnLista), org: yaEnLista.org, resp: 'Sí', accion: 'ya', nota: 'Acompañante que ya está en la lista y ya está confirmado.', check: false, dis: true });
+            else pushItem({ tipo: 'persona', id: yaEnLista.id, nombre: nombreDe(yaEnLista), org: yaEnLista.org, resp: 'Sí', accion: 'confirmado', nota: 'Acompañante que ya está en la lista: pasa a Confirmado.', check: true, dis: false });
+          } else pushItem({ tipo: 'acompanante', nomA: nomA, apeA: apeA, preA: preA, nombre: nombreA, inviterNombre: inviterNombre, grupo: grupoA, org: orgA, resp: 'Sí', accion: 'acompanante', nota: 'Acompañante de ' + inviterNombre + ': registro propio.', check: true, dis: false });
+        }
+      }
+    });
+    rsvpPendientes = items;
+    var nConf = items.filter(function (x) { return x.accion === 'confirmado'; }).length;
+    var nCanc = items.filter(function (x) { return x.accion === 'cancelado'; }).length;
+    var nAgr = items.filter(function (x) { return x.accion === 'agregado'; }).length;
+    var nAcomp = items.filter(function (x) { return x.accion === 'acompanante'; }).length;
+    var cls = { confirmado: 'acc-conf', cancelado: 'acc-canc', agregado: 'acc-agr', acompanante: 'acc-agr', ya: 'acc-ning', protegido: 'acc-canc', ninguna: 'acc-ning' };
+    var lbl = { confirmado: 'Confirmado', cancelado: 'Cancelado', agregado: 'Agregado', acompanante: 'Acompañante', ya: 'Ya aplicado', protegido: 'No se cambia', ninguna: 'Sin acción' };
+    var html = '<p class="nota">«' + esc(file.name) + '»: <b>' + nConf + ' por confirmar</b>, ' + nCanc + ' por cancelar, ' + nAgr + ' agregado(s) nuevo(s), ' + nAcomp + ' acompañante(s). Marca o desmarca cada fila antes de aplicar.</p>';
+    if (items.length) {
+      html += '<table><tr><th></th><th>Persona</th><th>Organización</th><th>Respuesta</th><th>Acción propuesta</th></tr>' + items.map(function (it) {
+        return '<tr><td><input type="checkbox" data-i="' + it.idx + '"' + (it.check ? ' checked' : '') + (it.dis ? ' disabled' : '') + '></td><td>' + esc(it.nombre) + '</td><td>' + esc(it.org || '') + '</td><td>' + esc(it.resp) + '</td><td class="' + (cls[it.accion] || '') + '">' + esc(lbl[it.accion] || it.accion) + ' — ' + esc(it.nota || '') + '</td></tr>';
+      }).join('') + '</table>';
+      html += '<div class="impbtns"><button class="btn" id="btnRsvpAplicar" type="button">Aplicar cambios</button><button class="btn sec" id="btnRsvpCancel" type="button">Cancelar</button></div>';
+    } else html += '<p class="nota">No hay filas con datos para cruzar.</p>';
+    prev.innerHTML = html;
+    var ba = $('btnRsvpAplicar');
+    if (ba) ba.addEventListener('click', function () {
+      var checks = prev.querySelectorAll('input[data-i]');
+      var t = Date.now();
+      var nConf2 = 0, nCanc2 = 0, nAgr2 = 0, nAcomp2 = 0;
+      checks.forEach(function (cb) {
+        if (!cb.checked) return;
+        var it = rsvpPendientes[parseInt(cb.getAttribute('data-i'), 10)];
+        if (!it) return;
+        if (it.tipo === 'persona' && (it.accion === 'confirmado' || it.accion === 'cancelado')) {
+          var e = estadoDe(it.id);
+          if (e === 'cancelado' || e === 'delego') return;
+          setEstado(it.id, it.accion, '');
+          if (it.accion === 'confirmado') nConf2++; else nCanc2++;
+        } else if (it.tipo === 'agregado') {
+          var id = 'n' + t.toString(36) + 'rsvp' + it.idx;
+          var r2 = it.r;
+          agregados[id] = { g: grupoPorOrgRsvp(r2.org), pre: '', nom: limpiarNombreRsvp(r2.nom), ape: limpiarNombreRsvp(r2.ape), cargo: '', ofi: '', org: r2.org, tipo: tipoPorOrgRsvp(r2.org), mail: r2.mail || 'pendiente', t: t };
+          if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
+          setEstado('ag_' + id, 'confirmado', '');
+          nAgr2++;
+        } else if (it.tipo === 'acompanante' || it.tipo === 'acompanante-sinnombre') {
+          var id2 = 'n' + t.toString(36) + 'rsvp' + it.idx;
+          var rec = it.tipo === 'acompanante-sinnombre'
+            ? { g: it.grupo, pre: '', nom: 'Acompañante', ape: '(nombre pendiente)', cargo: 'Acompañante de ' + it.inviterNombre + ' — nombre pendiente', ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t }
+            : { g: it.grupo, pre: it.preA || '', nom: it.nomA, ape: it.apeA, cargo: 'Acompañante de ' + it.inviterNombre, ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t };
+          agregados[id2] = rec;
+          if (agregadosRef) agregadosRef.child(id2).set(agregados[id2]);
+          setEstado('ag_' + id2, 'confirmado', '');
+          nAcomp2++;
+        }
+      });
+      saveLocal();
+      renderTodo();
+      programarSyncLista();
+      $('fileRsvp').value = '';
+      prev.innerHTML = '<p class="nota">Se aplicaron los cambios: ' + nConf2 + ' confirmado(s), ' + nCanc2 + ' cancelado(s), ' + nAgr2 + ' agregado(s) nuevo(s), ' + nAcomp2 + ' acompañante(s).</p>';
+      rsvpPendientes = [];
+    });
+    var bx = $('btnRsvpCancel');
+    if (bx) bx.addEventListener('click', function () { $('fileRsvp').value = ''; prev.innerHTML = ''; rsvpPendientes = []; });
+  } catch (err) {
+    prev.innerHTML = '<p class="nota">No se pudo leer el archivo. Prueba con un .csv o un .xlsx con las columnas del formulario.</p>';
   }
 });
 
