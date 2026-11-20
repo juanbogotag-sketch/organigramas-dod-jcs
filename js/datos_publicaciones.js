@@ -33,6 +33,15 @@ var PUBLICACIONES = [
     descripcion: '',
     archivo: 'publicaciones/Notas_Gonima_Congreso_v19.11.26_PM.docx',
     tipo: 'docx'
+  },
+  {
+    id: 'local-1795206704886',
+    titulo: 'Notas del encuentro entre el contralmirante, Carlos Gónima, viceministro de Política Criminal y Justicia Restaurativa del Ministerio de Justicia y del Derecho, y representantes de centros de pensamiento',
+    tema: 'Comercio e inversión',
+    fecha: '2026-11-20',
+    descripcion: '',
+    archivo: 'publicaciones/Notas_Centros_Pensamiento_v19.11.26_PM.docx',
+    tipo: 'docx'
   }
 ];
 
