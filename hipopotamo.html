@@ -40,6 +40,7 @@
   .btn { border: none; cursor: pointer; font: 700 13.5px 'Montserrat', sans-serif; padding: 12px 16px; border-radius: 12px; }
   .btn-oro { background: #e0a800; color: #0a1d38; }
   .btn-borde { background: #fff; border: 2px solid #0a1d38; color: #0a1d38; }
+  .btn-rojo { background: #CE1126; color: #fff; }
   .form-extra { display: none; background: #fff; border: 2px dashed #e0a800; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
   .form-extra.abierto { display: block; }
   .form-extra h3 { font-size: 14px; color: #0a1d38; margin-bottom: 10px; }
@@ -98,7 +99,7 @@
     </div>
     <button class="btn btn-oro" id="btnExtra">＋ Persona no invitada</button>
     <button class="btn btn-borde" id="btnCsv">⬇ Reporte CSV</button>
-    <button class="btn btn-oro" id="btnInforme">📊 Generar informe</button>
+    <button class="btn btn-rojo" id="btnCerrar">🔒 Cerrar evento</button>
   </div>
 
   <div class="form-extra" id="formExtra">
@@ -233,11 +234,19 @@ $('btnCsv').addEventListener('click', () => {
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 });
 
-$('btnInforme').addEventListener('click', () => {
+let armCerrar = null;
+$('btnCerrar').addEventListener('click', () => {
   if (typeof generarInformeChecklist !== 'function') {
     alert('El generador del informe no cargó. Recarga la página y vuelve a intentarlo.');
     return;
   }
+  if (!armCerrar) {
+    armCerrar = setTimeout(() => { armCerrar = null; $('btnCerrar').textContent = '🔒 Cerrar evento'; }, 5000);
+    $('btnCerrar').textContent = '¿Seguro? Cerrar evento';
+    return;
+  }
+  clearTimeout(armCerrar); armCerrar = null;
+  $('btnCerrar').textContent = '🔒 Cerrar evento';
   generarInformeChecklist({
     titulo: 'Life After the Hippopotamus',
     fecha: 'Jueves 19 de noviembre de 2026',
