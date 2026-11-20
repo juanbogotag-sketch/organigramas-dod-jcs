@@ -315,7 +315,7 @@
     groups.forEach((folks, org) => {
       const tid = (curCat === 'ejecutivo' && folks[0]) ? folks[0].orgId : '';
       html += '<div class="gname"><span>' + esc(org) + ' (' + folks.length + ')</span>' +
-        (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
+        (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
       folks.forEach(p => { html += rowHtml(p); });
     });
     $('#groups').innerHTML = html;
@@ -365,7 +365,7 @@
         const of = folks.filter(p => p.org === org);
         const tid = (c.id === 'ejecutivo' && of[0]) ? of[0].orgId : '';
         html += '<div class="gname"><span>' + esc(catLabel(c.id)) + ' · ' + esc(org) + ' (' + of.length + ')</span>' +
-          (tid ? '<a class="vorg" href="index.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
+          (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
         of.forEach(p => { html += rowHtml(p); });
       });
     });
