@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=36">
+  <link rel="stylesheet" href="css/repositorio.css?v=37">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -41,14 +41,21 @@
     <h1>Todo</h1>
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Perfiles · Eventos · Publicaciones</p>
-    <div class="hlinks">
-      <a class="homebtn" href="organigrama.html">Organigrama Estados Unidos →</a>
-    </div>
   </header>
 
   <main>
     <section id="home">
       <div class="tiles">
+        <!-- Cuarto tile (20 nov 2026, orden de Juan 14:52 EST): el enlace
+             «Organigrama Estados Unidos →» del encabezado se quita y en su
+             lugar va este tile, primero de la fila, azul sólido como el de
+             Perfiles. Es un enlace a organigrama.html (página completa, no
+             un panel desplegable). -->
+        <a id="tileOrg" class="tile tile-main" href="organigrama.html">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="6" width="20" height="12" rx="3"/><rect x="6" y="44" width="14" height="12" rx="3"/><rect x="25" y="44" width="14" height="12" rx="3"/><rect x="44" y="44" width="14" height="12" rx="3"/><path d="M32 18v8M13 26h38M13 26v18M32 26v18M51 26v18"/></svg>
+          <span class="tlab">Organigrama Estados Unidos</span>
+          <span class="tsub">Estructura y cargos del Gobierno de Estados Unidos</span>
+        </a>
         <button id="tilePerfiles" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="22" cy="28" r="7"/><path d="M12 46c2-6 6-8 10-8s8 2 10 8"/><path d="M38 22h10M38 30h10M38 38h10"/></svg>
           <span class="tlab">Repositorio de Perfiles</span>
