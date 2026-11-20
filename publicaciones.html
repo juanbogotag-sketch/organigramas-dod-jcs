@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/embajadores.css?v=3">
-  <link rel="stylesheet" href="css/publicaciones.css?v=2">
+  <link rel="stylesheet" href="css/publicaciones.css?v=3">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0a1d38">
   <meta name="mobile-web-app-capable" content="yes">
@@ -47,7 +47,13 @@
 
   <main>
     <p class="pubintro">Documentos de coyuntura preparados por la Embajada: informes estratégicos, análisis y notas de trabajo para leer y compartir dentro de la misión.</p>
-    <p class="localnote">Nota: las publicaciones que se suban con el formulario de abajo quedan guardadas <b>en este dispositivo</b> hasta que se agreguen al repositorio. Para que todos las vean, usa «Exportar datos» y envíale el archivo a Juan junto con el documento.</p>
+    <p class="localnote">Nota: las publicaciones que se suban con el formulario de abajo se publican directamente en la web para que las vean todos. Si no hay conexión, quedan guardadas <b>en este dispositivo</b> hasta que las publiques con «Publicarlas ahora».</p>
+
+    <div id="pubMigra" class="pubmigra" hidden>
+      <span id="pubMigraTexto"></span>
+      <button id="btnMigra" type="button" class="p">Publicarlas ahora</button>
+      <p id="pubMigraMsg" role="status"></p>
+    </div>
 
     <input id="pq" type="search" placeholder="Buscar por título o descripción…" autocomplete="off" aria-label="Buscar publicaciones">
     <div id="chips" role="group" aria-label="Filtrar por temática"></div>
@@ -92,7 +98,9 @@
 
   <script src="js/logo.js"></script>
   <script src="js/datos_publicaciones.js?v=2"></script>
-  <script src="js/publicaciones.js?v=2"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/publicaciones.js?v=3"></script>
   <script src="js/inicio.js?v=3"></script>
 </body>
 
