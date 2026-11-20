@@ -170,6 +170,45 @@
       guardarLocales(leerLocales().filter(function (p) { return p.id !== id; }));
       render();
     });
+    // Casillero para arrastrar y soltar (dropzone) del formulario
+    // (20 nov 2026, orden de Juan): además del botón de elegir archivo.
+    // Soltar un archivo lo pone en el mismo input (#upFile), así que pasa
+    // por la misma validación y el mismo envío del formulario.
+    var dzInput = $('#upFile');
+    var dz = $('#upDrop');
+    function mostrarArchivo(f) {
+      if (!dz) return;
+      var t = dz.querySelector('.dztext');
+      if (t) t.textContent = f ? ('Archivo elegido: ' + f.name) : 'Arrastra archivos aquí o haz clic para elegir';
+    }
+    if (dz && dzInput) {
+      dz.addEventListener('click', function () { dzInput.click(); });
+      dz.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dzInput.click(); }
+      });
+      ['dragenter', 'dragover'].forEach(function (ev) {
+        dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('over'); });
+      });
+      ['dragleave', 'drop'].forEach(function (ev) {
+        dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove('over'); });
+      });
+      dz.addEventListener('drop', function (e) {
+        var files = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : null;
+        if (!files || !files.length) return;
+        try { dzInput.files = files; }
+        catch (err) {
+          try {
+            var dt = new DataTransfer();
+            dt.items.add(files[0]);
+            dzInput.files = dt.files;
+          } catch (err2) {}
+        }
+        mostrarArchivo(files[0]);
+      });
+      dzInput.addEventListener('change', function () {
+        mostrarArchivo(dzInput.files && dzInput.files[0] ? dzInput.files[0] : null);
+      });
+    }
     // Formulario de subida.
     var form = $('#upForm');
     if (form) form.addEventListener('submit', function (e) {
@@ -208,6 +247,7 @@
           return;
         }
         form.reset();
+        mostrarArchivo(null);
         setMsg('Publicación guardada en este dispositivo. Usa «Exportar datos» para agregarla al repositorio y que la vean todos.', 'ok');
         render();
       };
