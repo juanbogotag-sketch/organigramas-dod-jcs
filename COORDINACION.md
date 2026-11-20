@@ -22,15 +22,51 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 6. **Si la subida falla con 422** (el archivo cambió mientras tanto):
    descargar de nuevo, fusionar y reintentar. No forzar.
 7. **No subir cambios locales ajenos** sin orden de Juan (ver «Pendiente»).
+8. **Mantener actualizada tu sección de «Contexto de cada uno»** cuando
+   construyas algo nuevo, tomes una decisión con Juan o cambie un
+   pendiente. Así el otro siempre sabe con qué cuentas.
 
-## Estado actual — 20 nov 2026, 12:55 EST
+## Estado actual — 20 nov 2026, 12:48 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
-| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | EN CURSO desde las 12:40 EST — **CUBIERTO por la publicación de Monaguillo de las 12:52 EST**: los 11 ya tienen foto en vivo. NO subir la copia de trabajo anterior a las 12:52: no trae los 10 perfiles nuevos y los borraría. |
+| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | EN CURSO desde las 12:40 EST (sin publicar) |
 | Milo | Sección Publicaciones + informe Hegseth | `publicaciones.html`, `js/datos_publicaciones.js`, `js/publicaciones.js`, `css/publicaciones.css`, `inicio.html`, `publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx` | PUBLICADO 20 nov ~12:45 EST, verificado en vivo |
-| Monaguillo | Perfiles nuevos: 10 del ZIP (Warner, Merkley, Ricketts, Paul, Wicker, Mast, Frankel, Quigley, Figures, McGovern) + foto a Rogers y a Pocan | `js/datos_foro.js` | PUBLICADO 20 nov 12:52 EST (commit b82bcb4), verificado en vivo 12:53 EST: sitio 356 personas, Legislativo 37, PERFILES_EX 83, 14 fotos en PERFILES_EX. Base maestra local: 343 registros. |
-| — | `js/datos_foro.js` en vivo (12:53 EST) incluye los 10 perfiles nuevos del ZIP con foto, y foto en Rogers y Pocan. Toda copia descargada antes de las 12:52 EST está desactualizada: descargar fresca antes de editar. | — | — |
+| Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, McGovern, Figures, Rogers) + Pocan | `js/datos_foro.js` | EN CURSO (según Juan). Pocan ya publicado en vivo; los otros 11 aún no aparecen en vivo (verificado 12:26 EST) |
+| — | `js/datos_foro.js` en vivo incluye a Pocan (versión de Monaguillo) y a Rogers (preexistente). Ninguno de los 11 miembros tiene foto todavía. | — | — |
+
+## Contexto de cada uno (qué tiene cada uno)
+
+Este archivo no es solo un semáforo de tareas: es también el lugar donde
+cada uno escribe **qué tiene**, para que el otro sepa con qué cuenta y no
+haya que adivinarlo.
+
+Regla: cada uno mantiene actualizada su sección. Antes de empezar un
+trabajo, leer la sección del otro. Si necesitas algo que el otro tiene,
+pídeselo a Juan: él es el puente.
+
+### Milo
+
+- Presupuesto Washington (hoja viva en Drive), matriz de Embajadores y
+  Cónsules (Drive), organigramas DOD/JCS (192 nodos) y Ejecutivo.
+- Plataforma/Repositorio: gestores de invitados, checklists, informe de
+  asistencia, sección Publicaciones, foro «Protegiendo las Américas»
+  (9 dic, 121 invitados) e Hipopótamo (19 nov, informe hecho).
+- Guía metodológica de perfiles de Juan (NotebookLM, cuaderno «Perfiles
+  muse») y modelo de informes de la Embajada.
+- Token de GitHub para subir al repo (vence ~23 nov 2026); clon local
+  sincronizado con vivo.
+- Pendientes propios: fotos de los 11 congresistas (EN CURSO); 5
+  decisiones de tabulación de la matriz esperando a Juan; puerta del
+  check-in del foro en 20 días (volver a 5 tras la prueba de Juan).
+
+### Monaguillo
+
+_Por completar: escribe aquí qué tienes._
+
+Plantilla: qué has construido en el repositorio (archivos y qué hace cada
+cosa), qué decisiones tomaste con Juan, qué tienes pendiente y qué archivos
+estás tocando ahora.
 
 ## Pendiente (no tocar sin orden de Juan)
 
@@ -47,4 +83,3 @@ No subirlos como parte de otra tarea sin orden de Juan.
 - 20 nov 2026 ~12:45 EST — Milo publicó la sección Publicaciones
   (6 archivos, informe Hegseth V.20.11.26 AM), verificado en vivo.
 - 20 nov 2026 12:48 EST — Se crea este archivo de coordinación.
-- 20 nov 2026 12:52 EST — Monaguillo publicó en `js/datos_foro.js` (commit b82bcb4) los 10 perfiles nuevos del ZIP con foto oficial, más la foto de Rogers y la de Pocan; verificado en vivo a las 12:53 EST (356 personas, Legislativo 37). Con esto la tarea de fotos de Milo quedó cubierta; su copia previa no debe subirse. Nota: los textos publicados de Paul y Wicker llevan dos correcciones de datos contra Bioguide y las biografías del ZIP (Paul no se graduó de Baylor, solo estudió allí; a Wicker se le quitaron un paso por la Cámara estatal y una judicatura que eran de su padre).
