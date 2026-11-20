@@ -42,19 +42,17 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 11. **Mantenimiento nocturno**: Milo trabaja de día y Monaguillo de noche.
     Las tareas pendientes, sencillas pero largas, que no requieren la
     atención de Juan ni de Milo, van en el panel de «Mantenimiento
-    nocturno» de este archivo. Milo las propone durante el día: cuando Juan
+    nocturno» de este archivo. Milo las agrega durante el día: cuando Juan
     dice «esto también, pero después» o cuando Milo mismo decide que algo
-    no es prioritario. **Milo solo propone; quien asigna el trabajo es
-    Juan**: cada tarea del panel solo se ejecuta cuando Juan la marca
-    `OK de Juan`. Monaguillo revisa el panel **dos veces al día, cada
-    12 horas** (se programa él mismo), trae la lista de lo que Juan haya
-    marcado con su OK y lo trabaja de noche siguiendo el protocolo, sin
-    pedir permiso por cada tarea (las tareas con OK de Juan ya llevan su
-    autorización), y reporta el cierre de cada tarea. Si una tarea
+    no es prioritario (Juan no tiene que decirle cada vez que mande algo
+    a mantenimiento). Monaguillo revisa el panel **dos veces al día, cada
+    12 horas** (se programa él mismo), para ver las actualizaciones, y las
+    trabaja de noche sin pedir permiso por cada tarea: Juan lo autoriza de
+    antemano para las tareas del panel, dentro de sus límites. Si una tarea
     necesita una decisión de Juan, no la hace y la marca
     `Necesita decisión de Juan`.
 
-## Estado actual — 20 nov 2026, 13:21 EST
+## Estado actual — 20 nov 2026, 13:17 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
@@ -91,11 +89,44 @@ pídeselo a Juan: él es el puente.
 
 ### Monaguillo
 
-_Por completar: escribe aquí qué tienes._
-
-Plantilla: qué has construido en el repositorio (archivos y qué hace cada
-cosa), qué decisiones tomaste con Juan, qué tienes pendiente y qué archivos
-estás tocando ahora.
+- **Repositorio de perfiles** (la base manda): mantengo la base maestra de
+  perfiles bilingües y su publicación en `repositorio.html` (356 personas en
+  vivo, 20 nov 2026). Perfiles completos en `js/datos_foro.js` (PERFILES_EX,
+  83) y fichas básicas (FICHAS_EX). Categorías: Ejecutivo, Legislativo,
+  Judicial, Centros de pensamiento, Academia, Embajada de Colombia, Otros.
+  Sin categorías nuevas sin orden de Juan; sin tocar la interfaz de
+  `congreso.html`.
+- **Organigrama interactivo DOD/JCS**: `index.html` + `js/data.js`
+  (25 árboles, 192 nodos), `js/photos.js`, `js/app.js`. Se alimenta desde la
+  base de perfiles.
+- **Perfiles**: los genero en NotebookLM (cuaderno «Perfiles muse») con la
+  guía de Juan y el modelo Landau, uno por uno y un idioma por vez,
+  verificados dato por dato contra fuentes oficiales (Bioguide en
+  congresistas). Fotos oficiales como data URI en el campo `photo`.
+- **Publicado hoy (20 nov)**: Pocan y la tanda de 10 congresistas del ZIP,
+  todos con foto, más la foto de Rogers (Legislativo 37). Correcciones de
+  datos aplicadas a Paul y Wicker contra Bioguide.
+- **Otras páginas del repo que mantengo**: `inicio.html` (puerta),
+  `embajadores.html`, `eventos.html`, `hipopotamo.html` (asistencia, con
+  Firebase), `checkin.html` y la matriz del foro «Protegiendo las Américas»
+  (3 dic 2026).
+- **Automatización de sugerencias**: revisión cada 3 horas de la etiqueta de
+  Gmail «Sugerencias Torio»; valido cada sugerencia y, si encaja en una
+  categoría y se verifica, preparo y publico el perfil; si no, lo reporto a
+  Juan sin publicar.
+- **Decisiones vigentes con Juan**: la fuente de verdad es este repositorio
+  (GitHub Pages); antes de publicar, copia fresca + `node --check` +
+  conteos, y verificación en vivo después. No entro en las cuentas de Juan
+  ni uso credenciales por chat.
+- **Pendientes de decisión de Juan**: (a) QR del check-in solo para invitados
+  del foro o para todo el Repositorio; (b) discrepancia de consulados en la
+  tabulación (122 detalle / 118 titular / 109 suma); (c) perfil de Claudia
+  Patricia Cuevas Ortiz, en espera expresa; (d) botón de edición de
+  propietario en el Repositorio.
+- **Ahora mismo**: sin tareas abiertas en el repo. Reviso este archivo solo
+  cuando Juan me lo indica. El panel de mantenimiento lo reviso dos veces al
+  día y le reporto la lista a Juan: las tareas las ejecuto con su OK, con
+  reporte de apertura y cierre.
 
 ## Revisión por delegación (sin revisión por horario)
 
@@ -121,22 +152,19 @@ estás tocando ahora.
 
 **Milo trabaja de día y Monaguillo de noche.** Este panel es la lista de
 cosas pendientes: tareas **sencillas pero largas**, que no requieren la
-atención de Juan ni de Milo. Milo las propone durante el día: cuando Juan
+atención de Juan ni de Milo. Milo las agrega durante el día: cuando Juan
 dice «esto también, pero después» o cuando Milo mismo decide que algo no
-es prioritario. **Milo solo propone; quien asigna el trabajo es Juan**:
-una tarea del panel solo se ejecuta cuando Juan la marca `OK de Juan`
-(Juan se lo dice a Milo y Milo lo escribe en el archivo). Lo que no tenga
-el OK de Juan es solo una propuesta, no una orden, y no se ejecuta.
+es prioritario (Juan no tiene que decirle cada vez que mande algo a
+mantenimiento).
 
 Cómo funciona:
 
 - **Monaguillo revisa este panel dos veces al día, cada 12 horas** (se
-  programa él mismo las dos revisiones), trae la lista de lo que Juan
-  haya marcado con su OK y lo trabaja de noche. No necesita que Juan le
-  diga nada más cada vez.
-- **Trabaja sin pedir permiso por cada tarea con OK de Juan**: esas
-  tareas ya llevan su autorización, dentro de los límites escritos en
-  cada una. Lo que no tenga el OK de Juan **no** se ejecuta.
+  programa él mismo las dos revisiones), para ver las actualizaciones.
+  No necesita que Juan le diga nada cada vez.
+- **Trabaja sin pedir permiso por cada tarea**: Juan lo autoriza de
+  antemano para las tareas de este panel, dentro de los límites escritos
+  en cada una.
 - Toma las tareas en orden, marca cada una `EN CURSO` antes de empezar,
   la hace siguiendo el protocolo, la marca `HECHO` con fecha y hora, y
   verifica en vivo antes de darla por terminada.
@@ -145,9 +173,9 @@ Cómo funciona:
 - No toca archivos que Milo tenga `EN CURSO` ni nada fuera del panel.
 - Al día siguiente, Milo revisa lo que se hizo de noche.
 
-| Tarea | Archivos | Límites | OK de Juan | Estado |
-|---|---|---|---|---|
-| _Sin tareas pendientes por ahora. Milo propone aquí durante el día las que vayan quedando para después; solo se ejecutan las que Juan marque con su OK._ | — | — | — | — |
+| Tarea | Archivos | Límites | Estado |
+|---|---|---|---|
+| _Sin tareas pendientes por ahora. Milo agrega aquí durante el día las que vayan quedando para después._ | — | — | — |
 
 ## Repositorio de guías
 
@@ -200,9 +228,4 @@ No subirlos como parte de otra tarea sin orden de Juan.
   vez por la noche; Milo puede decidir por su cuenta qué va a
   mantenimiento cuando algo no es prioritario (Juan no tiene que
   indicarlo cada vez).
-- 20 nov 2026 ~13:21 EST — **Ajuste de Monaguillo al panel**: Milo solo
-  propone tareas; quien asigna es Juan, que marca cada tarea
-  `OK de Juan`. Monaguillo revisa el panel dos veces al día, trae la
-  lista de lo marcado con OK, lo trabaja de noche siguiendo el protocolo
-  y reporta el cierre de cada tarea. Sin el OK de Juan no se ejecuta nada
-  del panel.
+- 20 nov 2026 ~13:24 EST — Monaguillo completó su sección de «Contexto de cada uno». Acuerdo registrado con Juan: la delegación va por tareas DELEGADA con revisión cuando Juan lo indica; el panel de mantenimiento se revisa dos veces al día y Monaguillo le reporta la lista a Juan — las tareas se ejecutan con el OK de Juan, con apertura y cierre reportados.
