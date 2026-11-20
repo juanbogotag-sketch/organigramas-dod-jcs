@@ -55,6 +55,16 @@
   (function gate() {
     const g = $('#gate'), inp = $('#gname'), eml = $('#gemail'), btn = $('#gbtn');
     if (!g || !inp || !btn) return;
+    // 20 nov 2026 (corrección del panel de Publicaciones): esta puerta vive
+    // ahora en publicaciones.html (la antigua inicio.html ya solo redirige y
+    // no carga este script). La redirección a repositorio.html solo tiene
+    // sentido en la página de entrada; en cualquier otra página, un visitante
+    // ya registrado simplemente entra (la puerta queda oculta) y uno nuevo se
+    // registra sin salir de la página. Antes, dentro del iframe del panel de
+    // Publicaciones, la redirección navegaba el iframe a repositorio.html y
+    // descartaba la lista ya renderizada.
+    const pagina = (location.pathname.split('/').pop() || '').toLowerCase();
+    const esEntrada = (pagina === '' || pagina === 'inicio.html' || pagina === 'index.html');
     try {
       let reg = leerRegistro();
       if (!reg) {
@@ -62,10 +72,10 @@
         for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { reg = { n: av[i].nombre, e: av[i].correo || '' }; break; }
         if (reg) localStorage.setItem('orgs_visitante', JSON.stringify(reg));
       }
-      // 20 nov 2026 (orden de Juan): la entrada va directa al menú de los
-      // botones cuadrados (repositorio.html). El ingreso se reporta también
-      // allí al llegar (su propia puerta), así que no se pierde el aviso.
-      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); location.replace('repositorio.html'); return; }
+      // Visitante ya registrado: se reporta el ingreso. Solo en la página de
+      // entrada se navega a repositorio.html; en las demás páginas la puerta
+      // simplemente queda oculta y se muestra la página.
+      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); if (esEntrada) location.replace('repositorio.html'); else g.hidden = true; return; }
     } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -82,9 +92,10 @@
       reportarRegistro(nombre, correo, 'Repositorio');
       g.hidden = true;
       document.body.style.overflow = '';
-      // 20 nov 2026 (orden de Juan): entrada directa a repositorio.html.
-      // Pequeña espera para que el aviso de registro salga antes de navegar.
-      setTimeout(function () { location.replace('repositorio.html'); }, 600);
+      // Solo en la página de entrada se navega a repositorio.html tras el
+      // registro (pequeña espera para que el aviso salga antes de navegar).
+      // En las demás páginas la puerta ya quedó oculta y no se navega.
+      if (esEntrada) setTimeout(function () { location.replace('repositorio.html'); }, 600);
     };
     btn.addEventListener('click', go);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
