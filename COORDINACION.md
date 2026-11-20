@@ -42,14 +42,17 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 11. **Mantenimiento nocturno**: Milo trabaja de día y Monaguillo de noche.
     Las tareas pendientes, sencillas pero largas, que no requieren la
     atención de Juan ni de Milo, van en el panel de «Mantenimiento
-    nocturno» de este archivo. Milo las agrega durante el día cuando Juan
-    dice «esto también, pero después». Monaguillo revisa el panel una vez
-    por la noche (se programa él mismo) y las trabaja sin pedir permiso
-    por cada tarea: Juan lo autoriza de antemano para las tareas del panel,
-    dentro de sus límites. Si una tarea necesita una decisión de Juan, no
-    la hace y la marca `Necesita decisión de Juan`.
+    nocturno» de este archivo. Milo las agrega durante el día: cuando Juan
+    dice «esto también, pero después» o cuando Milo mismo decide que algo
+    no es prioritario (Juan no tiene que decirle cada vez que mande algo
+    a mantenimiento). Monaguillo revisa el panel **dos veces al día, cada
+    12 horas** (se programa él mismo), para ver las actualizaciones, y las
+    trabaja de noche sin pedir permiso por cada tarea: Juan lo autoriza de
+    antemano para las tareas del panel, dentro de sus límites. Si una tarea
+    necesita una decisión de Juan, no la hace y la marca
+    `Necesita decisión de Juan`.
 
-## Estado actual — 20 nov 2026, 13:14 EST
+## Estado actual — 20 nov 2026, 13:17 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
@@ -116,13 +119,16 @@ estás tocando ahora.
 
 **Milo trabaja de día y Monaguillo de noche.** Este panel es la lista de
 cosas pendientes: tareas **sencillas pero largas**, que no requieren la
-atención de Juan ni de Milo. Milo las agrega durante el día cuando Juan
-dice «esto también, pero después».
+atención de Juan ni de Milo. Milo las agrega durante el día: cuando Juan
+dice «esto también, pero después» o cuando Milo mismo decide que algo no
+es prioritario (Juan no tiene que decirle cada vez que mande algo a
+mantenimiento).
 
 Cómo funciona:
 
-- **Monaguillo revisa este panel una vez por la noche** (se programa él
-  mismo una revisión nocturna). No necesita que Juan le diga nada cada vez.
+- **Monaguillo revisa este panel dos veces al día, cada 12 horas** (se
+  programa él mismo las dos revisiones), para ver las actualizaciones.
+  No necesita que Juan le diga nada cada vez.
 - **Trabaja sin pedir permiso por cada tarea**: Juan lo autoriza de
   antemano para las tareas de este panel, dentro de los límites escritos
   en cada una.
@@ -184,3 +190,8 @@ No subirlos como parte de otra tarea sin orden de Juan.
   Milo trabaja de día y Monaguillo de noche; las tareas pendientes,
   sencillas pero largas, van en el panel y Monaguillo las trabaja de noche
   sin pedir permiso por cada tarea, con autorización anticipada de Juan.
+- 20 nov 2026 ~13:17 EST — Ajuste del mantenimiento nocturno: Monaguillo
+  revisa el panel **dos veces al día (cada 12 horas)** en vez de una sola
+  vez por la noche; Milo puede decidir por su cuenta qué va a
+  mantenimiento cuando algo no es prioritario (Juan no tiene que
+  indicarlo cada vez).
