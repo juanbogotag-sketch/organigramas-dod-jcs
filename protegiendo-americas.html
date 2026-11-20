@@ -611,6 +611,9 @@ $('lista').addEventListener('click', e => {
   const g = efectivos().find(x => x.id === id);
   if (!g) return;
   if (act !== 'eliminar') armEliminar = null;
+  // Toggle (20 nov 2026, orden de Juan): clic otra vez en el botón del
+  // estado actual vuelve a Pendiente; cambiar a otro estado sigue igual.
+  if ((act === 'confirmado' || act === 'cancelado' || act === 'delego') && estadoDe(id) === act) { clearEstado(id); return; }
   if (act === 'confirmado') setEstado(id, 'confirmado', '');
   else if (act === 'cancelado') setEstado(id, 'cancelado', '');
   else if (act === 'delego') abrirDelegar(b.closest('.invitado'), g);
