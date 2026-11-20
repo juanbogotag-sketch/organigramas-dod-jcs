@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Repositorio · Embajada de Colombia en Estados Unidos</title>
+  <title>Todo · Embajada de Colombia en Estados Unidos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=35">
+  <link rel="stylesheet" href="css/repositorio.css?v=36">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -25,7 +25,7 @@
   <div class="tricolor" aria-hidden="true"></div>
   <div id="gate" hidden>
     <div class="gcard">
-      <h2>Repositorio</h2>
+      <h2>Todo</h2>
       <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
       <label for="gname">Nombre completo</label>
       <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
@@ -38,34 +38,35 @@
   <img id="wm" alt="" hidden>
 
   <header>
-    <h1>Repositorio</h1>
+    <h1>Todo</h1>
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
-    <p id="subtitle">Base de datos de perfiles</p>
+    <p id="subtitle">Perfiles · Eventos · Publicaciones</p>
     <div class="hlinks">
-      <a class="homebtn" href="organigrama.html">Organigrama DOD/JCS →</a>
+      <a class="homebtn" href="organigrama.html">Organigrama Estados Unidos →</a>
     </div>
   </header>
 
   <main>
     <section id="home">
       <div class="tiles">
-        <button id="tilePerfiles" type="button" class="tile tile-main" onclick="var pv=document.getElementById('perfilesView');pv.hidden=!pv.hidden;this.classList.toggle('on',!pv.hidden);if(!pv.hidden){pv.scrollIntoView({behavior:'smooth',block:'start'});}">
+        <button id="tilePerfiles" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="22" cy="28" r="7"/><path d="M12 46c2-6 6-8 10-8s8 2 10 8"/><path d="M38 22h10M38 30h10M38 38h10"/></svg>
           <span class="tlab">Repositorio de Perfiles</span>
           <span class="tsub">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
         </button>
-        <button id="tileEventos" type="button" class="tile" onclick="location.href='eventos.html'">
+        <button id="tileEventos" type="button" class="tile">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="14" width="44" height="40" rx="6"/><path d="M10 26h44M22 8v12M42 8v12"/><path d="M20 36h8M30 36h8M40 36h4M20 44h8M30 44h8"/></svg>
           <span class="tlab">Eventos</span>
           <span class="tsub">Crear y gestionar eventos</span>
         </button>
-        <button id="tilePublicaciones" type="button" class="tile" onclick="location.href='publicaciones.html'">
+        <button id="tilePublicaciones" type="button" class="tile">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8h24l8 8v40H16z"/><path d="M40 8v8h8"/><path d="M22 26h20M22 34h20M22 42h14"/></svg>
           <span class="tlab">Publicaciones</span>
           <span class="tsub">Documentos e informes de la Embajada</span>
         </button>
       </div>
       <div id="perfilesView" hidden>
+        <p id="perfilesCount" class="pcount"></p>
         <div class="homesch">
           <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
             aria-label="Buscar en todos los perfiles">
@@ -76,6 +77,18 @@
           <div class="col" id="colR"></div>
         </div>
         <div class="colsB"><div class="colB" id="colB"></div></div>
+      </div>
+      <!-- Paneles desplegables de Eventos y Publicaciones (20 nov 2026, orden
+           de Juan): igual que el de Perfiles, se despliegan debajo de los
+           tiles sin navegar a otra página. Cada uno incrusta su página
+           (eventos.html / publicaciones.html) en un iframe del mismo
+           origen, así que usan su marcado, su lógica y sus datos en vivo
+           sin duplicar nada. Solo un panel abierto a la vez. -->
+      <div id="eventosView" class="panelView" hidden>
+        <iframe id="frameEventos" title="Eventos" src="eventos.html"></iframe>
+      </div>
+      <div id="publicacionesView" class="panelView" hidden>
+        <iframe id="framePublicaciones" title="Publicaciones" src="publicaciones.html"></iframe>
       </div>
       <!-- Botones pequeños «Eventos» y «Publicaciones» eliminados 20 nov 2026
            (orden de Juan): los agrupan los tres botones cuadrados de arriba.
@@ -161,8 +174,8 @@
 
   <button type="button" id="btnSug" class="sugfab" title="Sugerencias" aria-label="Sugerencias">💡</button>
 
-  <button type="button" id="cartFab" class="cartfab" title="Carpeta de perfiles" aria-label="Carpeta de perfiles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 6.8A1.7 1.7 0 0 1 4.5 5.2h5l2 2.6h7.9a1.7 1.7 0 0 1 1.7 1.7v7.6a1.7 1.7 0 0 1-1.7 1.7H4.5a1.7 1.7 0 0 1-1.7-1.7z"/></svg><span id="cartN" class="cartn" hidden>0</span></button>
-  <button type="button" id="selFab" class="selfab" title="Seleccionar perfiles tocando su tarjeta" aria-label="Seleccionar perfiles para la carpeta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 6.8A1.7 1.7 0 0 1 4.5 5.2h5l2 2.6h7.9a1.7 1.7 0 0 1 1.7 1.7v7.6a1.7 1.7 0 0 1-1.7 1.7H4.5a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M12 10.6v5.2M9.4 13.2h5.2"/></svg><span id="selDot" class="seldot"></span></button>
+  <button type="button" id="cartFab" class="cartfab" title="Carpeta de perfiles" aria-label="Carpeta de perfiles" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 6.8A1.7 1.7 0 0 1 4.5 5.2h5l2 2.6h7.9a1.7 1.7 0 0 1 1.7 1.7v7.6a1.7 1.7 0 0 1-1.7 1.7H4.5a1.7 1.7 0 0 1-1.7-1.7z"/></svg><span id="cartN" class="cartn" hidden>0</span></button>
+  <button type="button" id="selFab" class="selfab" title="Seleccionar perfiles tocando su tarjeta" aria-label="Seleccionar perfiles para la carpeta" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 6.8A1.7 1.7 0 0 1 4.5 5.2h5l2 2.6h7.9a1.7 1.7 0 0 1 1.7 1.7v7.6a1.7 1.7 0 0 1-1.7 1.7H4.5a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M12 10.6v5.2M9.4 13.2h5.2"/></svg><span id="selDot" class="seldot"></span></button>
 
   <div id="cartPanel" hidden role="dialog" aria-label="Carpeta de perfiles">
     <div class="cphead"><b>📁 Carpeta de perfiles</b><button id="cartX" type="button" aria-label="Cerrar carpeta">✕</button></div>
@@ -262,7 +275,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=41"></script>
+  <script src="js/repositorio.js?v=42"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
