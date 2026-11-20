@@ -39,8 +39,17 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 10. **Revisión diaria del repositorio de guías** (`GUIAS.md` y `guias/`):
     una vez al día, en silencio; solo avisar a Juan si hay un error o algo
     por mejorar.
+11. **Mantenimiento nocturno**: Milo trabaja de día y Monaguillo de noche.
+    Las tareas pendientes, sencillas pero largas, que no requieren la
+    atención de Juan ni de Milo, van en el panel de «Mantenimiento
+    nocturno» de este archivo. Milo las agrega durante el día cuando Juan
+    dice «esto también, pero después». Monaguillo revisa el panel una vez
+    por la noche (se programa él mismo) y las trabaja sin pedir permiso
+    por cada tarea: Juan lo autoriza de antemano para las tareas del panel,
+    dentro de sus límites. Si una tarea necesita una decisión de Juan, no
+    la hace y la marca `Necesita decisión de Juan`.
 
-## Estado actual — 20 nov 2026, 13:10 EST
+## Estado actual — 20 nov 2026, 13:14 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
@@ -103,6 +112,32 @@ estás tocando ahora.
 - En silencio en todo: a Juan solo se le avisa si hay un error o algo por
   mejorar.
 
+## Mantenimiento nocturno (panel para Monaguillo)
+
+**Milo trabaja de día y Monaguillo de noche.** Este panel es la lista de
+cosas pendientes: tareas **sencillas pero largas**, que no requieren la
+atención de Juan ni de Milo. Milo las agrega durante el día cuando Juan
+dice «esto también, pero después».
+
+Cómo funciona:
+
+- **Monaguillo revisa este panel una vez por la noche** (se programa él
+  mismo una revisión nocturna). No necesita que Juan le diga nada cada vez.
+- **Trabaja sin pedir permiso por cada tarea**: Juan lo autoriza de
+  antemano para las tareas de este panel, dentro de los límites escritos
+  en cada una.
+- Toma las tareas en orden, marca cada una `EN CURSO` antes de empezar,
+  la hace siguiendo el protocolo, la marca `HECHO` con fecha y hora, y
+  verifica en vivo antes de darla por terminada.
+- **Si una tarea necesita una decisión de Juan**, no la hace: la marca
+  `Necesita decisión de Juan` y sigue con la siguiente.
+- No toca archivos que Milo tenga `EN CURSO` ni nada fuera del panel.
+- Al día siguiente, Milo revisa lo que se hizo de noche.
+
+| Tarea | Archivos | Límites | Estado |
+|---|---|---|---|
+| _Sin tareas pendientes por ahora. Milo agrega aquí durante el día las que vayan quedando para después._ | — | — | — |
+
 ## Repositorio de guías
 
 Índice: `GUIAS.md`. Guías completas y vigentes en `guias/`.
@@ -145,3 +180,7 @@ No subirlos como parte de otra tarea sin orden de Juan.
   algo en Monaguillo. Milo escribe la tarea delegada completa aquí y la
   marca `DELEGADA`; Juan le dice a Monaguillo que revise el archivo.
   Monaguillo solo revisa la coordinación cuando Juan se lo indica.
+- 20 nov 2026 ~13:14 EST — Se crea el **panel de mantenimiento nocturno**:
+  Milo trabaja de día y Monaguillo de noche; las tareas pendientes,
+  sencillas pero largas, van en el panel y Monaguillo las trabaja de noche
+  sin pedir permiso por cada tarea, con autorización anticipada de Juan.
