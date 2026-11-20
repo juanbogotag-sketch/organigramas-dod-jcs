@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Publicaciones · Repositorio de la Embajada de Colombia en Estados Unidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/embajadores.css?v=3">
+  <link rel="stylesheet" href="css/publicaciones.css?v=1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0a1d38">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Repositorio">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-dia-192.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" media="(prefers-color-scheme: dark)">
+</head>
+
+<body>
+  <div class="tricolor" aria-hidden="true"></div>
+  <div id="gate" hidden>
+    <div class="gcard">
+      <h2>Repositorio</h2>
+      <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
+      <label for="gname">Nombre completo</label>
+      <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
+      <label for="gemail">Correo electrónico</label>
+      <input id="gemail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+      <button id="gbtn" class="p" disabled>Entrar</button>
+    </div>
+  </div>
+
+  <header>
+    <h1>Publicaciones</h1>
+    <p class="emb">Embajada de Colombia en Estados Unidos</p>
+    <p id="subtitle">Informes y documentos coyunturales</p>
+    <div class="hlinks">
+      <a class="homebtn" href="inicio.html">← Menú principal</a>
+    </div>
+  </header>
+
+  <main>
+    <p class="pubintro">Documentos de coyuntura preparados por la Embajada: informes estratégicos, análisis y notas de trabajo para leer y compartir dentro de la misión.</p>
+    <p class="localnote">Nota: las publicaciones que se suban con el formulario de abajo quedan guardadas <b>en este dispositivo</b> hasta que se agreguen al repositorio. Para que todos las vean, usa «Exportar datos» y envíale el archivo a Juan junto con el documento.</p>
+
+    <input id="pq" type="search" placeholder="Buscar por título o descripción…" autocomplete="off" aria-label="Buscar publicaciones">
+    <div id="chips" role="group" aria-label="Filtrar por temática"></div>
+    <div id="pubList"></div>
+    <p id="pubEmpty" hidden>No hay publicaciones para este filtro.</p>
+
+    <section class="pubform" aria-label="Subir publicación">
+      <h2>Subir publicación</h2>
+      <p class="pubhint">Sube un documento coyuntural (PDF, Word, Excel o PowerPoint, máximo 4 MB). La fecha se pone automáticamente con la de hoy.</p>
+      <form id="upForm">
+        <label for="upTitulo">Título *</label>
+        <input id="upTitulo" type="text" placeholder="Ej.: Informe estratégico: Colombia–Estados Unidos…" autocomplete="off" required>
+        <label for="upTema">Temática *</label>
+        <select id="upTema" required>
+          <option value="">Elige una temática…</option>
+        </select>
+        <label for="upDesc">Descripción</label>
+        <textarea id="upDesc" rows="3" placeholder="Resumen corto de una o dos frases (opcional)…"></textarea>
+        <label for="upFile">Archivo * (.pdf, .docx, .xlsx, .pptx — máximo 4 MB)</label>
+        <input id="upFile" type="file" accept=".pdf,.docx,.xlsx,.pptx" required>
+        <div class="mrow">
+          <button type="submit" class="p">Publicar</button>
+        </div>
+        <p id="upMsg" role="status"></p>
+      </form>
+      <div class="pubexport">
+        <div class="mrow">
+          <button id="btnExport" type="button">Exportar datos (JSON)</button>
+        </div>
+        <p class="phexp">Descarga los datos de las publicaciones subidas en este dispositivo, en formato JSON, para agregarlas al repositorio (archivo en <b>publicaciones/</b> y entrada en <b>js/datos_publicaciones.js</b>).</p>
+        <a id="exportDl" hidden></a>
+      </div>
+    </section>
+
+    <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
+    </footer>
+  </main>
+
+  <script src="js/logo.js"></script>
+  <script src="js/datos_publicaciones.js?v=1"></script>
+  <script src="js/publicaciones.js?v=1"></script>
+  <script src="js/inicio.js?v=3"></script>
+</body>
+
+</html>
