@@ -1,8 +1,8 @@
-/* Repositorio — service worker: red primero; la caché solo es respaldo sin conexión.
+/* Todo — service worker: red primero; la caché solo es respaldo sin conexión.
    Los archivos propios del organigrama (organigrama.html, app.js, styles.css) pasan directos.
    (20 nov 2026: el organigrama se mudó de index.html a organigrama.html; index.html
    ahora redirige a repositorio.html y también pasa directo.) */
-var CACHE = 'repositorio-v5';
+var CACHE = 'todo-v1';
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
