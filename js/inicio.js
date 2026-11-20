@@ -62,7 +62,10 @@
         for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { reg = { n: av[i].nombre, e: av[i].correo || '' }; break; }
         if (reg) localStorage.setItem('orgs_visitante', JSON.stringify(reg));
       }
-      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); return; }
+      // 20 nov 2026 (orden de Juan): la entrada va directa al menú de los
+      // botones cuadrados (repositorio.html). El ingreso se reporta también
+      // allí al llegar (su propia puerta), así que no se pierde el aviso.
+      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); location.replace('repositorio.html'); return; }
     } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -79,6 +82,9 @@
       reportarRegistro(nombre, correo, 'Repositorio');
       g.hidden = true;
       document.body.style.overflow = '';
+      // 20 nov 2026 (orden de Juan): entrada directa a repositorio.html.
+      // Pequeña espera para que el aviso de registro salga antes de navegar.
+      setTimeout(function () { location.replace('repositorio.html'); }, 600);
     };
     btn.addEventListener('click', go);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
@@ -87,10 +93,10 @@
   })();
 
   // ---------- Buscador de categorías (menú principal) ----------
-  // Mismo patrón que el buscador de portada de embajadores.html (#hq):
-  // mínimo 2 caracteres, sin tildes; cada resultado abre su categoría
-  // en repositorio.html con ?cat=<id>.
-  (function buscador() {
+  // DESACTIVADO 20 nov 2026 (orden de Juan): la entrada va directa a
+  // repositorio.html y su buscador (#qg) cubre esta función. El código
+  // queda guardado aquí, comentado, por si se restaura el menú.
+  /* (function buscador() {
     const hq = $('#hq'), hsres = $('#hsres');
     if (!hq || !hsres) return;
     const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -117,5 +123,5 @@
         location.href = 'repositorio.html?cat=' + b.dataset.cat;
       }));
     });
-  })();
+  })(); */
 })();
