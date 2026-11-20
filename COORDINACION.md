@@ -23,14 +23,14 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
    descargar de nuevo, fusionar y reintentar. No forzar.
 7. **No subir cambios locales ajenos** sin orden de Juan (ver «Pendiente»).
 
-## Estado actual — 20 nov 2026, 12:48 EST
+## Estado actual — 20 nov 2026, 12:55 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
-| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | EN CURSO desde las 12:40 EST (sin publicar) |
+| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | EN CURSO desde las 12:40 EST — **CUBIERTO por la publicación de Monaguillo de las 12:52 EST**: los 11 ya tienen foto en vivo. NO subir la copia de trabajo anterior a las 12:52: no trae los 10 perfiles nuevos y los borraría. |
 | Milo | Sección Publicaciones + informe Hegseth | `publicaciones.html`, `js/datos_publicaciones.js`, `js/publicaciones.js`, `css/publicaciones.css`, `inicio.html`, `publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx` | PUBLICADO 20 nov ~12:45 EST, verificado en vivo |
-| Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, McGovern, Figures, Rogers) + Pocan | `js/datos_foro.js` | EN CURSO (según Juan). Pocan ya publicado en vivo; los otros 11 aún no aparecen en vivo (verificado 12:26 EST) |
-| — | `js/datos_foro.js` en vivo incluye a Pocan (versión de Monaguillo) y a Rogers (preexistente). Ninguno de los 11 miembros tiene foto todavía. | — | — |
+| Monaguillo | Perfiles nuevos: 10 del ZIP (Warner, Merkley, Ricketts, Paul, Wicker, Mast, Frankel, Quigley, Figures, McGovern) + foto a Rogers y a Pocan | `js/datos_foro.js` | PUBLICADO 20 nov 12:52 EST (commit b82bcb4), verificado en vivo 12:53 EST: sitio 356 personas, Legislativo 37, PERFILES_EX 83, 14 fotos en PERFILES_EX. Base maestra local: 343 registros. |
+| — | `js/datos_foro.js` en vivo (12:53 EST) incluye los 10 perfiles nuevos del ZIP con foto, y foto en Rogers y Pocan. Toda copia descargada antes de las 12:52 EST está desactualizada: descargar fresca antes de editar. | — | — |
 
 ## Pendiente (no tocar sin orden de Juan)
 
@@ -47,3 +47,4 @@ No subirlos como parte de otra tarea sin orden de Juan.
 - 20 nov 2026 ~12:45 EST — Milo publicó la sección Publicaciones
   (6 archivos, informe Hegseth V.20.11.26 AM), verificado en vivo.
 - 20 nov 2026 12:48 EST — Se crea este archivo de coordinación.
+- 20 nov 2026 12:52 EST — Monaguillo publicó en `js/datos_foro.js` (commit b82bcb4) los 10 perfiles nuevos del ZIP con foto oficial, más la foto de Rogers y la de Pocan; verificado en vivo a las 12:53 EST (356 personas, Legislativo 37). Con esto la tarea de fotos de Milo quedó cubierta; su copia previa no debe subirse. Nota: los textos publicados de Paul y Wicker llevan dos correcciones de datos contra Bioguide y las biografías del ZIP (Paul no se graduó de Baylor, solo estudió allí; a Wicker se le quitaron un paso por la Cámara estatal y una judicatura que eran de su padre).
