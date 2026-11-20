@@ -98,6 +98,7 @@
     </div>
     <button class="btn btn-oro" id="btnExtra">＋ Persona no invitada</button>
     <button class="btn btn-borde" id="btnCsv">⬇ Reporte CSV</button>
+    <button class="btn btn-oro" id="btnInforme">📊 Generar informe</button>
   </div>
 
   <div class="form-extra" id="formExtra">
@@ -119,6 +120,7 @@
 <footer>Los cambios se sincronizan en vivo en todos los dispositivos que tengan abierta esta página. Toca un invitado para marcar su llegada; tócalo de nuevo para desmarcarla.</footer>
 
 <script src="js/logo.js"></script>
+<script src="js/informe-checklist.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
@@ -229,6 +231,16 @@ $('btnCsv').addEventListener('click', () => {
   a.download = 'asistencia_hippopotamus.csv';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+
+$('btnInforme').addEventListener('click', () => {
+  generarInformeChecklist({
+    titulo: 'Life After the Hippopotamus',
+    fecha: 'Jueves 19 de noviembre de 2026',
+    hora: '6:30 – 8:00 p. m.',
+    lugar: 'Residencia de la Embajadora de Colombia en Washington',
+    invitados: INVITADOS, checks: checks, extras: extras
+  });
 });
 
 if (FB_CONFIG && window.firebase) {
