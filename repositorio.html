@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=37">
+  <link rel="stylesheet" href="css/repositorio.css?v=38">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -49,16 +49,18 @@
         <!-- Cuarto tile (20 nov 2026, orden de Juan 14:52 EST): el enlace
              «Organigrama Estados Unidos →» del encabezado se quita y en su
              lugar va este tile, primero de la fila, azul sólido como el de
-             Perfiles. Es un enlace a organigrama.html (página completa, no
-             un panel desplegable). -->
-        <a id="tileOrg" class="tile tile-main" href="organigrama.html">
+             Perfiles. 15:15 EST (REVERSA la decisión de 14:59 EST de abrirlo
+             como página completa): ya NO navega a organigrama.html; al
+             hacer clic despliega el panel del organigrama debajo de los
+             tiles, como los demás paneles. -->
+        <button id="tileOrg" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="6" width="20" height="12" rx="3"/><rect x="6" y="44" width="14" height="12" rx="3"/><rect x="25" y="44" width="14" height="12" rx="3"/><rect x="44" y="44" width="14" height="12" rx="3"/><path d="M32 18v8M13 26h38M13 26v18M32 26v18M51 26v18"/></svg>
           <span class="tlab">Organigrama Estados Unidos</span>
           <span class="tsub">Estructura y cargos del Gobierno de Estados Unidos</span>
-        </a>
+        </button>
         <button id="tilePerfiles" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="22" cy="28" r="7"/><path d="M12 46c2-6 6-8 10-8s8 2 10 8"/><path d="M38 22h10M38 30h10M38 38h10"/></svg>
-          <span class="tlab">Repositorio de Perfiles</span>
+          <span class="tlab">Perfiles</span>
           <span class="tsub">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
         </button>
         <button id="tileEventos" type="button" class="tile">
@@ -73,6 +75,11 @@
         </button>
       </div>
       <div id="perfilesView" hidden>
+        <div class="panelhead">
+          <h2>Perfiles</h2>
+          <p class="emb">Embajada de Colombia en Estados Unidos</p>
+          <p class="sub">Buscar y gestionar perfiles</p>
+        </div>
         <p id="perfilesCount" class="pcount"></p>
         <div class="homesch">
           <input id="qg" type="search" placeholder="Buscar en todos los perfiles: nombre, cargo u organización…" autocomplete="off"
@@ -85,17 +92,27 @@
         </div>
         <div class="colsB"><div class="colB" id="colB"></div></div>
       </div>
-      <!-- Paneles desplegables de Eventos y Publicaciones (20 nov 2026, orden
-           de Juan): igual que el de Perfiles, se despliegan debajo de los
-           tiles sin navegar a otra página. Cada uno incrusta su página
-           (eventos.html / publicaciones.html) en un iframe del mismo
-           origen, así que usan su marcado, su lógica y sus datos en vivo
-           sin duplicar nada. Solo un panel abierto a la vez. -->
+      <!-- Paneles desplegables de Eventos, Publicaciones y Organigrama
+           (20 nov 2026, orden de Juan): igual que el de Perfiles, se
+           despliegan debajo de los tiles sin navegar a otra página. Cada
+           uno incrusta su página (eventos.html / publicaciones.html /
+           organigrama.html) en un iframe del mismo origen, así que usan su
+           marcado, su lógica y sus datos en vivo sin duplicar nada. Solo un
+           panel abierto a la vez. El panel del organigrama lleva su barra
+           azul encima del iframe. -->
       <div id="eventosView" class="panelView" hidden>
         <iframe id="frameEventos" title="Eventos" src="eventos.html"></iframe>
       </div>
       <div id="publicacionesView" class="panelView" hidden>
         <iframe id="framePublicaciones" title="Publicaciones" src="publicaciones.html"></iframe>
+      </div>
+      <div id="organigramaView" class="panelView" hidden>
+        <div class="panelhead">
+          <h2>Organigrama Estados Unidos</h2>
+          <p class="emb">Embajada de Colombia en Estados Unidos</p>
+          <p class="sub">Estructura del Gobierno de Estados Unidos</p>
+        </div>
+        <iframe id="frameOrganigrama" title="Organigrama Estados Unidos" src="organigrama.html"></iframe>
       </div>
       <!-- Botones pequeños «Eventos» y «Publicaciones» eliminados 20 nov 2026
            (orden de Juan): los agrupan los tres botones cuadrados de arriba.
@@ -282,7 +299,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=42"></script>
+  <script src="js/repositorio.js?v=43"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
