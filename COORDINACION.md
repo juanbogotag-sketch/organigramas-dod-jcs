@@ -54,11 +54,11 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
     necesita una decisión de Juan, no la hace y la marca
     `Necesita decisión de Juan`.
 
-## Estado actual — 20 nov 2026, 13:37 EST
+## Estado actual — 20 nov 2026, 13:54 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
-| Milo | Reestructurar menú principal y menú de categorías: inicio solo con 2 botones; en repositorio, categorías agrupadas detrás de un botón cuadrado «Repositorio de Perfiles» y otro cuadrado «Eventos»; Publicaciones queda debajo de Eventos sin cambio de estilo | `repositorio.html`, `css/repositorio.css`, `js/repositorio.js` (`inicio.html` ya tiene solo los 2 botones; no se toca) | EN CURSO desde las 13:37 EST (orden de Juan) |
+| Milo | Reestructurar menú principal y menú de categorías: inicio solo con 2 botones; en repositorio, categorías agrupadas detrás de un botón cuadrado «Repositorio de Perfiles» y otro cuadrado «Eventos»; Publicaciones queda debajo de Eventos sin cambio de estilo | `repositorio.html`, `css/repositorio.css`, `js/repositorio.js` (`inicio.html` ya tiene solo los 2 botones; no se toca) | PUBLICADO 20 nov ~13:45 EST, verificado en vivo (inicio 2 botones; repositorio con los 2 botones cuadrados; Publicaciones intacta; fotos 11/11 siguen en vivo) |
 | Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | PUBLICADO 20 nov ~13:00 EST, verificado en vivo (11/11 miembros con foto) |
 | Milo | Sección Publicaciones + informe Hegseth | `publicaciones.html`, `js/datos_publicaciones.js`, `js/publicaciones.js`, `css/publicaciones.css`, `inicio.html`, `publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx` | PUBLICADO 20 nov ~12:45 EST, verificado en vivo |
 | Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, Figures, McGovern) + Pocan | `js/datos_foro.js` | PUBLICADO en vivo (verificado 12:59 EST): Pocan y los 10 perfiles nuevos ya están en vivo |
@@ -239,3 +239,4 @@ No subirlos como parte de otra tarea sin orden de Juan.
   panel: actualizar la guía de perfiles en NotebookLM (lenguaje sencillo,
   sin subtítulos), con OK de Juan, ordenada por Juan en la llamada.
 - 20 nov 2026 ~13:24 EST — Monaguillo completó su sección de «Contexto de cada uno». Acuerdo registrado con Juan: la delegación va por tareas DELEGADA con revisión cuando Juan lo indica; el panel de mantenimiento se revisa dos veces al día y Monaguillo le reporta la lista a Juan — las tareas se ejecutan con el OK de Juan, con apertura y cierre reportados.
+- 20 nov 2026 ~13:45 EST — Milo reestructura el menú: `inicio.html` ya tenía solo los 2 botones (Repositorio de la Embajada, Embajadas y Consulados), sin cambios; en `repositorio.html` las categorías quedan detrás del botón cuadrado «Repositorio de Perfiles» (icono SVG de tarjeta de identificación) y «Eventos» es otro botón cuadrado que va a `eventos.html`; Publicaciones intacta debajo de Eventos. Corregido además el emoji 📅 que `js/repositorio.js` volvía a poner en el botón Eventos al cargar. Verificado en vivo; las fotos 11/11 siguen en vivo en `js/datos_foro.js`.
