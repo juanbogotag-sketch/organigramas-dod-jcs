@@ -502,3 +502,29 @@ body.selmode .selbar { display: flex; }
   font-family: inherit; text-decoration: none; line-height: 1.2;
 }
 .homebtn:hover { background: var(--blue2); color: #fff; }
+
+/* Dos botones cuadrados del menú del Repositorio (20 nov 2026, orden de Juan):
+   «Repositorio de Perfiles» agrupa las categorías de perfiles (Poder Ejecutivo,
+   Legislativo, Judicial, think tanks, Academia, Embajada, Otros) y «Eventos»
+   agrupa lo que hacía el botón «Eventos» de abajo. Sin emojis: iconos SVG. */
+.tiles { display: flex; gap: 16px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+.tile {
+  width: min(240px, 44vw); aspect-ratio: 1 / 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: #fff; color: var(--blue); border: 2px solid var(--blue); border-radius: 20px;
+  padding: 18px 14px; cursor: pointer; font-family: inherit; text-align: center;
+}
+.tile:hover { background: #eef1f3; box-shadow: 0 4px 16px rgba(10, 29, 56, .14); }
+.tile-main { background: var(--blue); color: #fff; }
+.tile-main:hover { background: var(--blue2); }
+.tile.on { box-shadow: 0 0 0 3px var(--blue2); }
+.tile svg { width: 64px; height: 64px; display: block; }
+.tile .tlab { display: block; font-size: 19px; font-weight: 800; line-height: 1.25; }
+.tile .tsub { display: block; font-size: 12.5px; line-height: 1.45; color: #cfd8e6; }
+.tile:not(.tile-main) .tsub { color: var(--mu); }
+#perfilesView[hidden] { display: none; }
+@media (max-width: 640px) {
+  .tile { width: min(200px, 44vw); }
+  .tile svg { width: 52px; height: 52px; }
+  .tile .tlab { font-size: 16px; }
+}
