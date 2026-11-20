@@ -503,11 +503,13 @@ body.selmode .selbar { display: flex; }
 }
 .homebtn:hover { background: var(--blue2); color: #fff; }
 
-/* Tres botones cuadrados del menú del Repositorio (20 nov 2026, orden de Juan):
-   «Repositorio de Perfiles» agrupa las categorías de perfiles (Poder Ejecutivo,
-   Legislativo, Judicial, think tanks, Academia, Embajada, Otros), «Eventos»
-   agrupa lo que hacía el botón «Eventos» de abajo y «Publicaciones» lleva a
-   publicaciones.html. Sin emojis: iconos SVG. */
+/* Cuatro botones cuadrados del menú del Repositorio (20 nov 2026, orden de Juan):
+   «Organigrama Estados Unidos» (azul, icono SVG de organigrama, abre
+   organigrama.html como página completa), «Repositorio de Perfiles» (azul)
+   agrupa las categorías de perfiles (Poder Ejecutivo, Legislativo, Judicial,
+   think tanks, Academia, Embajada, Otros), «Eventos» agrupa lo que hacía el
+   botón «Eventos» de abajo y «Publicaciones» lleva a publicaciones.html.
+   Sin emojis: iconos SVG. */
 .tiles { display: flex; gap: 16px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
 .tile {
   width: min(240px, 44vw); aspect-ratio: 1 / 1;
@@ -515,6 +517,8 @@ body.selmode .selbar { display: flex; }
   background: #fff; color: var(--blue); border: 2px solid var(--blue); border-radius: 20px;
   padding: 18px 14px; cursor: pointer; font-family: inherit; text-align: center;
 }
+/* El tile del organigrama es un enlace (<a>), no un botón: sin subrayado. */
+a.tile { text-decoration: none; }
 .tile:hover { background: #eef1f3; box-shadow: 0 4px 16px rgba(10, 29, 56, .14); }
 .tile-main { background: var(--blue); color: #fff; }
 .tile-main:hover { background: var(--blue2); }
