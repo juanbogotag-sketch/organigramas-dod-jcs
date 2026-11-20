@@ -1549,11 +1549,13 @@
   renderCats();
 
   // ---------- Paneles desplegables bajo los tiles (20 nov 2026, orden de Juan) ----------
-  // Los tres tiles NO navegan: despliegan su interfaz justo debajo de la
+  // Los cuatro tiles NO navegan: despliegan su interfaz justo debajo de la
   // fila de botones. Solo un panel abierto a la vez; pulsar el mismo tile
   // lo cierra. La fila de tiles queda siempre visible arriba.
-  const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView' };
-  const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones' };
+  // El organigrama (15:15 EST, REVERSA la decisión de 14:59 EST de abrirlo
+  // como página completa) también es panel: organigrama.html va en iframe.
+  const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView', organigrama: 'organigramaView' };
+  const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones', organigrama: 'tileOrg' };
   // Botones «Crear carpeta» (carpeta y selección rápida): solo visibles
   // con el panel de Perfiles abierto; al cerrarse el panel (o al entrar a
   // una categoría) vuelven a ocultarse.
@@ -1573,11 +1575,13 @@
   // Ajustes de incrustado para los iframes (mismo origen): sin enlace
   // «volver» (llevaría a la misma página dentro del panel), enlaces a
   // página completa, y la puerta de registro ya resuelta en esta página.
+  // #backRepo es el «Volver a Todo» del organigrama: también se oculta
+  // dentro del panel, igual que .volver/.hlinks de los otros paneles.
   function frameTweaks(fr) {
     try {
       const doc = fr.contentDocument;
       if (!doc) return;
-      const back = doc.querySelector('.volver, .hlinks');
+      const back = doc.querySelector('.volver, .hlinks, #backRepo');
       if (back) back.style.display = 'none';
       doc.querySelectorAll('a[href]').forEach(a => {
         const href = a.getAttribute('href') || '';
@@ -1614,9 +1618,9 @@
     } catch (err) { fr.addEventListener('load', go, { once: true }); }
   }
   function showPanel(name) {
-    const cur = ['perfiles', 'eventos', 'publicaciones'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
+    const cur = ['perfiles', 'eventos', 'publicaciones', 'organigrama'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
     const next = (cur === name) ? null : name;
-    ['perfiles', 'eventos', 'publicaciones'].forEach(k => {
+    ['perfiles', 'eventos', 'publicaciones', 'organigrama'].forEach(k => {
       document.getElementById(PANEL_VIEWS[k]).hidden = (k !== next);
       document.getElementById(PANEL_TILES[k]).classList.toggle('on', k === next);
     });
@@ -1636,14 +1640,15 @@
   $('#tilePerfiles').addEventListener('click', () => showPanel('perfiles'));
   $('#tileEventos').addEventListener('click', () => showPanel('eventos'));
   $('#tilePublicaciones').addEventListener('click', () => showPanel('publicaciones'));
+  $('#tileOrg').addEventListener('click', () => showPanel('organigrama'));
   // Armar los iframes al cargar (aunque el panel esté oculto) para que el
   // contenido esté listo al desplegar; la altura se mide al abrir.
-  ['frameEventos', 'framePublicaciones'].forEach(id => {
+  ['frameEventos', 'framePublicaciones', 'frameOrganigrama'].forEach(id => {
     const fr = document.getElementById(id);
     if (fr) setupPanelFrame(fr);
   });
   window.addEventListener('resize', () => {
-    const open = ['eventos', 'publicaciones'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden);
+    const open = ['eventos', 'publicaciones', 'organigrama'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden);
     if (open) {
       const fr = document.getElementById(PANEL_VIEWS[open]).querySelector('iframe');
       if (fr) sizeFrame(fr);
