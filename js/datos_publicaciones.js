@@ -34,5 +34,10 @@ var TEMAS_PUBLICACIONES = [
   'Congreso',
   'Comercio e inversión',
   'Coyuntura',
-  'Visita del secretario de Guerra a Colombia'
+  'Visita del secretario de Guerra a Colombia',
+  'Migración y asuntos consulares',
+  'Cultura y educación',
+  'Derechos humanos',
+  'Energía y ambiente',
+  'Cooperación y desarrollo'
 ];
