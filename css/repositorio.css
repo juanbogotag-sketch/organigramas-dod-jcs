@@ -503,10 +503,11 @@ body.selmode .selbar { display: flex; }
 }
 .homebtn:hover { background: var(--blue2); color: #fff; }
 
-/* Dos botones cuadrados del menú del Repositorio (20 nov 2026, orden de Juan):
+/* Tres botones cuadrados del menú del Repositorio (20 nov 2026, orden de Juan):
    «Repositorio de Perfiles» agrupa las categorías de perfiles (Poder Ejecutivo,
-   Legislativo, Judicial, think tanks, Academia, Embajada, Otros) y «Eventos»
-   agrupa lo que hacía el botón «Eventos» de abajo. Sin emojis: iconos SVG. */
+   Legislativo, Judicial, think tanks, Academia, Embajada, Otros), «Eventos»
+   agrupa lo que hacía el botón «Eventos» de abajo y «Publicaciones» lleva a
+   publicaciones.html. Sin emojis: iconos SVG. */
 .tiles { display: flex; gap: 16px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
 .tile {
   width: min(240px, 44vw); aspect-ratio: 1 / 1;
