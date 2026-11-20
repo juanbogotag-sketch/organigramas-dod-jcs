@@ -362,16 +362,37 @@ function clearEstado(id) { setEstado(id, 'pendiente', ''); }
 // los estados o en la lista reescribe en Firebase la lista de confirmados
 // que lee el check-in. Es el mismo patrón del Hipopótamo.
 let syncListaTimer = null;
+// SEGURO: la lista de asistencia nunca se borra por un estado vacío.
+// listaNubeCount = cuántos confirmados guarda la nube (-1 = aún no lo sabemos).
+let listaNubeCount = -1;
+let armVaciarLista = false;
 function escribirListaChecklist(mostrarMsg) {
   if (!listaRef) return;
   const list = efectivos().filter(g => estadoDe(g.id) === 'confirmado');
   const obj = {};
   for (const g of list) obj[g.id] = { n: nombreDe(g), o: g.org || '' };
+  const nTxt = list.length === 1 ? '1 persona confirmada' : list.length + ' personas confirmadas';
+  // Si aún no sabemos qué hay en la nube, averiguarlo antes de decidir.
+  if (listaNubeCount < 0) { listaRef.once('value').then(s => { listaNubeCount = Object.keys(s.val() || {}).length; escribirListaChecklist(mostrarMsg); }).catch(() => {}); return; }
+  // Si la nube ya tiene confirmados y aquí salen 0 (típico al abrir el
+  // gestor en un navegador nuevo antes de que descarguen los estados),
+  // el auto-sync NO escribe nada. Vaciarla a mano exige dos pulsaciones.
+  if (!list.length && listaNubeCount > 0) {
+    if (!mostrarMsg) return;
+    if (!armVaciarLista) {
+      armVaciarLista = true;
+      setTimeout(() => { armVaciarLista = false; }, 8000);
+      const el0 = $('msgLista');
+      if (el0) el0.textContent = 'La nube guarda ' + listaNubeCount + ' personas confirmadas. Pulsa otra vez «Actualizar la checklist» si de verdad quieres vaciarla.';
+      return;
+    }
+    armVaciarLista = false;
+  }
   listaRef.set(obj).then(() => {
     const now = new Date();
     const hora = now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
     const el = $('msgLista');
-    if (el) el.textContent = (mostrarMsg ? 'Checklist actualizada con ' + list.length + ' personas confirmadas' : 'Checklist actualizada automáticamente con ' + list.length + ' personas confirmadas') + ' · ' + hora;
+    if (el) el.textContent = (mostrarMsg ? 'Checklist actualizada con ' + nTxt : 'Checklist actualizada automáticamente con ' + nTxt) + ' · ' + hora;
   }).catch(() => { const el = $('msgLista'); if (el && mostrarMsg) el.textContent = 'No se pudo actualizar la checklist. Revisa la conexión e inténtalo de nuevo.'; });
 }
 function programarSyncLista() { clearTimeout(syncListaTimer); syncListaTimer = setTimeout(() => escribirListaChecklist(false), 1500); }
@@ -689,6 +710,8 @@ if (FB_CONFIG && window.firebase) {
     estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
     rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
     agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
+    // El seguro lee cuántos confirmados guarda la nube, para no borrarlos nunca por un estado vacío.
+    listaRef.on('value', s => { const v = s.val() || {}; listaNubeCount = Object.keys(v).length; });
     // La checklist se crea en segundo plano con el gestor: al cargar, la
     // lista de confirmados ya queda publicada aunque nadie cambie nada.
     escribirListaChecklist(false);
