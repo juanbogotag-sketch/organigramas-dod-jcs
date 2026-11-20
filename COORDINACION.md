@@ -25,15 +25,18 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 8. **Mantener actualizada tu sección de «Contexto de cada uno»** cuando
    construyas algo nuevo, tomes una decisión con Juan o cambie un
    pendiente. Así el otro siempre sabe con qué cuentas.
-9. **Revisión periódica de este archivo**: cada uno lo revisa **cada 15
-   minutos** (la menor latencia posible). Si hay una tarea pendiente para
-   ti, hazla siguiendo este protocolo. No avisar a Juan en cada revisión:
-   solo si hay un error o algo por mejorar.
+9. **Revisión solo cuando hay una tarea abierta** (para no gastar recursos):
+   nadie revisa este archivo por horario. Cuando Monaguillo empieza una
+   tarea, reporta la **APERTURA** aquí (tarea, archivos, fecha y hora EST)
+   y se lo dice a Juan. Milo activa entonces el protocolo de revisión: lee
+   el archivo y lo revisa mientras la tarea esté abierta. Cuando Monaguillo
+   termina, reporta el **CIERRE** aquí (qué publicó, verificado en vivo) y
+   se lo dice a Juan. Milo hace la verificación final y cierra la revisión.
 10. **Revisión diaria del repositorio de guías** (`GUIAS.md` y `guias/`):
     una vez al día, en silencio; solo avisar a Juan si hay un error o algo
     por mejorar.
 
-## Estado actual — 20 nov 2026, 13:00 EST
+## Estado actual — 20 nov 2026, 13:09 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
@@ -41,6 +44,7 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 | Milo | Sección Publicaciones + informe Hegseth | `publicaciones.html`, `js/datos_publicaciones.js`, `js/publicaciones.js`, `css/publicaciones.css`, `inicio.html`, `publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx` | PUBLICADO 20 nov ~12:45 EST, verificado en vivo |
 | Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, Figures, McGovern) + Pocan | `js/datos_foro.js` | PUBLICADO en vivo (verificado 12:59 EST): Pocan y los 10 perfiles nuevos ya están en vivo |
 | — | `js/datos_foro.js` en vivo: 165 entradas. Los 11 miembros del Poder Legislativo ya tienen foto (9 puestas por Milo, rogers y pocan por Monaguillo). | — | — |
+| — | No hay tareas abiertas en este momento. | — | — |
 
 ## Contexto de cada uno (qué tiene cada uno)
 
@@ -75,15 +79,22 @@ Plantilla: qué has construido en el repositorio (archivos y qué hace cada
 cosa), qué decisiones tomaste con Juan, qué tienes pendiente y qué archivos
 estás tocando ahora.
 
-## Revisión periódica
+## Revisión por apertura y cierre (sin revisión por horario)
 
-- **Este archivo (coordinación)**: cada uno lo revisa **cada 15 minutos**.
-  Si encuentras una tarea pendiente para ti, hazla siguiendo el protocolo.
-  En silencio: a Juan solo se le avisa si hay un error o algo por mejorar.
-- **Repositorio de guías** (`GUIAS.md` y `guias/`): cada uno lo revisa
-  **una vez al día**. En silencio: a Juan solo se le avisa si hay un error
-  o algo por mejorar.
-- Las dos revisiones son independientes.
+- **Nadie revisa este archivo por horario**: la revisión cada 15 minutos
+  se canceló (eran 96 ejecuciones al día) para no gastar recursos.
+- **APERTURA**: cuando Monaguillo empieza una tarea, la reporta aquí
+  (tarea, archivos, fecha y hora EST) y se lo dice a Juan. Milo activa
+  entonces el protocolo de revisión y revisa el archivo mientras la tarea
+  esté abierta.
+- **CIERRE**: cuando Monaguillo termina, lo reporta aquí (qué publicó,
+  verificado en vivo) y se lo dice a Juan. Milo hace la verificación final
+  y cierra la revisión.
+- **Repositorio de guías** (`GUIAS.md` y `guias/`): se revisa **una vez al
+  día** (es solo 1 ejecución al día). En silencio: a Juan solo se le avisa
+  si hay un error o algo por mejorar.
+- En silencio en todo: a Juan solo se le avisa si hay un error o algo por
+  mejorar.
 
 ## Repositorio de guías
 
@@ -118,3 +129,8 @@ No subirlos como parte de otra tarea sin orden de Juan.
   `guias/guia-generacion-perfiles.md`) y se programan las revisiones
   periódicas (coordinación cada 15 min, guías una vez al día, en silencio
   salvo error o mejora).
+- 20 nov 2026 ~13:09 EST — **Cambio de dinámica**: se cancela la revisión
+  de coordinación cada 15 min (96 ejecuciones al día, demasiado recurso).
+  Nueva dinámica por apertura y cierre: Monaguillo reporta apertura y
+  cierre de cada tarea; Milo revisa solo mientras la tarea esté abierta.
+  La revisión diaria de guías se mantiene (1 al día).
