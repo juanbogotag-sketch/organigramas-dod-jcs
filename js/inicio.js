@@ -57,12 +57,13 @@
     if (!g || !inp || !btn) return;
     // 20 nov 2026 (corrección del panel de Publicaciones): esta puerta vive
     // ahora en publicaciones.html (la antigua inicio.html ya solo redirige y
-    // no carga este script). La redirección a repositorio.html solo tiene
-    // sentido en la página de entrada; en cualquier otra página, un visitante
-    // ya registrado simplemente entra (la puerta queda oculta) y uno nuevo se
-    // registra sin salir de la página. Antes, dentro del iframe del panel de
-    // Publicaciones, la redirección navegaba el iframe a repositorio.html y
-    // descartaba la lista ya renderizada.
+    // no carga este script). La redirección a repositorio.html y el reporte
+    // de ingreso solo tienen sentido en la página de entrada; en cualquier
+    // otra página, un visitante ya registrado simplemente entra (la puerta
+    // queda oculta) y uno nuevo se registra sin salir de la página. Antes,
+    // dentro del iframe del panel de Publicaciones, cada carga disparaba un
+    // correo «Ingreso de visitante» (FormSubmit) y la redirección navegaba el
+    // iframe a repositorio.html, descartando la lista ya renderizada.
     const pagina = (location.pathname.split('/').pop() || '').toLowerCase();
     const esEntrada = (pagina === '' || pagina === 'inicio.html' || pagina === 'index.html');
     try {
@@ -72,10 +73,11 @@
         for (let i = av.length - 1; i >= 0; i--) if (av[i] && av[i].nombre) { reg = { n: av[i].nombre, e: av[i].correo || '' }; break; }
         if (reg) localStorage.setItem('orgs_visitante', JSON.stringify(reg));
       }
-      // Visitante ya registrado: se reporta el ingreso. Solo en la página de
-      // entrada se navega a repositorio.html; en las demás páginas la puerta
-      // simplemente queda oculta y se muestra la página.
-      if (reg && reg.n) { reportarIngreso(reg.n, reg.e, 'Repositorio'); if (esEntrada) location.replace('repositorio.html'); else g.hidden = true; return; }
+      // Visitante ya registrado: el ingreso solo se reporta en la página de
+      // entrada (el hub ya lo reporta con su propia puerta al entrar). En las
+      // demás páginas la puerta simplemente queda oculta, sin reporte y sin
+      // navegación: así abrir el panel varias veces no genera correos.
+      if (reg && reg.n) { if (esEntrada) { reportarIngreso(reg.n, reg.e, 'Repositorio'); location.replace('repositorio.html'); } else g.hidden = true; return; }
     } catch (e) {}
     g.hidden = false;
     document.body.style.overflow = 'hidden';
