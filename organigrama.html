@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Organigramas DOD / JCS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=2">
+</head>
+
+<body class="view">
+  <div class="tricolor"></div>
+  <aside>
+    <a id="backRepo" href="repositorio.html">← Volver al repositorio</a>
+    <!-- «Menú principal» (inicio.html) eliminada 20 nov 2026: el inicio es
+         ahora repositorio.html (los tiles), así que el menú principal es
+         esta misma página de repositorio. -->
+    <h1 id="mainTitle">Organigramas</h1>
+    <div id="viewsubtitle" style="font-size:12px;color:var(--mu);margin-bottom:6px">Versión de consulta · toca un cargo para ver su foto y perfil · pellizca o usa la rueda para ampliar</div>
+
+    <div id="modeselect" hidden>
+      <h3>Modo de uso (Propietario)</h3>
+      <div id="moderow" role="group" aria-label="Modo de uso">
+        <button type="button" data-mode="view" class="on">👁️ Consulta</button>
+        <button type="button" data-mode="edit">✏️ Edición</button>
+      </div>
+      <div id="modehint"></div>
+      <div id="savestatus"></div>
+    </div>
+
+    <h3>Dispositivo</h3>
+    <div id="devrow" role="group" aria-label="Vista de dispositivo">
+      <button type="button" data-dev="desktop">Computador</button>
+      <button type="button" data-dev="mobile">Celular</button>
+    </div>
+    <div id="devhint"></div>
+
+    <h3>Árboles</h3>
+    <div style="font-size:12px;color:var(--mu);margin:-2px 0 6px">Toca o haz clic en un árbol para abrirlo.</div>
+    <div id="trees"></div>
+    <button id="newT">+ Nuevo árbol</button>
+    <div id="tedit"></div>
+
+    <h3 class="editonly">Datos, Word e Imagen</h3>
+    <button id="share" class="p">Crear versión para compartir (HTML)</button>
+    <button id="png">Ver / Descargar imagen o Word</button>
+    <button id="wAll">Word: perfiles del árbol actual</button>
+    <button id="exp">Exportar respaldo (JSON)</button>
+    <button id="imp">Importar respaldo (JSON)</button>
+    <input type="file" id="impf" accept=".json" hidden>
+    <button id="expDataJs">💾 Descargar data.js actualizado</button>
+    <button id="resetBtn">↺ Restablecer datos originales (data.js)</button>
+    <button id="vlog">Registro de visitas (CSV)</button>
+    <div id="msg" style="font-size:12px;color:var(--mu);margin-bottom:6px"></div>
+  </aside>
+
+  <div id="phv" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <div class="phbox">
+      <button id="phx" aria-label="Cerrar foto ampliada">✕ Cerrar</button>
+      <img id="phi" alt="">
+      <div id="phc"></div>
+      <button id="phb" class="p">Volver al organigrama</button>
+    </div>
+  </div>
+
+  <div id="gate" hidden>
+    <div class="gcard">
+      <h2>Organigramas DOD / JCS</h2>
+      <p>Para entrar, regístrate con tu nombre completo y tu correo. Solo tendrás que hacerlo una vez en este dispositivo.</p>
+      <label for="gname">Nombre completo</label>
+      <input id="gname" type="text" autocomplete="name" placeholder="Tu nombre">
+      <label for="gemail">Correo electrónico</label>
+      <input id="gemail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+      <button id="gbtn" class="p" disabled>Entrar</button>
+    </div>
+  </div>
+
+  <div id="ov" hidden>
+    <div>
+      <a id="ova" download="organigrama.png"><button>Descargar en PNG</button></a>
+      <button id="ovw">Descargar en Word</button>
+      <button id="ovc">Cerrar</button><br>
+      <small>También puedes copiar o guardar la imagen con clic derecho (o manteniendo presionado en el
+        celular).</small>
+    </div>
+    <img id="ovi" alt="organigrama">
+  </div>
+
+  <div id="sh" hidden>
+    <div class="box">
+      <b>Versión para compartir lista</b>
+      <p id="shi"></p>
+      <a id="sha" download="organigrama.html"><button class="p">Descargar archivo HTML</button></a>
+      <button id="shc">Cerrar</button>
+      <p style="font-size:12px;color:var(--mu)">Envíalo por correo o WhatsApp, o súbelo a Drive, Dropbox o un sitio web.
+        Quien lo abra, en computador o celular, podrá ampliar, mover, plegar, tocar un nombre para acercar la vista
+        sobre él y tocarlo dos veces para ver su foto y perfil. Es de solo lectura: tus datos originales no cambian.</p>
+    </div>
+  </div>
+
+  <div id="dlg" hidden>
+    <div class="box">
+      <p id="dm"></p>
+      <input id="di" hidden style="width:100%;margin-bottom:10px">
+      <div class="row" style="margin:0">
+        <button id="dok" class="p">Aceptar</button>
+        <button id="dno">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ptitle"></div>
+
+  <main id="stage">
+    <div id="qwrap">
+      <input id="q" type="search" placeholder="Buscar por nombre o cargo…" autocomplete="off"
+        aria-label="Buscar funcionario por nombre o cargo">
+      <div id="qres" hidden></div>
+    </div>
+    <div id="world">
+      <svg id="edges"></svg>
+      <div id="cards"></div>
+    </div>
+    <div id="zoom">
+      <div class="zcol">
+        <button id="ori" aria-pressed="false" aria-label="Cambiar entre vista horizontal y vertical"
+          title="Intercalar el árbol entre vertical y horizontal">⇄</button>
+        <button id="zf" style="width:auto" aria-label="Ajustar" title="Ajustar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <rect width="16" height="16" x="4" y="4" rx="1" />
+          </svg>
+        </button>
+      </div>
+      <div class="zcol">
+        <button id="fa">Plegar</button>
+        <button id="ua">Desplegar</button>
+      </div>
+    </div>
+    <div id="devcorn" role="group" aria-label="Vista de dispositivo">
+      <button type="button" id="devm" aria-label="Vista de celular" title="Vista de celular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+          <path d="M12 18h.01" />
+        </svg>
+      </button>
+      <button type="button" id="devd" aria-label="Vista de computador" title="Vista de computador">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <rect width="20" height="14" x="2" y="3" rx="2" />
+          <line x1="8" x2="16" y1="21" y2="21" />
+          <line x1="12" x2="12" y1="17" y2="21" />
+        </svg>
+      </button>
+      <button type="button" id="zin" aria-label="Ampliar" title="Ampliar"
+        style="font-size:23px;line-height:1">+</button>
+      <button type="button" id="zout" aria-label="Alejar" title="Alejar" style="font-size:23px;line-height:1">−</button>
+    </div>
+    <button id="mn" aria-label="Mostrar u ocultar el menú">☰</button>
+  </main>
+
+  <section id="panel" hidden></section>
+
+  <script>
+    (function () {
+      try {
+        var ua = navigator.userAgent || '';
+        var br = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /OPR\/|Opera/.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Otro navegador';
+        var os = /Android/.test(ua) ? 'Android' : /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /Windows/.test(ua) ? 'Windows' : /Mac OS X|Macintosh/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Otro sistema';
+        var tipo = /iPad|Tablet/.test(ua) ? 'Tableta' : /Mobi|Android|iPhone|iPod/.test(ua) ? 'Celular' : 'Computador';
+        var a = [];
+        try { a = JSON.parse(localStorage.getItem('orgs_visitas_v1')) || []; } catch (e) { a = []; }
+        var now = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+        a.push({
+          dia: now.getFullYear() + '-' + p(now.getMonth() + 1) + '-' + p(now.getDate()),
+          hora: p(now.getHours()) + ':' + p(now.getMinutes()) + ':' + p(now.getSeconds()),
+          dispositivo: tipo + ' · ' + os,
+          navegador: br
+        });
+        if (a.length > 500) a = a.slice(-500);
+        localStorage.setItem('orgs_visitas_v1', JSON.stringify(a));
+      } catch (e) { }
+    })();
+  </script>
+  <script src="js/vendor/jszip.min.js"></script>
+  <script src="js/vendor/docx.min.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+
+</html>
