@@ -1407,7 +1407,7 @@ window.__APP_FN = function () {
   }
 
   function shareHTML(d) {
-    const nm = S.view == 'all' ? 'Organigramas DOD / JCS' : tree(S.view).name;
+    const nm = S.view == 'all' ? 'Organigrama Estados Unidos' : tree(S.view).name;
     const shellClone = document.body.cloneNode(true);
     shellClone.querySelectorAll('script, style, link, #modeselect').forEach(e => e.remove());
     const p = shellClone.querySelector('#panel');
