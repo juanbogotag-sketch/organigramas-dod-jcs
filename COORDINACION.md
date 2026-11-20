@@ -42,17 +42,19 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 11. **Mantenimiento nocturno**: Milo trabaja de día y Monaguillo de noche.
     Las tareas pendientes, sencillas pero largas, que no requieren la
     atención de Juan ni de Milo, van en el panel de «Mantenimiento
-    nocturno» de este archivo. Milo las agrega durante el día: cuando Juan
+    nocturno» de este archivo. Milo las propone durante el día: cuando Juan
     dice «esto también, pero después» o cuando Milo mismo decide que algo
-    no es prioritario (Juan no tiene que decirle cada vez que mande algo
-    a mantenimiento). Monaguillo revisa el panel **dos veces al día, cada
-    12 horas** (se programa él mismo), para ver las actualizaciones, y las
-    trabaja de noche sin pedir permiso por cada tarea: Juan lo autoriza de
-    antemano para las tareas del panel, dentro de sus límites. Si una tarea
+    no es prioritario. **Milo solo propone; quien asigna el trabajo es
+    Juan**: cada tarea del panel solo se ejecuta cuando Juan la marca
+    `OK de Juan`. Monaguillo revisa el panel **dos veces al día, cada
+    12 horas** (se programa él mismo), trae la lista de lo que Juan haya
+    marcado con su OK y lo trabaja de noche siguiendo el protocolo, sin
+    pedir permiso por cada tarea (las tareas con OK de Juan ya llevan su
+    autorización), y reporta el cierre de cada tarea. Si una tarea
     necesita una decisión de Juan, no la hace y la marca
     `Necesita decisión de Juan`.
 
-## Estado actual — 20 nov 2026, 13:17 EST
+## Estado actual — 20 nov 2026, 13:26 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
@@ -152,19 +154,22 @@ pídeselo a Juan: él es el puente.
 
 **Milo trabaja de día y Monaguillo de noche.** Este panel es la lista de
 cosas pendientes: tareas **sencillas pero largas**, que no requieren la
-atención de Juan ni de Milo. Milo las agrega durante el día: cuando Juan
+atención de Juan ni de Milo. Milo las propone durante el día: cuando Juan
 dice «esto también, pero después» o cuando Milo mismo decide que algo no
-es prioritario (Juan no tiene que decirle cada vez que mande algo a
-mantenimiento).
+es prioritario. **Milo solo propone; quien asigna el trabajo es Juan**:
+una tarea del panel solo se ejecuta cuando Juan la marca `OK de Juan`
+(Juan se lo dice a Milo y Milo lo escribe en el archivo). Lo que no tenga
+el OK de Juan es solo una propuesta, no una orden, y no se ejecuta.
 
 Cómo funciona:
 
 - **Monaguillo revisa este panel dos veces al día, cada 12 horas** (se
-  programa él mismo las dos revisiones), para ver las actualizaciones.
-  No necesita que Juan le diga nada cada vez.
-- **Trabaja sin pedir permiso por cada tarea**: Juan lo autoriza de
-  antemano para las tareas de este panel, dentro de los límites escritos
-  en cada una.
+  programa él mismo las dos revisiones), trae la lista de lo que Juan
+  haya marcado con su OK y lo trabaja de noche. No necesita que Juan le
+  diga nada más cada vez.
+- **Trabaja sin pedir permiso por cada tarea con OK de Juan**: esas
+  tareas ya llevan su autorización, dentro de los límites escritos en
+  cada una. Lo que no tenga el OK de Juan **no** se ejecuta.
 - Toma las tareas en orden, marca cada una `EN CURSO` antes de empezar,
   la hace siguiendo el protocolo, la marca `HECHO` con fecha y hora, y
   verifica en vivo antes de darla por terminada.
@@ -173,9 +178,9 @@ Cómo funciona:
 - No toca archivos que Milo tenga `EN CURSO` ni nada fuera del panel.
 - Al día siguiente, Milo revisa lo que se hizo de noche.
 
-| Tarea | Archivos | Límites | Estado |
-|---|---|---|---|
-| _Sin tareas pendientes por ahora. Milo agrega aquí durante el día las que vayan quedando para después._ | — | — | — |
+| Tarea | Archivos | Límites | OK de Juan | Estado |
+|---|---|---|---|---|
+| Actualizar la guía metodológica de perfiles en NotebookLM (cuaderno «Perfiles muse»): lenguaje sencillo, sin subtítulos ni frases pesadas tipo «antecedentes formativos y profesionales» en el segundo párrafo (ejemplo: perfil de Lois Frankel). Después, actualizar la copia del repositorio (guias/guia-generacion-perfiles.md) para que quede igual y verificar en vivo. | Guía en NotebookLM; guias/guia-generacion-perfiles.md | Solo la guía; no regenerar ni tocar perfiles ya publicados. | OK de Juan | Pendiente (con OK) |
 
 ## Repositorio de guías
 
@@ -228,4 +233,9 @@ No subirlos como parte de otra tarea sin orden de Juan.
   vez por la noche; Milo puede decidir por su cuenta qué va a
   mantenimiento cuando algo no es prioritario (Juan no tiene que
   indicarlo cada vez).
+- 20 nov 2026 ~13:26 EST — Se fusiona la regla del OK de Juan en la regla
+  11 y el panel (Milo solo propone; sin OK de Juan no se ejecuta nada),
+  sin tocar la sección de contexto de Monaguillo. Primera tarea del
+  panel: actualizar la guía de perfiles en NotebookLM (lenguaje sencillo,
+  sin subtítulos), con OK de Juan, ordenada por Juan en la llamada.
 - 20 nov 2026 ~13:24 EST — Monaguillo completó su sección de «Contexto de cada uno». Acuerdo registrado con Juan: la delegación va por tareas DELEGADA con revisión cuando Juan lo indica; el panel de mantenimiento se revisa dos veces al día y Monaguillo le reporta la lista a Juan — las tareas se ejecutan con el OK de Juan, con apertura y cierre reportados.
