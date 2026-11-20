@@ -1260,8 +1260,11 @@
   // provisional del momento. «Abrir» carga el evento en el espacio de
   // trabajo para agregar o quitar invitados; «Eliminar» lo borra.
   function paintEventosBtn() {
-    const b = $('#btnEventos');
-    if (b) b.textContent = 'Eventos' + (events.length ? ' (' + events.length + ')' : '');
+    // 20 nov 2026 (orden de Juan): el botón pequeño «Eventos» se eliminó;
+    // el contador de eventos guardados vive ahora en el subtítulo del
+    // botón cuadrado grande «Eventos» (#tileEventos .tsub).
+    const s = document.querySelector('#tileEventos .tsub');
+    if (s) s.textContent = 'Crear y gestionar eventos' + (events.length ? ' (' + events.length + ')' : '');
   }
   function paintOpenEvent() {
     const pill = $('#evOpen');
@@ -1351,7 +1354,9 @@
     renderEvList();
     $('#evListModal').hidden = false;
   }
-  $('#btnEventos').addEventListener('click', () => { location.href = 'eventos.html'; });
+  // El botón cuadrado grande «Eventos» (#tileEventos) ya lleva su propio
+  // onclick a eventos.html; el botón pequeño #btnEventos se eliminó
+  // 20 nov 2026 (orden de Juan).
   $('#evListX').addEventListener('click', () => { $('#evListModal').hidden = true; });
   $('#evListModal').addEventListener('click', e => { if (e.target === $('#evListModal')) $('#evListModal').hidden = true; });
   $('#evListNew').addEventListener('click', () => { $('#evListModal').hidden = true; if (curEvent) openEventoNuevo(); else openEvModal(); });
