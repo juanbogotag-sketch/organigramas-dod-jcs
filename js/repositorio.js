@@ -1261,7 +1261,7 @@
   // trabajo para agregar o quitar invitados; «Eliminar» lo borra.
   function paintEventosBtn() {
     const b = $('#btnEventos');
-    if (b) b.textContent = '📅 Eventos' + (events.length ? ' (' + events.length + ')' : '');
+    if (b) b.textContent = 'Eventos' + (events.length ? ' (' + events.length + ')' : '');
   }
   function paintOpenEvent() {
     const pill = $('#evOpen');
