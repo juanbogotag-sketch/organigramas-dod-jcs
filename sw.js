@@ -1,5 +1,7 @@
 /* Repositorio — service worker: red primero; la caché solo es respaldo sin conexión.
-   Los archivos propios del organigrama (index.html, app.js, styles.css) pasan directos. */
+   Los archivos propios del organigrama (organigrama.html, app.js, styles.css) pasan directos.
+   (20 nov 2026: el organigrama se mudó de index.html a organigrama.html; index.html
+   ahora redirige a repositorio.html y también pasa directo.) */
 var CACHE = 'repositorio-v5';
 self.addEventListener('install', function (e) {
   e.waitUntil(
@@ -18,7 +20,7 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   var url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.endsWith('index.html') || url.pathname.endsWith('js/app.js') ||
+  if (url.pathname.endsWith('index.html') || url.pathname.endsWith('organigrama.html') || url.pathname.endsWith('js/app.js') ||
       url.pathname.endsWith('css/styles.css')) return;
   e.respondWith(
     fetch(e.request).then(function (r) {
