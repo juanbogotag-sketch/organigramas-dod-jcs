@@ -155,8 +155,8 @@ const FB_CONFIG = {
 
 const $ = id => document.getElementById(id);
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const horaFmt = t => { try { return new Date(t).toLocaleTimeString('es-US', {hour: 'numeric', minute: '2-digit'}); } catch (e) { return ''; } };
+const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const horaFmtH = t => { try { return new Date(t).toLocaleTimeString('es-US', {hour: 'numeric', minute: '2-digit'}); } catch (e) { return ''; } };
 
 if (window.LOGO_EMB) { $('escudo').src = LOGO_EMB; }
 
@@ -194,7 +194,7 @@ function renderLista() {
     visibles++;
     const row = document.createElement('div');
     row.className = 'invitado' + (llego ? ' llego' : '');
-    row.innerHTML = '<div class="check">✓</div><div class="quien"><div class="nombre">' + esc(g.n) + '</div><div class="org">' + esc(g.o || '') + '</div></div>' + (llego ? '<div class="hora">' + horaFmt(checks[g.id].t) + '</div>' : '');
+    row.innerHTML = '<div class="check">✓</div><div class="quien"><div class="nombre">' + escH(g.n) + '</div><div class="org">' + escH(g.o || '') + '</div></div>' + (llego ? '<div class="hora">' + horaFmtH(checks[g.id].t) + '</div>' : '');
     row.addEventListener('click', () => toggle(g.id));
     frag.appendChild(row);
   }
@@ -214,7 +214,7 @@ function renderExtras() {
     const e = extras[id];
     const row = document.createElement('div');
     row.className = 'extra';
-    row.innerHTML = '<div class="quien"><div class="nombre">' + esc(e.n) + '</div><div class="org">' + esc(e.o || '') + '</div></div><div class="hora">' + horaFmt(e.t) + '</div>';
+    row.innerHTML = '<div class="quien"><div class="nombre">' + escH(e.n) + '</div><div class="org">' + escH(e.o || '') + '</div></div><div class="hora">' + horaFmtH(e.t) + '</div>';
     const btn = document.createElement('button');
     btn.textContent = '✕'; btn.title = 'Quitar de la lista';
     btn.addEventListener('click', () => { if (extrasRef) extrasRef.child(id).remove(); });
@@ -247,8 +247,8 @@ $('btnGuardarExtra').addEventListener('click', () => {
 });
 $('btnCsv').addEventListener('click', () => {
   const filas = [['Tipo', 'Nombre', 'Organización', 'Hora de llegada']];
-  for (const g of INVITADOS) if (checks[g.id]) filas.push(['Invitado', g.n, g.o || '', horaFmt(checks[g.id].t)]);
-  for (const id of Object.keys(extras)) filas.push(['No estaba en lista', extras[id].n, extras[id].o || '', horaFmt(extras[id].t)]);
+  for (const g of INVITADOS) if (checks[g.id]) filas.push(['Invitado', g.n, g.o || '', horaFmtH(checks[g.id].t)]);
+  for (const id of Object.keys(extras)) filas.push(['No estaba en lista', extras[id].n, extras[id].o || '', horaFmtH(extras[id].t)]);
   const csv = filas.map(f => f.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
