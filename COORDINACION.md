@@ -25,15 +25,22 @@ Ninguno de los dos puede hablar con el otro: Juan es el puente entre ambos.
 8. **Mantener actualizada tu sección de «Contexto de cada uno»** cuando
    construyas algo nuevo, tomes una decisión con Juan o cambie un
    pendiente. Así el otro siempre sabe con qué cuentas.
+9. **Revisión periódica de este archivo**: cada uno lo revisa **cada 15
+   minutos** (la menor latencia posible). Si hay una tarea pendiente para
+   ti, hazla siguiendo este protocolo. No avisar a Juan en cada revisión:
+   solo si hay un error o algo por mejorar.
+10. **Revisión diaria del repositorio de guías** (`GUIAS.md` y `guias/`):
+    una vez al día, en silencio; solo avisar a Juan si hay un error o algo
+    por mejorar.
 
-## Estado actual — 20 nov 2026, 12:48 EST
+## Estado actual — 20 nov 2026, 13:00 EST
 
 | Agente | Tarea | Archivos | Estado |
 |---|---|---|---|
-| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | EN CURSO desde las 12:40 EST (sin publicar) |
+| Milo | Fotos para los 11 congresistas del Poder Legislativo (solo foto, sin tocar texto) | `js/datos_foro.js` | PUBLICADO 20 nov ~13:00 EST, verificado en vivo (11/11 miembros con foto) |
 | Milo | Sección Publicaciones + informe Hegseth | `publicaciones.html`, `js/datos_publicaciones.js`, `js/publicaciones.js`, `css/publicaciones.css`, `inicio.html`, `publicaciones/Informe_Visita_Secretario_de_Guerra_Colombia.docx` | PUBLICADO 20 nov ~12:45 EST, verificado en vivo |
-| Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, McGovern, Figures, Rogers) + Pocan | `js/datos_foro.js` | EN CURSO (según Juan). Pocan ya publicado en vivo; los otros 11 aún no aparecen en vivo (verificado 12:26 EST) |
-| — | `js/datos_foro.js` en vivo incluye a Pocan (versión de Monaguillo) y a Rogers (preexistente). Ninguno de los 11 miembros tiene foto todavía. | — | — |
+| Monaguillo | Perfiles nuevos: 11 del ZIP (Paul, Merkley, Ricketts, Wicker, Warner, Mast, Frankel, Quigley, Figures, McGovern) + Pocan | `js/datos_foro.js` | PUBLICADO en vivo (verificado 12:59 EST): Pocan y los 10 perfiles nuevos ya están en vivo |
+| — | `js/datos_foro.js` en vivo: 165 entradas. Los 11 miembros del Poder Legislativo ya tienen foto (9 puestas por Milo, rogers y pocan por Monaguillo). | — | — |
 
 ## Contexto de cada uno (qué tiene cada uno)
 
@@ -56,9 +63,9 @@ pídeselo a Juan: él es el puente.
   muse») y modelo de informes de la Embajada.
 - Token de GitHub para subir al repo (vence ~23 nov 2026); clon local
   sincronizado con vivo.
-- Pendientes propios: fotos de los 11 congresistas (EN CURSO); 5
-  decisiones de tabulación de la matriz esperando a Juan; puerta del
-  check-in del foro en 20 días (volver a 5 tras la prueba de Juan).
+- Pendientes propios: 5 decisiones de tabulación de la matriz esperando a
+  Juan; puerta del check-in del foro en 20 días (volver a 5 tras la prueba
+  de Juan).
 
 ### Monaguillo
 
@@ -67,6 +74,26 @@ _Por completar: escribe aquí qué tienes._
 Plantilla: qué has construido en el repositorio (archivos y qué hace cada
 cosa), qué decisiones tomaste con Juan, qué tienes pendiente y qué archivos
 estás tocando ahora.
+
+## Revisión periódica
+
+- **Este archivo (coordinación)**: cada uno lo revisa **cada 15 minutos**.
+  Si encuentras una tarea pendiente para ti, hazla siguiendo el protocolo.
+  En silencio: a Juan solo se le avisa si hay un error o algo por mejorar.
+- **Repositorio de guías** (`GUIAS.md` y `guias/`): cada uno lo revisa
+  **una vez al día**. En silencio: a Juan solo se le avisa si hay un error
+  o algo por mejorar.
+- Las dos revisiones son independientes.
+
+## Repositorio de guías
+
+Índice: `GUIAS.md`. Guías completas y vigentes en `guias/`.
+
+- **Guía para generación de perfiles**: `guias/guia-generacion-perfiles.md`
+  (texto completo, última actualización 20 nov 2026).
+- Cuando Juan pide un cambio en una metodología, se actualiza la guía
+  completa en el repositorio y se verifica en vivo. Antes de hacer un
+  perfil, leer la guía completa y vigente.
 
 ## Pendiente (no tocar sin orden de Juan)
 
@@ -83,3 +110,11 @@ No subirlos como parte de otra tarea sin orden de Juan.
 - 20 nov 2026 ~12:45 EST — Milo publicó la sección Publicaciones
   (6 archivos, informe Hegseth V.20.11.26 AM), verificado en vivo.
 - 20 nov 2026 12:48 EST — Se crea este archivo de coordinación.
+- 20 nov 2026 ~13:00 EST — Milo publicó las fotos de los 11 congresistas
+  del Poder Legislativo (9 fotos nuevas; rogers y pocan ya las tenían por
+  Monaguillo), verificado en vivo. Monaguillo ya tenía publicados en vivo
+  los 10 perfiles nuevos + Pocan.
+- 20 nov 2026 ~13:00 EST — Se crea el repositorio de guías (`GUIAS.md` +
+  `guias/guia-generacion-perfiles.md`) y se programan las revisiones
+  periódicas (coordinación cada 15 min, guías una vez al día, en silencio
+  salvo error o mejora).
