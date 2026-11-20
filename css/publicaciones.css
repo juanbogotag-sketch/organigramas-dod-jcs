@@ -89,3 +89,16 @@
   #pubList { grid-template-columns: 1fr; }
   .pubform { padding: 16px; }
 }
+
+/* Aviso de migración de locales a la web (20 nov 2026, orden de Juan). */
+.pubmigra {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  font-size: 13.5px; line-height: 1.5; color: var(--ink);
+  background: #fdf6e3; border: 1px solid #e8d9a8; border-radius: 8px;
+  padding: 10px 14px; margin: 0 0 20px;
+}
+.pubmigra[hidden] { display: none; }
+.pubmigra #pubMigraTexto { flex: 1 1 auto; }
+.pubmigra #pubMigraMsg { flex: 1 1 100%; margin: 2px 0 0; font-size: 13px; color: var(--mu); }
+.pubmigra #pubMigraMsg.ok { color: var(--blue2); }
+.pubmigra #pubMigraMsg.err { color: #CE1126; }
