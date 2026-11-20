@@ -32,6 +32,40 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
   var SESSION_KEY = "orgs_checkin_staff_v1";
   var FORMSUBMIT_URL = "https://formsubmit.co/ajax/juan.bogotag@gmail.com";
 
+  // Puerta de 5 días (regla general de los checklists): el registro de
+  // asistencia se habilita 5 días antes del evento. Antes de esa fecha el
+  // personal puede ver el perfil del invitado con el token, pero no marcar.
+  // Para un evento futuro, cambiar solo EVENTO_FECHA.
+  var EVENTO_FECHA = "2026-12-09";
+  var PUERTA_DIAS = 5;
+  var FB_CONFIG = {
+    apiKey: "AIzaSyD9fVRwR4VbNWxz_uRYFV00DsOt0K6m-Cc",
+    authDomain: "asistencia-eventos-cc286.firebaseapp.com",
+    databaseURL: "https://asistencia-eventos-cc286-default-rtdb.firebaseio.com",
+    projectId: "asistencia-eventos-cc286",
+    storageBucket: "asistencia-eventos-cc286.firebasestorage.app",
+    messagingSenderId: "1078332084015",
+    appId: "1:1078332084015:web:9297f883eb4ed7a767dbda"
+  };
+  var LISTA_URL = "asistencia/hipopotamo/protegiendo-americas/lista";
+  function puertaAbierta() {
+    var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    var abre = new Date(EVENTO_FECHA + "T00:00:00-05:00");
+    abre.setDate(abre.getDate() - PUERTA_DIAS);
+    abre.setHours(0, 0, 0, 0);
+    return hoy.getTime() >= abre.getTime();
+  }
+  function fechaPuerta() {
+    var abre = new Date(EVENTO_FECHA + "T00:00:00-05:00");
+    abre.setDate(abre.getDate() - PUERTA_DIAS);
+    try {
+      return new Intl.DateTimeFormat("es-CO", {
+        timeZone: "America/New_York",
+        weekday: "long", day: "numeric", month: "long", year: "numeric"
+      }).format(abre);
+    } catch (e) { return abre.toLocaleDateString(); }
+  }
+
   // Invitados de la matriz definitiva del evento (60): 59 personas
   // nombradas de la base de Drive
   // «Base_de_datos_Evento_Protecting_the_Americas_Forum._V05.11.26_actualizada.xlsx»
@@ -584,6 +618,11 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
   }
 
   function mark(gid, guest, status) {
+    var note = $("markNote");
+    if (!puertaAbierta()) {
+      note.textContent = "El registro de asistencia se habilita el " + fechaPuerta() + ".";
+      return;
+    }
     var store = loadStore();
     var prev = store[gid];
     if (prev && prev.status === status) {
@@ -594,7 +633,6 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
     var iso = new Date().toISOString();
     var btn = status === "si" ? $("btnYes") : $("btnNo");
     btn.disabled = true;
-    var note = $("markNote");
     note.textContent = "Registrando…";
     sendPing(gid, guest, status, iso).then(function (ok) {
       store[gid] = { name: guest.name, status: status, time: iso };
@@ -637,6 +675,11 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
     }
     $("guestCard").hidden = false;
     renderStatus(gid);
+    if (!puertaAbierta()) {
+      $("btnYes").disabled = true;
+      $("btnNo").disabled = true;
+      $("markNote").textContent = "El registro de asistencia se habilita el " + fechaPuerta() + ".";
+    }
     $("btnYes").onclick = function () { mark(gid, guest, "si"); };
     $("btnNo").onclick = function () { mark(gid, guest, "no"); };
   }
@@ -655,6 +698,20 @@ var STAFF_TOKEN_HASH = "99992f32c48973f7c8d20273a0907da1c96249bfe8a8517a48d84fca
 
   function init() {
     var gid = getGuestId();
+    // Aviso de la puerta de 5 días: visible antes de entrar con el token.
+    if (!puertaAbierta()) { var gp = $("gatePuerta"); if (gp) gp.hidden = false; }
+    // Conteo en vivo de confirmados desde la gestión (solo lectura): un
+    // cambio en el gestor aparece aquí sin pulsar ningún botón.
+    if (window.firebase) {
+      try {
+        if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+        firebase.database().ref(LISTA_URL).on("value", function (s) {
+          var v = s.val() || {};
+          var el = $("countConfirmados");
+          if (el) el.textContent = Object.keys(v).length;
+        });
+      } catch (e) {}
+    }
     if (sessionStorage.getItem(SESSION_KEY) === "ok") {
       showGuest(gid);
     } else {
