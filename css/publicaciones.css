@@ -68,6 +68,16 @@
 }
 .pubform textarea { resize: vertical; }
 .pubform input[type="file"] { margin-bottom: 14px; font-family: inherit; font-size: 14px; }
+/* Casillero para arrastrar y soltar (20 nov 2026, orden de Juan). */
+.dropzone {
+  border: 2px dashed var(--blue2); border-radius: 8px; background: #f4f7fb;
+  padding: 22px 16px; text-align: center; cursor: pointer; margin-bottom: 14px;
+  color: var(--blue); font-size: 14.5px; line-height: 1.5;
+}
+.dropzone:hover { background: #eaf0f7; }
+.dropzone.over { background: #dbe7f5; border-color: var(--blue); }
+.dropzone:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+.dropzone .dzicon { display: block; margin: 0 auto 6px; }
 .pubform .mrow { margin-top: 6px; }
 #upMsg { font-size: 13.5px; color: var(--mu); margin: 10px 0 0; }
 #upMsg.ok { color: var(--blue2); }
