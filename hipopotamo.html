@@ -234,6 +234,10 @@ $('btnCsv').addEventListener('click', () => {
 });
 
 $('btnInforme').addEventListener('click', () => {
+  if (typeof generarInformeChecklist !== 'function') {
+    alert('El generador del informe no cargó. Recarga la página y vuelve a intentarlo.');
+    return;
+  }
   generarInformeChecklist({
     titulo: 'Life After the Hippopotamus',
     fecha: 'Jueves 19 de noviembre de 2026',
