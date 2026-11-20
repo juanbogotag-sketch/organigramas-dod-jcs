@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=34">
+  <link rel="stylesheet" href="css/repositorio.css?v=35">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -41,9 +41,12 @@
     <h1>Repositorio</h1>
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Base de datos de perfiles</p>
-    <div class="hlinks">
+    <!-- Enlace «Menú principal» eliminado 20 nov 2026 (orden de Juan):
+         inicio.html lleva ahora directo a esta página (los tiles SON el
+         menú principal), así que el enlace haría un bucle. -->
+    <!-- <div class="hlinks">
       <a class="homebtn" href="inicio.html">← Menú principal</a>
-    </div>
+    </div> -->
   </header>
 
   <main>
@@ -59,6 +62,11 @@
           <span class="tlab">Eventos</span>
           <span class="tsub">Crear y gestionar eventos</span>
         </button>
+        <button id="tilePublicaciones" type="button" class="tile" onclick="location.href='publicaciones.html'">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8h24l8 8v40H16z"/><path d="M40 8v8h8"/><path d="M22 26h20M22 34h20M22 42h14"/></svg>
+          <span class="tlab">Publicaciones</span>
+          <span class="tsub">Documentos e informes de la Embajada</span>
+        </button>
       </div>
       <div id="perfilesView" hidden>
         <div class="homesch">
@@ -72,13 +80,10 @@
         </div>
         <div class="colsB"><div class="colB" id="colB"></div></div>
       </div>
-      <!-- Botón «Eventos» anterior (20 nov 2026): ahora lo agrupa el botón cuadrado «Eventos» de arriba. Se mantiene oculto en el DOM porque js/repositorio.js lo usa (contador de eventos); no borrar. -->
-      <div class="evrow" hidden>
-        <button id="btnEventos" type="button" class="p evbtn evbtn2">Eventos</button>
-      </div>
-      <div class="evrow">
-        <button id="btnPublicaciones" type="button" class="p evbtn evbtn2" onclick="location.href='publicaciones.html'">Publicaciones</button>
-      </div>
+      <!-- Botones pequeños «Eventos» y «Publicaciones» eliminados 20 nov 2026
+           (orden de Juan): los agrupan los tres botones cuadrados de arriba.
+           El contador de eventos vive ahora en el subtítulo del tile grande
+           (js/repositorio.js, paintEventosBtn). -->
       <div id="evOpen" class="evopen" hidden></div>
       <footer id="foot"><img id="footlogo" alt="Embajada de Colombia en Estados Unidos">
       </footer>
@@ -260,7 +265,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=39"></script>
+  <script src="js/repositorio.js?v=40"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
