@@ -36,6 +36,17 @@
   .chip.act { background: #0a1d38; color: #fff; }
   .chip.est.act { background: #e0a800; border-color: #e0a800; color: #0a1d38; }
   .chips .sep { flex-basis: 100%; height: 0; }
+  .chip.addgrupo { border-style: dashed; border-color: #5a6b82; color: #5a6b82; background: #f7f9fc; }
+  .modalFondo { position: fixed; inset: 0; background: rgba(10,29,56,.45); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+  .modalCaja { background: #fff; border-radius: 14px; padding: 18px; width: 100%; max-width: 420px; box-shadow: 0 8px 30px rgba(10,29,56,.25); }
+  .modalCaja .xcerrar { float: right; border: none; background: none; font: 800 18px 'Montserrat', sans-serif; color: #5a6b82; cursor: pointer; padding: 0 2px; line-height: 1; }
+  .modalCaja h3 { font-size: 16px; font-weight: 800; color: #0a1d38; margin-bottom: 6px; }
+  .modalCaja p { font-size: 13px; font-weight: 600; color: #5a6b82; margin-bottom: 12px; line-height: 1.5; }
+  .modalCaja input { width: 100%; font: 600 14px 'Montserrat', sans-serif; padding: 10px 12px; border: 2px solid #c9d4e4; border-radius: 10px; outline: none; }
+  .modalCaja input:focus { border-color: #0a1d38; }
+  .modalCaja .err { color: #b3261e; font-size: 13px; font-weight: 700; margin-top: 8px; min-height: 18px; }
+  .modalCaja .frow { display: flex; gap: 10px; margin-top: 12px; }
+  .modalCaja .frow .btn { flex: 1; padding: 11px 14px; font-size: 14px; }
   .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
   .btn { flex: 1 1 220px; font: 800 15px 'Montserrat', sans-serif; padding: 14px 18px; border-radius: 999px; cursor: pointer; text-align: center; border: 2px solid #0a1d38; background: #0a1d38; color: #fff; }
   .btn.sec { background: #fff; color: #0a1d38; }
@@ -171,7 +182,20 @@
     <summary id="elimSum">Eliminados (0)</summary>
     <div id="elimLista" style="margin-top:10px"></div>
   </details>
-  <p class="pie">Gestión de invitados del foro · Los estados se sincronizan en vivo cuando hay conexión.<br>La descarga trae las 4 pestañas con las mismas columnas de la base original, más el estado de cada persona.</p>
+  <p class="pie">Gestión de invitados del foro · Los estados se sincronizan en vivo cuando hay conexión.<br>La descarga trae una pestaña por grupo con las mismas columnas de la base original, más el estado de cada persona.</p>
+  <div class="modalFondo" id="modalGrupo" hidden>
+    <div class="modalCaja" role="dialog" aria-label="Agregar grupo">
+      <button class="xcerrar" id="mgCerrar" type="button" aria-label="Cerrar">✕</button>
+      <h3>Agregar grupo</h3>
+      <p>Escribe el nombre del grupo nuevo. Aparecerá junto a los demás grupos y tendrá su propia pestaña en el Excel descargable.</p>
+      <input id="mgNombre" type="text" placeholder="Ej.: Prensa" maxlength="40" autocomplete="off">
+      <div class="err" id="mgError"></div>
+      <div class="frow">
+        <button class="btn" id="mgAgregar" type="button">Agregar</button>
+        <button class="btn sec" id="mgCancelar" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </main>
 <script src="js/vendor/jszip.min.js"></script>
 <script src="js/logo.js"></script>
@@ -189,28 +213,67 @@ const FB_CONFIG = {
   messagingSenderId: "1078332084015",
   appId: "1:1078332084015:web:9297f883eb4ed7a767dbda"
 };
-const LS_E = 'prot_americas_estados_v1', LS_R = 'prot_americas_roster_v1', LS_A = 'prot_americas_agregados_v1';
+const LS_E = 'prot_americas_estados_v1', LS_R = 'prot_americas_roster_v1', LS_A = 'prot_americas_agregados_v1', LS_G = 'prot_americas_grupos_v1';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades' };
+// Grupos: los 4 de la base + los agregados por el usuario (en orden de creación).
+function grupos() {
+  return PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] })).concat(gruposExtra);
+}
+function nombreGrupo(k) {
+  const g = grupos().find(x => x.key === k);
+  return g ? g.name : k;
+}
+// Clave de un grupo nuevo: 'g' + nombre en minúsculas, sin acentos ni símbolos.
+function claveGrupo(nombre) {
+  let slug = norm(nombre).replace(/[^a-z0-9]+/g, '');
+  let base = 'g' + (slug || 'grupo');
+  const usados = new Set(grupos().map(g => g.key));
+  let key = base, n = 2;
+  while (usados.has(key)) { key = base + '-' + n; n++; }
+  return key;
+}
+// Nombre de pestaña de Excel: máx. 31 caracteres, sin : \ / ? * [ ], sin espacios en los extremos; único (sin importar mayúsculas).
+function nombreHojaExcel(nombre, key, usados) {
+  const prohibidos = [58, 92, 47, 63, 42, 91, 93]; // : \ / ? * [ ]
+  let n = String(nombre == null ? '' : nombre).split('').filter(c => prohibidos.indexOf(c.charCodeAt(0)) < 0 && c.charCodeAt(0) >= 32).join('').trim();
+  if (n.length > 31) n = n.slice(0, 31).trim();
+  if (!n) n = key;
+  const base = n;
+  let i = 2;
+  while (usados.has(n.toLowerCase())) {
+    const suf = ' (' + i + ')';
+    n = (base.length + suf.length > 31 ? base.slice(0, 31 - suf.length).trim() : base) + suf;
+    i++;
+  }
+  usados.add(n.toLowerCase());
+  return n;
+}
 const EST_LABEL = { pendiente: 'Pendiente', confirmado: 'Confirmado', cancelado: 'Cancelado', delego: 'Delegó' };
 
 let estados = {}, roster = {}, agregados = {};
+let gruposExtra = []; // Grupos agregados por el usuario (no están en PROT_SHEETS).
 let filtroGrupo = 'todos', filtroEstado = 'todos';
 let armEliminar = null;
-let estadosRef = null, rosterRef = null, agregadosRef = null, listaRef = null;
+let estadosRef = null, rosterRef = null, agregadosRef = null, listaRef = null, gruposRef = null;
 
 function loadLocal() {
   try { estados = JSON.parse(localStorage.getItem(LS_E) || '{}') || {}; } catch (e) { estados = {}; }
   try { roster = JSON.parse(localStorage.getItem(LS_R) || '{}') || {}; } catch (e) { roster = {}; }
   try { agregados = JSON.parse(localStorage.getItem(LS_A) || '{}') || {}; } catch (e) { agregados = {}; }
+  try {
+    const gg = JSON.parse(localStorage.getItem(LS_G) || '[]');
+    gruposExtra = (Array.isArray(gg) ? gg : []).filter(g => g && typeof g.key === 'string' && typeof g.name === 'string' && g.key && g.name && !GRUPOS[g.key]);
+  } catch (e) { gruposExtra = []; }
 }
 function saveLocal() {
   try {
     localStorage.setItem(LS_E, JSON.stringify(estados));
     localStorage.setItem(LS_R, JSON.stringify(roster));
     localStorage.setItem(LS_A, JSON.stringify(agregados));
+    localStorage.setItem(LS_G, JSON.stringify(gruposExtra));
   } catch (e) {}
 }
 // Fusión con la nube: por cada clave gana el cambio más reciente (por fecha).
@@ -304,7 +367,7 @@ function renderLista() {
     if (g.reemp && g.orig) sub += '<div class="sub">Reemplaza a: ' + esc(nombreDe(g.orig)) + '</div>';
     if (g.agregado) sub += '<div class="sub">Agregado en la página</div>';
     row.innerHTML =
-      '<div class="top"><div class="quien"><div class="grupo">' + esc(GRUPOS[g.g] || g.g) + '</div>' +
+      '<div class="top"><div class="quien"><div class="grupo">' + esc(nombreGrupo(g.g)) + '</div>' +
       '<div class="nombre">' + esc(nombreDe(g)) + '</div>' +
       '<div class="cargo">' + esc([g.cargo, g.org].filter(Boolean).join(' · ')) + '</div>' +
       (g.ofi ? '<div class="cargo">' + esc(g.ofi) + '</div>' : '') +
@@ -330,7 +393,7 @@ function renderEliminados() {
   for (const g of list) {
     const row = document.createElement('div');
     row.className = 'invitado';
-    row.innerHTML = '<div class="top"><div class="quien"><div class="grupo">' + esc(GRUPOS[g.g] || g.g) + '</div>' +
+    row.innerHTML = '<div class="top"><div class="quien"><div class="grupo">' + esc(nombreGrupo(g.g)) + '</div>' +
       '<div class="nombre">' + esc(nombreDe(g)) + '</div>' +
       '<div class="cargo">' + esc([g.cargo, g.org].filter(Boolean).join(' · ')) + '</div></div></div>' +
       '<div class="botones"><button class="mini" data-act="restaurar" data-id="' + esc(g.id) + '">Restaurar</button></div>';
@@ -343,13 +406,17 @@ function renderTodo() { renderContadores(); renderLista(); renderEliminados(); }
 function buildChips() {
   const cg = $('chipsGrupo');
   cg.innerHTML = '';
-  const todos = [{ key: 'todos', name: 'Todos los grupos' }].concat(PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] })));
+  const todos = [{ key: 'todos', name: 'Todos los grupos' }].concat(grupos());
   for (const t of todos) {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'chip' + (filtroGrupo === t.key ? ' act' : ''); b.textContent = t.name;
     b.addEventListener('click', () => { filtroGrupo = t.key; buildChips(); renderLista(); });
     cg.appendChild(b);
   }
+  const bAdd = document.createElement('button');
+  bAdd.type = 'button'; bAdd.className = 'chip addgrupo'; bAdd.textContent = '＋ Agregar grupo';
+  bAdd.addEventListener('click', abrirModalGrupo);
+  cg.appendChild(bAdd);
   const sep = document.createElement('div'); sep.className = 'sep'; cg.appendChild(sep);
   const ce = $('chipsEstado');
   ce.innerHTML = '';
@@ -361,8 +428,38 @@ function buildChips() {
     ce.appendChild(b);
   }
   const sel = $('aGrupo');
-  sel.innerHTML = PROT_SHEETS.map(s => '<option value="' + esc(s.key) + '">' + esc(GRUPOS[s.key]) + '</option>').join('');
+  sel.innerHTML = grupos().map(s => '<option value="' + esc(s.key) + '">' + esc(s.name) + '</option>').join('');
 }
+
+// ---------- Agregar grupo ----------
+function abrirModalGrupo() {
+  $('mgNombre').value = '';
+  $('mgError').textContent = '';
+  $('modalGrupo').hidden = false;
+  $('mgNombre').focus();
+}
+function cerrarModalGrupo() { $('modalGrupo').hidden = true; }
+function agregarGrupo() {
+  const nombre = $('mgNombre').value.trim();
+  const err = $('mgError');
+  if (!nombre) { err.textContent = 'Escribe el nombre del grupo.'; $('mgNombre').focus(); return; }
+  if (nombre.length > 40) { err.textContent = 'El nombre no puede pasar de 40 caracteres.'; return; }
+  if (grupos().some(g => norm(g.name) === norm(nombre))) { err.textContent = 'Ya existe un grupo con ese nombre.'; return; }
+  const key = claveGrupo(nombre);
+  gruposExtra.push({ key: key, name: nombre });
+  saveLocal();
+  if (gruposRef) { try { gruposRef.child(key).set({ name: nombre, t: Date.now() }).catch(() => {}); } catch (e) {} }
+  cerrarModalGrupo();
+  filtroGrupo = key;
+  buildChips();
+  if ($('aGrupo')) $('aGrupo').value = key;
+  renderTodo();
+}
+$('mgAgregar').addEventListener('click', agregarGrupo);
+$('mgCancelar').addEventListener('click', cerrarModalGrupo);
+$('mgCerrar').addEventListener('click', cerrarModalGrupo);
+$('mgNombre').addEventListener('keydown', e => { if (e.key === 'Enter') agregarGrupo(); if (e.key === 'Escape') cerrarModalGrupo(); });
+$('modalGrupo').addEventListener('click', e => { if (e.target === $('modalGrupo')) cerrarModalGrupo(); });
 
 // ---------- Acciones ----------
 function setEstado(id, e, delegado) {
@@ -907,7 +1004,10 @@ async function descargarXlsx() {
   const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo']);
   const list = efectivos();
   const sheetsXml = [], sheetTags = [], rels = [];
-  PROT_SHEETS.forEach((sh, si) => {
+  const listaGrupos = grupos();
+  const nombresHoja = new Set();
+  listaGrupos.forEach((sh, si) => {
+    const nombreHoja = nombreHojaExcel(sh.name, sh.key, nombresHoja);
     const rows = list.filter(g => g.g === sh.key).map(g => {
       const e = estadoDe(g.id);
       const st = estados[g.id] || {};
@@ -919,14 +1019,14 @@ async function descargarXlsx() {
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
-    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="false"/></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
-    sheetTags.push('<sheet name="' + xesc(sh.name) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
+    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="false" workbookViewId="0"/></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
+    sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
     rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
   });
-  rels.push('<Relationship Id=\"rId' + (PROT_SHEETS.length + 1) + '\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>');
+  rels.push('<Relationship Id=\"rId' + (listaGrupos.length + 1) + '\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>');
   const z = new JSZip();
   let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
-  PROT_SHEETS.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  listaGrupos.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
   ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
   ct += '</Types>';
   z.file('[Content_Types].xml', ct);
@@ -968,6 +1068,22 @@ if (FB_CONFIG && window.firebase) {
     estadosRef.on('value', s => { const v = s.val() || {}; mergeServer(estados, v); pushNewer(estadosRef, estados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
     rosterRef.on('value', s => { const v = s.val() || {}; mergeServer(roster, v); pushNewer(rosterRef, roster, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
     agregadosRef.on('value', s => { const v = s.val() || {}; mergeServer(agregados, v); pushNewer(agregadosRef, agregados, v); saveLocal(); renderTodo(); programarSyncLista(); }, onFbErr);
+    gruposRef = db.ref('asistencia/hipopotamo/protegiendo-americas/grupos');
+    // Grupos personalizados: fusión solo aditiva (nunca se borra un grupo local
+    // porque el remoto venga vacío) y subida best-effort de los locales que falten.
+    gruposRef.on('value', s => {
+      const v = s.val() || {};
+      let cambio = false;
+      for (const k of Object.keys(v)) {
+        const item = v[k];
+        if (!item || typeof item.name !== 'string' || GRUPOS[k]) continue;
+        if (!gruposExtra.some(x => x.key === k)) { gruposExtra.push({ key: k, name: item.name }); cambio = true; }
+      }
+      for (const g of gruposExtra) {
+        if (!v[g.key]) { try { gruposRef.child(g.key).set({ name: g.name, t: Date.now() }).catch(() => {}); } catch (e) {} }
+      }
+      if (cambio) { saveLocal(); buildChips(); renderTodo(); }
+    }, () => {});
     // El seguro lee cuántos confirmados guarda la nube, para no borrarlos nunca por un estado vacío.
     listaRef.on('value', s => { const v = s.val() || {}; listaNubeCount = Object.keys(v).length; });
     // La checklist se crea en segundo plano con el gestor: al cargar, la
