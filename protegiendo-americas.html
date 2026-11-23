@@ -127,6 +127,24 @@
   .inf-cont .lab { font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #5a6b82; margin-top: 2px; }
   .inf-cont.conf .num { color: #1d7a35; }
   .inf-cont.canc .num { color: #b3261e; }
+  .inf-peq { font-size: 12.5px; font-weight: 700; color: #5a6b82; text-align: center; margin-top: 6px; }
+  .inf-linea { font-size: 14px; font-weight: 600; color: #3d4f68; margin-bottom: 6px; }
+  .inf-linea b { color: #0a1d38; }
+  .inf-seg { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: #eef1f3; margin-bottom: 4px; }
+  .inf-seg span { display: block; height: 100%; }
+  .inf-seg .s-conf { background: #1d7a35; }
+  .inf-seg .s-azul { background: #0a1d38; }
+  .inf-seg .s-amb { background: #e0a800; }
+  .inf-seg .s-gris { background: #7b8aa0; }
+  .inf-seg .s-cel { background: #5a6b82; }
+  .inf-seg .s-claro { background: #c9d4e4; }
+  .inf-sub { font-size: 12.5px; font-weight: 800; color: #5a6b82; margin: 10px 0 2px; }
+  .inf-top .fila { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 600; color: #3d4f68; padding: 5px 2px; border-bottom: 1px solid #eef1f3; }
+  .inf-top .fila:last-child { border-bottom: none; }
+  .inf-top .fila .nom { font-weight: 800; color: #0a1d38; }
+  .inf-detalle { margin-top: 4px; }
+  .inf-detalle summary { font-size: 14px; font-weight: 800; color: #0a1d38; cursor: pointer; padding: 4px 0; }
+  .inf-detalle .inf-lista { margin-top: 6px; }
   .inf-grupo { font-weight: 800; font-size: 13px; color: #0a1d38; margin: 10px 0 2px; }
   .inf-barra { margin-bottom: 8px; }
   .inf-barra .etiq { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #3d4f68; margin-bottom: 3px; }
@@ -134,20 +152,11 @@
   .inf-barra .relleno { height: 100%; border-radius: 999px; background: #0a1d38; }
   .inf-barra .relleno.conf { background: #1d7a35; }
   .inf-barra .relleno.pend { background: #e0a800; }
-  .inf-tabla { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  .inf-tabla th, .inf-tabla td { border: 1px solid #c9d4e4; padding: 5px 7px; text-align: left; }
-  .inf-tabla th { background: #0a1d38; color: #fff; }
-  .inf-tabla td.num, .inf-tabla th.num { text-align: right; }
   .inf-buscar { margin-bottom: 8px; }
   .inf-lista { max-height: 220px; overflow-y: auto; border: 1px solid #c9d4e4; border-radius: 10px; padding: 6px 10px; }
   .inf-lista .fila { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 7px 2px; border-bottom: 1px solid #eef1f3; font-size: 13px; font-weight: 600; color: #3d4f68; }
   .inf-lista .fila:last-child { border-bottom: none; }
   .inf-lista .fila .nom { font-weight: 800; color: #0a1d38; }
-  .inf-duelo { display: flex; gap: 8px; margin-top: 8px; }
-  .inf-duelo .caja { flex: 1; border-radius: 12px; padding: 10px; text-align: center; font-weight: 800; }
-  .inf-duelo .pub { background: #e3f3e5; color: #1d6b2f; }
-  .inf-duelo .pri { background: #e8eef7; color: #0a1d38; }
-  .inf-duelo .num { font-size: 22px; display: block; }
 </style>
 </head>
 <body>
@@ -584,12 +593,23 @@ function barraInforme(etiqueta, valor, total, cls) {
   const pct = total > 0 ? Math.round(valor / total * 100) : 0;
   return '<div class="inf-barra"><div class="etiq"><span>' + esc(etiqueta) + '</span><span>' + valor + ' de ' + total + ' (' + pct + '%)</span></div><div class="pista"><div class="relleno ' + (cls || '') + '" style="width:' + pct + '%"></div></div></div>';
 }
-function tablaOrgInforme(lista) {
-  let h = '<table class="inf-tabla"><thead><tr><th>Organización</th><th class="num">Confirmados</th><th class="num">Pendientes</th><th class="num">Total</th></tr></thead><tbody>';
-  for (const o of lista) {
-    h += '<tr><td>' + esc(o.org) + '</td><td class="num">' + o.conf + '</td><td class="num">' + o.pend + '</td><td class="num">' + o.total + '</td></tr>';
-  }
-  return h + '</tbody></table>';
+function barraSegInforme(partes, total) {
+  const seg = partes.filter(p => p.valor > 0);
+  if (!total || !seg.length) return '';
+  let h = '<div class="inf-seg">';
+  for (const p of seg) h += '<span class="' + (p.cls || '') + '" style="width:' + (p.valor / total * 100) + '%"></span>';
+  return h + '</div>';
+}
+function lineaInforme(partes) {
+  const vis = partes.filter(p => p.siempre || p.valor > 0);
+  return '<div class="inf-linea">' + vis.map(p => esc(p.etiqueta) + ' <b>' + p.valor + '</b>').join(' · ') + '</div>';
+}
+function topInforme(lista, n) {
+  const top = lista.filter(o => o.conf > 0).slice(0, n);
+  if (!top.length) return '<p class="nota">Aún no hay confirmados.</p>';
+  let h = '<div class="inf-top">';
+  for (const o of top) h += '<div class="fila"><span class="nom">' + esc(o.org) + '</span><span>' + o.conf + ' confirmado' + (o.conf === 1 ? '' : 's') + '</span></div>';
+  return h + '</div>';
 }
 function renderInforme() {
   const r = calcularInforme();
@@ -597,58 +617,48 @@ function renderInforme() {
   const p2 = n => String(n).padStart(2, '0');
   $('infFecha').textContent = 'Generado: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
   let h = '';
-  h += '<div class="inf-sec"><h4>Resumen</h4><div class="inf-contadores">'
-    + '<div class="inf-cont"><div class="num">' + r.total + '</div><div class="lab">Total</div></div>'
+  h += '<div class="inf-sec"><div class="inf-contadores">'
     + '<div class="inf-cont conf"><div class="num">' + r.conf + '</div><div class="lab">Confirmados</div></div>'
     + '<div class="inf-cont"><div class="num">' + r.pend + '</div><div class="lab">Pendientes</div></div>'
-    + '<div class="inf-cont canc"><div class="num">' + r.canc + '</div><div class="lab">Cancelados</div></div>'
-    + '<div class="inf-cont"><div class="num">' + r.deleg + '</div><div class="lab">Delegaron</div></div>'
-    + '<div class="inf-cont conf"><div class="num">' + r.conf + '</div><div class="lab">Asistentes esperados</div></div>'
-    + '</div></div>';
+    + '<div class="inf-cont"><div class="num">' + r.total + '</div><div class="lab">Total</div></div>'
+    + '</div><div class="inf-peq">Cancelados ' + r.canc + ' · Delegaron ' + r.deleg + '</div></div>';
+  h += '<div class="inf-sec"><h4>Género de los confirmados</h4>'
+    + lineaInforme([{ etiqueta: 'Mujeres', valor: r.genero['Mujeres'], siempre: true }, { etiqueta: 'Hombres', valor: r.genero['Hombres'], siempre: true }, { etiqueta: 'Sin determinar', valor: r.genero['Sin determinar'], siempre: true }])
+    + barraSegInforme([{ valor: r.genero['Mujeres'], cls: 's-conf' }, { valor: r.genero['Hombres'], cls: 's-azul' }, { valor: r.genero['Sin determinar'], cls: 's-amb' }], r.conf)
+    + '</div>';
+  h += '<div class="inf-sec"><h4>Sector de los confirmados</h4>'
+    + lineaInforme([{ etiqueta: 'Público', valor: r.sector['Público'], siempre: true }, { etiqueta: 'Privado', valor: r.sector['Privado'], siempre: true }, { etiqueta: 'Academia', valor: r.sector['Academia'] }, { etiqueta: 'Think Tank', valor: r.sector['Think Tank'] }, { etiqueta: 'ONG', valor: r.sector['ONG'] }, { etiqueta: 'Otro', valor: r.sector['Otro'] }])
+    + barraSegInforme([{ valor: r.sector['Público'], cls: 's-conf' }, { valor: r.sector['Privado'], cls: 's-azul' }, { valor: r.sector['Academia'], cls: 's-amb' }, { valor: r.sector['Think Tank'], cls: 's-gris' }, { valor: r.sector['ONG'], cls: 's-cel' }, { valor: r.sector['Otro'], cls: 's-claro' }], r.conf)
+    + '</div>';
   h += '<div class="inf-sec"><h4>Por grupo</h4>';
   for (const pg of r.porGrupo) {
-    h += '<div class="inf-grupo">' + esc(pg.name) + ' — ' + pg.conf + ' confirmados de ' + pg.total + '</div>';
+    h += '<div class="inf-grupo">' + esc(pg.name) + ' — ' + pg.conf + (pg.conf === 1 ? ' confirmado de ' : ' confirmados de ') + pg.total + '</div>';
     h += barraInforme('Confirmados', pg.conf, pg.total, 'conf');
-    h += barraInforme('Pendientes', pg.pend, pg.total, 'pend');
   }
   h += '</div>';
-  h += '<div class="inf-sec"><h4>Por organización</h4>'
-    + '<input class="inf-buscar" id="infBuscarOrg" type="search" placeholder="Buscar una empresa u organización…" autocomplete="off">'
-    + '<div id="infTablaOrg">' + tablaOrgInforme(r.porOrgList) + '</div>'
-    + '<div id="infResOrg"></div></div>';
   const ag = r.porGrupo.find(x => x.key === 'agreg');
   h += '<div class="inf-sec"><h4>Agregadurías</h4>';
   if (ag) {
-    h += '<p class="nota" style="margin-bottom:8px">Agregadurías: ' + ag.conf + ' confirmados de ' + ag.total + ' invitados.</p>';
+    h += '<div class="inf-linea">Confirmados <b>' + ag.conf + '</b> de ' + ag.total + '</div>';
     h += barraInforme('Confirmados', ag.conf, ag.total, 'conf');
-    h += barraInforme('Pendientes', ag.pend, ag.total, 'pend');
+    h += '<div class="inf-sub">Las que más confirmaron</div>' + topInforme(r.agreg, 5);
+  } else {
+    h += '<p class="nota">Sin invitados de agregadurías.</p>';
   }
-  h += '<div style="margin-top:8px">' + tablaOrgInforme(r.agreg) + '</div></div>';
-  h += '<div class="inf-sec"><h4>Género de los confirmados</h4>';
-  h += barraInforme('Mujeres', r.genero['Mujeres'], r.conf, 'conf');
-  h += barraInforme('Hombres', r.genero['Hombres'], r.conf, '');
-  h += barraInforme('Sin determinar', r.genero['Sin determinar'], r.conf, 'pend');
   h += '</div>';
-  h += '<div class="inf-sec"><h4>Sector de los confirmados</h4>';
-  const sectores = ['Público', 'Privado', 'Academia', 'Think Tank', 'ONG', 'Otro'];
-  for (const s of sectores) h += barraInforme(s, r.sector[s], r.conf, s === 'Público' ? 'conf' : '');
-  h += '<div class="inf-duelo"><div class="caja pub"><span class="num">' + r.sector['Público'] + '</span>Público</div><div class="caja pri"><span class="num">' + r.sector['Privado'] + '</span>Privado</div></div></div>';
-  h += '<div class="inf-sec"><h4>Confirmados (' + r.confirmados.length + ')</h4><div class="inf-lista">';
+  h += '<div class="inf-sec"><h4>Organizaciones que más confirmaron</h4>'
+    + topInforme(r.porOrgList, 5)
+    + '<input class="inf-buscar" id="infBuscarOrg" type="search" placeholder="Buscar una empresa u organización…" autocomplete="off">'
+    + '<div id="infResOrg"></div></div>';
+  h += '<details class="inf-detalle"><summary>Ver lista de confirmados (' + r.confirmados.length + ')</summary><div class="inf-lista">';
   for (const g of r.confirmados) {
     h += '<div class="fila"><span><span class="nom">' + esc(nombreDe(g)) + '</span> · ' + esc(g.org || '(Sin organización)') + ' · ' + esc(nombreGrupo(g.g)) + '</span></div>';
   }
-  h += '</div></div>';
+  h += '</div></details>';
   $('infCuerpo').innerHTML = h;
 }
 function filtrarOrgInforme(q) {
   const nq = norm(q);
-  const tabla = $('infTablaOrg');
-  if (!tabla) return;
-  const filas = tabla.querySelectorAll('tbody tr');
-  for (const tr of filas) {
-    const txt = norm(tr.cells[0].textContent);
-    tr.style.display = (!nq || txt.indexOf(nq) >= 0) ? '' : 'none';
-  }
   const res = $('infResOrg');
   if (!res) return;
   if (!nq) { res.innerHTML = ''; return; }
