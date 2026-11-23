@@ -116,6 +116,38 @@
   .eliminados summary { cursor: pointer; font-weight: 800; color: #5a6b82; font-size: 14px; }
   .eliminados .invitado { opacity: .75; }
   .pie { text-align: center; color: #7b8aa0; font-size: 12.5px; font-weight: 600; margin-top: 22px; line-height: 1.6; }
+  .modalCaja.ancha { max-width: 780px; max-height: 88vh; overflow-y: auto; }
+  .inf-fecha { font-size: 12.5px; font-weight: 700; color: #7b8aa0; margin-bottom: 4px; }
+  .inf-provisional { background: #fdf3d0; color: #8a6d00; font-size: 12.5px; font-weight: 700; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.5; }
+  .inf-sec { margin-bottom: 18px; }
+  .inf-sec h4 { font-size: 15px; font-weight: 800; color: #0a1d38; margin-bottom: 8px; }
+  .inf-contadores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 6px; }
+  .inf-cont { background: #f2f4f8; border-radius: 12px; padding: 10px 8px; text-align: center; }
+  .inf-cont .num { font-size: 24px; font-weight: 800; color: #0a1d38; line-height: 1.1; }
+  .inf-cont .lab { font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #5a6b82; margin-top: 2px; }
+  .inf-cont.conf .num { color: #1d7a35; }
+  .inf-cont.canc .num { color: #b3261e; }
+  .inf-grupo { font-weight: 800; font-size: 13px; color: #0a1d38; margin: 10px 0 2px; }
+  .inf-barra { margin-bottom: 8px; }
+  .inf-barra .etiq { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #3d4f68; margin-bottom: 3px; }
+  .inf-barra .pista { background: #eef1f3; border-radius: 999px; height: 12px; overflow: hidden; }
+  .inf-barra .relleno { height: 100%; border-radius: 999px; background: #0a1d38; }
+  .inf-barra .relleno.conf { background: #1d7a35; }
+  .inf-barra .relleno.pend { background: #e0a800; }
+  .inf-tabla { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .inf-tabla th, .inf-tabla td { border: 1px solid #c9d4e4; padding: 5px 7px; text-align: left; }
+  .inf-tabla th { background: #0a1d38; color: #fff; }
+  .inf-tabla td.num, .inf-tabla th.num { text-align: right; }
+  .inf-buscar { margin-bottom: 8px; }
+  .inf-lista { max-height: 220px; overflow-y: auto; border: 1px solid #c9d4e4; border-radius: 10px; padding: 6px 10px; }
+  .inf-lista .fila { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 7px 2px; border-bottom: 1px solid #eef1f3; font-size: 13px; font-weight: 600; color: #3d4f68; }
+  .inf-lista .fila:last-child { border-bottom: none; }
+  .inf-lista .fila .nom { font-weight: 800; color: #0a1d38; }
+  .inf-duelo { display: flex; gap: 8px; margin-top: 8px; }
+  .inf-duelo .caja { flex: 1; border-radius: 12px; padding: 10px; text-align: center; font-weight: 800; }
+  .inf-duelo .pub { background: #e3f3e5; color: #1d6b2f; }
+  .inf-duelo .pri { background: #e8eef7; color: #0a1d38; }
+  .inf-duelo .num { font-size: 22px; display: block; }
 </style>
 </head>
 <body>
@@ -143,6 +175,7 @@
   <div class="acciones">
     <button class="btn" id="btnAdd" type="button">＋ Agregar invitado</button>
     <button class="btn sec" id="btnXlsx" type="button">📊 Descargar base (.xlsx)</button>
+    <button class="btn sec" id="btnInforme" type="button">📋 Informe</button>
   </div>
   <p class="nota" id="msgLista"></p>
   <div class="formbox" id="formAdd" hidden>
@@ -194,6 +227,20 @@
       <div class="frow">
         <button class="btn" id="mgAgregar" type="button">Agregar</button>
         <button class="btn sec" id="mgCancelar" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <div class="modalFondo" id="modalInforme" hidden>
+    <div class="modalCaja ancha" role="dialog" aria-label="Informe provisional">
+      <button class="xcerrar" id="infCerrar" type="button" aria-label="Cerrar">✕</button>
+      <h3>Informe provisional — Protegiendo las Américas</h3>
+      <div class="inf-fecha" id="infFecha"></div>
+      <div class="inf-provisional">Provisional: refleja el estado actual del gestor. No cierra el evento ni cambia ningún estado.</div>
+      <div id="infCuerpo"></div>
+      <div class="frow">
+        <button class="btn" id="infActualizar" type="button">Actualizar</button>
+        <button class="btn" id="infXlsx" type="button">Descargar informe (.xlsx)</button>
+        <button class="btn sec" id="infCerrarBtn" type="button">Cerrar</button>
       </div>
     </div>
   </div>
@@ -461,6 +508,222 @@ $('mgCancelar').addEventListener('click', cerrarModalGrupo);
 $('mgCerrar').addEventListener('click', cerrarModalGrupo);
 $('mgNombre').addEventListener('keydown', e => { if (e.key === 'Enter') agregarGrupo(); if (e.key === 'Escape') cerrarModalGrupo(); });
 $('modalGrupo').addEventListener('click', e => { if (e.target === $('modalGrupo')) cerrarModalGrupo(); });
+
+// ---------- Informe provisional (solo lectura) ----------
+// Solo lee efectivos() + estadoDe(). No escribe en Firebase, no cambia
+// estados/roster/agregados, no toca la checklist y no cierra nada.
+function generoDe(g) {
+  const p = String(g.pre || '').trim().toLowerCase().replace(/\.$/, '');
+  if (p === 'ms' || p === 'mrs' || p === 'miss') return 'Mujeres';
+  if (p === 'mr') return 'Hombres';
+  return 'Sin determinar';
+}
+function sectorDe(g) {
+  const t = String(g.tipo || '').toLowerCase();
+  if (t.indexOf('government') >= 0 || t.indexOf('diplomatic') >= 0 || t.indexOf('international organization') >= 0 || t.indexOf('military') >= 0) return 'Público';
+  if (t.indexOf('private') >= 0) return 'Privado';
+  if (t.indexOf('academia') >= 0 || t.indexOf('university') >= 0) return 'Academia';
+  if (t.indexOf('think tank') >= 0) return 'Think Tank';
+  if (t.indexOf('ngo') >= 0 || t.indexOf('non-profit') >= 0 || t.indexOf('nonprofit') >= 0) return 'ONG';
+  return 'Otro';
+}
+function calcularInforme() {
+  const list = efectivos();
+  const res = { total: list.length, conf: 0, pend: 0, canc: 0, deleg: 0, porGrupo: [], porOrgList: [], agreg: [], genero: { 'Mujeres': 0, 'Hombres': 0, 'Sin determinar': 0 }, sector: { 'Público': 0, 'Privado': 0, 'Academia': 0, 'Think Tank': 0, 'ONG': 0, 'Otro': 0 }, confirmados: [] };
+  const porGrupoMap = {};
+  const porOrgMap = {};
+  const agMap = {};
+  for (const g of list) {
+    const e = estadoDe(g.id);
+    if (e === 'confirmado') res.conf++;
+    else if (e === 'pendiente') res.pend++;
+    else if (e === 'cancelado') res.canc++;
+    else if (e === 'delego') res.deleg++;
+    let pg = porGrupoMap[g.g];
+    if (!pg) { pg = { key: g.g, name: nombreGrupo(g.g), total: 0, conf: 0, pend: 0, canc: 0, deleg: 0 }; porGrupoMap[g.g] = pg; }
+    pg.total++;
+    if (e === 'confirmado') pg.conf++;
+    else if (e === 'pendiente') pg.pend++;
+    else if (e === 'cancelado') pg.canc++;
+    else if (e === 'delego') pg.deleg++;
+    const org = (g.org || '').trim() || '(Sin organización)';
+    let o = porOrgMap[org];
+    if (!o) { o = { org: org, conf: 0, pend: 0, canc: 0, deleg: 0, total: 0 }; porOrgMap[org] = o; }
+    o.total++;
+    if (e === 'confirmado') o.conf++;
+    else if (e === 'pendiente') o.pend++;
+    else if (e === 'cancelado') o.canc++;
+    else if (e === 'delego') o.deleg++;
+    if (g.g === 'agreg') {
+      let a = agMap[org];
+      if (!a) { a = { org: org, conf: 0, pend: 0, canc: 0, deleg: 0, total: 0 }; agMap[org] = a; }
+      a.total++;
+      if (e === 'confirmado') a.conf++;
+      else if (e === 'pendiente') a.pend++;
+      else if (e === 'cancelado') a.canc++;
+      else if (e === 'delego') a.deleg++;
+    }
+    if (e === 'confirmado') {
+      res.genero[generoDe(g)]++;
+      res.sector[sectorDe(g)]++;
+      res.confirmados.push(g);
+    }
+  }
+  const orden = grupos().map(x => x.key);
+  res.porGrupo = Object.keys(porGrupoMap).map(k => porGrupoMap[k]).sort((a, b) => {
+    const ia = orden.indexOf(a.key), ib = orden.indexOf(b.key);
+    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+  });
+  const porConf = (a, b) => (b.conf - a.conf) || (b.total - a.total) || (a.org < b.org ? -1 : a.org > b.org ? 1 : 0);
+  res.porOrgList = Object.keys(porOrgMap).map(k => porOrgMap[k]).sort(porConf);
+  res.agreg = Object.keys(agMap).map(k => agMap[k]).sort(porConf);
+  res.confirmados.sort((a, b) => { const na = nombreDe(a), nb = nombreDe(b); return na < nb ? -1 : na > nb ? 1 : 0; });
+  return res;
+}
+function barraInforme(etiqueta, valor, total, cls) {
+  const pct = total > 0 ? Math.round(valor / total * 100) : 0;
+  return '<div class="inf-barra"><div class="etiq"><span>' + esc(etiqueta) + '</span><span>' + valor + ' de ' + total + ' (' + pct + '%)</span></div><div class="pista"><div class="relleno ' + (cls || '') + '" style="width:' + pct + '%"></div></div></div>';
+}
+function tablaOrgInforme(lista) {
+  let h = '<table class="inf-tabla"><thead><tr><th>Organización</th><th class="num">Confirmados</th><th class="num">Pendientes</th><th class="num">Total</th></tr></thead><tbody>';
+  for (const o of lista) {
+    h += '<tr><td>' + esc(o.org) + '</td><td class="num">' + o.conf + '</td><td class="num">' + o.pend + '</td><td class="num">' + o.total + '</td></tr>';
+  }
+  return h + '</tbody></table>';
+}
+function renderInforme() {
+  const r = calcularInforme();
+  const now = new Date();
+  const p2 = n => String(n).padStart(2, '0');
+  $('infFecha').textContent = 'Generado: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
+  let h = '';
+  h += '<div class="inf-sec"><h4>Resumen</h4><div class="inf-contadores">'
+    + '<div class="inf-cont"><div class="num">' + r.total + '</div><div class="lab">Total</div></div>'
+    + '<div class="inf-cont conf"><div class="num">' + r.conf + '</div><div class="lab">Confirmados</div></div>'
+    + '<div class="inf-cont"><div class="num">' + r.pend + '</div><div class="lab">Pendientes</div></div>'
+    + '<div class="inf-cont canc"><div class="num">' + r.canc + '</div><div class="lab">Cancelados</div></div>'
+    + '<div class="inf-cont"><div class="num">' + r.deleg + '</div><div class="lab">Delegaron</div></div>'
+    + '<div class="inf-cont conf"><div class="num">' + r.conf + '</div><div class="lab">Asistentes esperados</div></div>'
+    + '</div></div>';
+  h += '<div class="inf-sec"><h4>Por grupo</h4>';
+  for (const pg of r.porGrupo) {
+    h += '<div class="inf-grupo">' + esc(pg.name) + ' — ' + pg.conf + ' confirmados de ' + pg.total + '</div>';
+    h += barraInforme('Confirmados', pg.conf, pg.total, 'conf');
+    h += barraInforme('Pendientes', pg.pend, pg.total, 'pend');
+  }
+  h += '</div>';
+  h += '<div class="inf-sec"><h4>Por organización</h4>'
+    + '<input class="inf-buscar" id="infBuscarOrg" type="search" placeholder="Buscar una empresa u organización…" autocomplete="off">'
+    + '<div id="infTablaOrg">' + tablaOrgInforme(r.porOrgList) + '</div>'
+    + '<div id="infResOrg"></div></div>';
+  const ag = r.porGrupo.find(x => x.key === 'agreg');
+  h += '<div class="inf-sec"><h4>Agregadurías</h4>';
+  if (ag) {
+    h += '<p class="nota" style="margin-bottom:8px">Agregadurías: ' + ag.conf + ' confirmados de ' + ag.total + ' invitados.</p>';
+    h += barraInforme('Confirmados', ag.conf, ag.total, 'conf');
+    h += barraInforme('Pendientes', ag.pend, ag.total, 'pend');
+  }
+  h += '<div style="margin-top:8px">' + tablaOrgInforme(r.agreg) + '</div></div>';
+  h += '<div class="inf-sec"><h4>Género de los confirmados</h4>';
+  h += barraInforme('Mujeres', r.genero['Mujeres'], r.conf, 'conf');
+  h += barraInforme('Hombres', r.genero['Hombres'], r.conf, '');
+  h += barraInforme('Sin determinar', r.genero['Sin determinar'], r.conf, 'pend');
+  h += '</div>';
+  h += '<div class="inf-sec"><h4>Sector de los confirmados</h4>';
+  const sectores = ['Público', 'Privado', 'Academia', 'Think Tank', 'ONG', 'Otro'];
+  for (const s of sectores) h += barraInforme(s, r.sector[s], r.conf, s === 'Público' ? 'conf' : '');
+  h += '<div class="inf-duelo"><div class="caja pub"><span class="num">' + r.sector['Público'] + '</span>Público</div><div class="caja pri"><span class="num">' + r.sector['Privado'] + '</span>Privado</div></div></div>';
+  h += '<div class="inf-sec"><h4>Confirmados (' + r.confirmados.length + ')</h4><div class="inf-lista">';
+  for (const g of r.confirmados) {
+    h += '<div class="fila"><span><span class="nom">' + esc(nombreDe(g)) + '</span> · ' + esc(g.org || '(Sin organización)') + ' · ' + esc(nombreGrupo(g.g)) + '</span></div>';
+  }
+  h += '</div></div>';
+  $('infCuerpo').innerHTML = h;
+}
+function filtrarOrgInforme(q) {
+  const nq = norm(q);
+  const tabla = $('infTablaOrg');
+  if (!tabla) return;
+  const filas = tabla.querySelectorAll('tbody tr');
+  for (const tr of filas) {
+    const txt = norm(tr.cells[0].textContent);
+    tr.style.display = (!nq || txt.indexOf(nq) >= 0) ? '' : 'none';
+  }
+  const res = $('infResOrg');
+  if (!res) return;
+  if (!nq) { res.innerHTML = ''; return; }
+  const list = efectivos().filter(g => norm(g.org || '').indexOf(nq) >= 0);
+  let h = '<div style="font-weight:800;font-size:13px;color:#0a1d38;margin:10px 0 4px">Invitados de las organizaciones que coinciden (' + list.length + ')</div>';
+  if (!list.length) { h += '<p class="nota">Ningún invitado de esa organización.</p>'; }
+  else {
+    h += '<div class="inf-lista">';
+    for (const g of list.slice(0, 60)) {
+      const e = estadoDe(g.id);
+      h += '<div class="fila"><span><span class="nom">' + esc(nombreDe(g)) + '</span> · ' + esc(g.org || '(Sin organización)') + ' · ' + esc(nombreGrupo(g.g)) + '</span><span class="estado ' + e + '">' + EST_LABEL[e] + '</span></div>';
+    }
+    h += '</div>';
+    if (list.length > 60) h += '<p class="nota">Mostrando 60 de ' + list.length + '. Afina la búsqueda para ver el resto.</p>';
+  }
+  res.innerHTML = h;
+}
+function abrirModalInforme() { renderInforme(); $('modalInforme').hidden = false; }
+function cerrarModalInforme() { $('modalInforme').hidden = true; }
+$('btnInforme').addEventListener('click', abrirModalInforme);
+$('infCerrar').addEventListener('click', cerrarModalInforme);
+$('infCerrarBtn').addEventListener('click', cerrarModalInforme);
+$('infActualizar').addEventListener('click', renderInforme);
+$('infXlsx').addEventListener('click', () => { descargarInformeXlsx().catch(() => alert('No se pudo generar el informe. Inténtalo de nuevo.')); });
+$('modalInforme').addEventListener('click', e => { if (e.target === $('modalInforme')) cerrarModalInforme(); });
+$('infCuerpo').addEventListener('input', e => { if (e.target && e.target.id === 'infBuscarOrg') filtrarOrgInforme(e.target.value); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('modalInforme').hidden) cerrarModalInforme(); });
+
+// ---------- Descarga del informe (.xlsx, mismo formato de la base) ----------
+async function descargarInformeXlsx() {
+  const r = calcularInforme();
+  const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const colL = i => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  const cellXml = (c, i, rr, s) => '<c r="' + colL(i) + rr + '" t="inlineStr"' + (s != null ? ' s="' + s + '"' : '') + '><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>';
+  const rowXml = (cells, rr, s) => '<row r="' + rr + '">' + cells.map((c, i) => cellXml(c, i, rr, s)).join('') + '</row>';
+  const hojas = [
+    { name: 'Resumen', rows: [['Concepto', 'Cantidad'], ['Total de registros', r.total], ['Confirmados', r.conf], ['Pendientes', r.pend], ['Cancelados', r.canc], ['Delegaron', r.deleg], ['Asistentes esperados', r.conf]] },
+    { name: 'Por grupo', rows: [['Grupo', 'Total', 'Confirmados', 'Pendientes', 'Cancelados', 'Delegaron']].concat(r.porGrupo.map(pg => [pg.name, pg.total, pg.conf, pg.pend, pg.canc, pg.deleg])) },
+    { name: 'Por organización', rows: [['Organización', 'Confirmados', 'Pendientes', 'Cancelados', 'Delegaron', 'Total']].concat(r.porOrgList.map(o => [o.org, o.conf, o.pend, o.canc, o.deleg, o.total])) },
+    { name: 'Género', rows: [['Género (confirmados)', 'Cantidad']].concat(['Mujeres', 'Hombres', 'Sin determinar'].map(k => [k, r.genero[k]])) },
+    { name: 'Sector', rows: [['Sector (confirmados)', 'Cantidad']].concat(['Público', 'Privado', 'Academia', 'Think Tank', 'ONG', 'Otro'].map(k => [k, r.sector[k]])) },
+    { name: 'Confirmados', rows: [['Nombre', 'Organización', 'Grupo']].concat(r.confirmados.map(g => [nombreDe(g), g.org || '', nombreGrupo(g.g)])) }
+  ];
+  const sheetsXml = [], sheetTags = [], rels = [];
+  const nombresHoja = new Set();
+  hojas.forEach((sh, si) => {
+    const nombreHoja = nombreHojaExcel(sh.name, 'inf' + si, nombresHoja);
+    const maxCols = Math.max.apply(null, sh.rows.map(x => x.length));
+    const colsXml = '<cols>' + Array.from({ length: maxCols }, (_, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="26.14" customWidth="1"/>').join('') + '</cols>';
+    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="0" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>' + colsXml + '<sheetData>' + sh.rows.map((rw, i) => rowXml(rw, i + 1, i === 0 ? 1 : 0)).join('') + '</sheetData></worksheet>');
+    sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
+    rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
+  });
+  rels.push('<Relationship Id="rId' + (hojas.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>');
+  const z = new JSZip();
+  let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
+  hojas.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
+  ct += '</Types>';
+  z.file('[Content_Types].xml', ct);
+  z.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><name val="Arial"/><sz val="12"/><color rgb="FF000000"/></font><font><name val="Arial"/><sz val="12"/><b/><color rgb="FFFFFFFF"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor rgb="FF000000"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color auto="1"/></left><right style="thin"><color auto="1"/></right><top style="thin"><color auto="1"/></top><bottom style="thin"><color auto="1"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1" applyBorder="1"><alignment wrapText="1" vertical="top"/></xf><xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment wrapText="1" vertical="top" horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
+  z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+  z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>' + sheetTags.join('') + '</sheets></workbook>');
+  z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels.join('') + '</Relationships>');
+  sheetsXml.forEach((xml, si) => z.file('xl/worksheets/sheet' + (si + 1) + '.xml', xml));
+  const blob = await z.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const now = new Date(), p2 = n => String(n).padStart(2, '0');
+  const fname = 'Informe_Protegiendo_las_Americas_V' + p2(now.getDate()) + '.' + p2(now.getMonth() + 1) + '.' + p2(now.getFullYear() % 100) + '.xlsx';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+}
 
 // ---------- Acciones ----------
 function setEstado(id, e, delegado) {
