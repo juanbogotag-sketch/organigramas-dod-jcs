@@ -1275,6 +1275,9 @@
   function paintOpenEvent() {
     const pill = $('#evOpen');
     if (!pill) return;
+    // Puerta privada (23 nov 2026): la píldora del evento abierto es
+    // contenido de Eventos; oculta mientras la puerta esté cerrada.
+    if (!privUnlocked()) { pill.hidden = true; pill.innerHTML = ''; return; }
     if (!curEvent || events.indexOf(curEvent) < 0) { pill.hidden = true; pill.innerHTML = ''; return; }
     const ev = curEvent;
     pill.hidden = false;
@@ -1618,6 +1621,10 @@
     } catch (err) { fr.addEventListener('load', go, { once: true }); }
   }
   function showPanel(name) {
+    // Puerta privada (23 nov 2026, orden de Juan): Eventos y
+    // Publicaciones solo se abren tras entrar con contraseña; si no,
+    // se pide la contraseña en vez de abrir el panel.
+    if ((name === 'eventos' || name === 'publicaciones') && !privUnlocked()) { openPrivModal(); return; }
     const cur = ['perfiles', 'eventos', 'publicaciones', 'organigrama'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
     const next = (cur === name) ? null : name;
     ['perfiles', 'eventos', 'publicaciones', 'organigrama'].forEach(k => {
@@ -1641,6 +1648,107 @@
   $('#tileEventos').addEventListener('click', () => showPanel('eventos'));
   $('#tilePublicaciones').addEventListener('click', () => showPanel('publicaciones'));
   $('#tileOrg').addEventListener('click', () => showPanel('organigrama'));
+
+  // ---------- Puerta privada: Eventos y Publicaciones (23 nov 2026, orden de Juan) ----------
+  // Los tiles y paneles de Eventos y Publicaciones solo se ven tras entrar
+  // con contraseña. El desbloqueo se recuerda por dispositivo en
+  // localStorage (clave todo_privado_v1). Se guarda SOLO el hash SHA-256
+  // de la contraseña, nunca la contraseña en claro. La comparación usa
+  // crypto.subtle (el sitio va por HTTPS). El botón de inicio de sesión
+  // (#btnPriv, en el encabezado) abre el diálogo; una vez dentro, el
+  // mismo botón cierra la sesión privada de este dispositivo.
+  const PRIV_HASH = 'a918e749c5f5b8f8efab36730d90fc347ea1dd23f4ce4c8c7b5bca599b01589b';
+  const PRIV_KEY = 'todo_privado_v1';
+  const PRIV_PANELS = ['eventos', 'publicaciones'];
+  function privUnlocked() {
+    try { return localStorage.getItem(PRIV_KEY) === '1'; } catch (e) { return false; }
+  }
+  async function sha256Hex(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  function applyPrivLock() {
+    const on = privUnlocked();
+    ['tileEventos', 'tilePublicaciones'].forEach(id => {
+      const t = document.getElementById(id);
+      if (t) t.classList.toggle('priv-hidden', !on);
+    });
+    if (!on) {
+      // Cerrar los paneles privados si estaban abiertos.
+      PRIV_PANELS.forEach(k => {
+        const v = document.getElementById(PANEL_VIEWS[k]);
+        if (v) v.hidden = true;
+        const t = document.getElementById(PANEL_TILES[k]);
+        if (t) t.classList.remove('on');
+      });
+      syncFabs();
+    }
+    const b = document.getElementById('btnPriv');
+    if (b) {
+      b.classList.toggle('on', on);
+      b.title = on ? 'Cerrar sesión privada' : 'Iniciar sesión';
+      b.setAttribute('aria-label', on ? 'Cerrar sesión privada' : 'Iniciar sesión');
+    }
+  }
+  function openPrivModal() {
+    const m = document.getElementById('privModal');
+    const msg = document.getElementById('privMsg');
+    if (!m) return;
+    if (msg) { msg.hidden = true; msg.textContent = ''; }
+    m.hidden = false;
+    setTimeout(() => { try { document.getElementById('privPass').focus(); } catch (e) {} }, 60);
+  }
+  function closePrivModal() {
+    const m = document.getElementById('privModal');
+    if (m) m.hidden = true;
+    const inp = document.getElementById('privPass');
+    if (inp) inp.value = '';
+  }
+  async function tryPrivLogin() {
+    const inp = document.getElementById('privPass');
+    const msg = document.getElementById('privMsg');
+    const btn = document.getElementById('privBtn');
+    const val = inp ? inp.value : '';
+    if (!val) {
+      if (msg) { msg.hidden = false; msg.textContent = 'Escribe la contraseña.'; }
+      return;
+    }
+    if (!window.crypto || !crypto.subtle || !window.TextEncoder) {
+      if (msg) { msg.hidden = false; msg.textContent = 'Este navegador no permite verificar la contraseña aquí.'; }
+      return;
+    }
+    if (btn) btn.disabled = true;
+    try {
+      const h = await sha256Hex(val);
+      if (h === PRIV_HASH) {
+        try { localStorage.setItem(PRIV_KEY, '1'); } catch (e) {}
+        closePrivModal();
+        applyPrivLock();
+      } else {
+        if (msg) { msg.hidden = false; msg.textContent = 'Contraseña incorrecta.'; }
+        if (inp) inp.select();
+      }
+    } catch (e) {
+      if (msg) { msg.hidden = false; msg.textContent = 'No se pudo verificar la contraseña. Inténtalo de nuevo.'; }
+    }
+    if (btn) btn.disabled = false;
+  }
+  (function wirePriv() {
+    const b = document.getElementById('btnPriv');
+    if (b) b.addEventListener('click', () => {
+      if (privUnlocked()) {
+        try { localStorage.removeItem(PRIV_KEY); } catch (e) {}
+        applyPrivLock();
+      } else openPrivModal();
+    });
+    const x = document.getElementById('privX');
+    if (x) x.addEventListener('click', closePrivModal);
+    const go = document.getElementById('privBtn');
+    if (go) go.addEventListener('click', tryPrivLogin);
+    const inp = document.getElementById('privPass');
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') tryPrivLogin(); });
+    applyPrivLock();
+  })();
   // Armar los iframes al cargar (aunque el panel esté oculto) para que el
   // contenido esté listo al desplegar; la altura se mide al abrir.
   ['frameEventos', 'framePublicaciones', 'frameOrganigrama'].forEach(id => {
@@ -1675,6 +1783,9 @@
       const crear = q.get('crear') === '1';
       const eid = q.get('evento');
       if (!crear && !eid) return;
+      // Puerta privada (23 nov 2026): el editor de eventos exige entrar
+      // con contraseña; si no, se pide la contraseña y no se abre nada.
+      if (!privUnlocked()) { history.replaceState(null, '', location.pathname); openPrivModal(); return; }
       if (crear) { if (curEvent) openEventoNuevo(); else openEvModal(); }
       else if (eid) { const ev = events.find(x => x.id === eid); if (ev) abrirEvento(ev); }
       history.replaceState(null, '', location.pathname);
