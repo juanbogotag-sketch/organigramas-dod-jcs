@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=38">
+  <link rel="stylesheet" href="css/repositorio.css?v=39">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -41,6 +41,12 @@
     <h1>Todo</h1>
     <p class="emb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Perfiles · Eventos · Publicaciones</p>
+    <!-- Botón de inicio de sesión (23 nov 2026, orden de Juan): abre la
+         puerta privada de Eventos y Publicaciones. Símbolo de persona
+         (identificación), sin emoji. -->
+    <button type="button" id="btnPriv" class="privbtn" title="Iniciar sesión" aria-label="Iniciar sesión">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>
+    </button>
   </header>
 
   <main>
@@ -287,6 +293,23 @@
     </div>
   </div>
 
+  <!-- Puerta privada: Eventos y Publicaciones (23 nov 2026, orden de
+       Juan). Pide la contraseña; al acertar se desbloquean los tiles y
+       paneles de Eventos y Publicaciones en este dispositivo. -->
+  <div id="privModal" hidden role="dialog" aria-modal="true" aria-label="Iniciar sesión">
+    <div class="mbox privbox">
+      <button id="privX" type="button" aria-label="Cerrar">✕ Cerrar</button>
+      <h2 class="sugtitle">Iniciar sesión</h2>
+      <p class="evhint">Escribe la contraseña para ver Eventos y Publicaciones en este dispositivo.</p>
+      <label for="privPass"><b>Contraseña</b></label>
+      <input id="privPass" type="password" autocomplete="current-password" placeholder="Contraseña">
+      <p id="privMsg" class="privmsg" hidden></p>
+      <div class="mrow">
+        <button id="privBtn" type="button" class="p">Entrar</button>
+      </div>
+    </div>
+  </div>
+
   <div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
     <img id="zoomImg" alt="">
     <p>Toca o haz clic para cerrar</p>
@@ -299,7 +322,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=43"></script>
+  <script src="js/repositorio.js?v=44"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
