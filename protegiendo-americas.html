@@ -1020,7 +1020,7 @@ async function descargarXlsx() {
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
-    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="false" workbookViewId="0"/></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
+    sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="0" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 1) + rows.map((r, i) => rowXml(r, i + 2, 0)).join('') + '</sheetData></worksheet>');
     sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
     rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
   });
