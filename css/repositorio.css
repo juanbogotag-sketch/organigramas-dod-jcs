@@ -30,6 +30,19 @@ header {
   padding: 34px 16px 26px;
 }
 
+/* Botón de idioma global (24 nov 2026, orden de Juan): arriba a la
+   izquierda del banner de Todo. Clase propia y colores explícitos. */
+header { position: relative; }
+.langbtn-main {
+  position: absolute; top: 14px; left: 14px; z-index: 6;
+  background: #e87722 !important; color: #ffffff !important; border: 2px solid #ffffff;
+  border-radius: 999px; padding: 9px 16px;
+  font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+.langbtn-main:hover { background: #cf6514 !important; }
+@media (max-width: 640px) { .langbtn-main { top: 10px; left: 10px; padding: 7px 12px; font-size: 12.5px; } }
+
 header h1 {
   margin: 0 0 6px;
   font-size: 34px;
