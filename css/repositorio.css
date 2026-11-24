@@ -305,12 +305,12 @@ a.vorg { text-decoration: none; cursor: pointer; }
   .mhead { flex-direction: column; }
 }
 
-/* Botón flotante de Sugerencias: redondo, pequeño, abajo a la izquierda */
+/* Botón flotante de Sugerencias: redondo, abajo a la izquierda */
 .sugfab {
   position: fixed; left: 16px; bottom: 16px; z-index: 40;
-  width: 48px; height: 48px; border-radius: 50%;
+  width: 56px; height: 56px; border-radius: 50%;
   background: var(--blue); color: #fff; border: 1px solid #9fc3e8;
-  font-size: 20px; line-height: 1; cursor: pointer;
+  font-size: 24px; line-height: 1; cursor: pointer;
   box-shadow: 0 3px 10px rgba(11, 38, 69, .35);
 }
 .sugfab:hover { background: var(--blue2); }
