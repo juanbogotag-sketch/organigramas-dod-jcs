@@ -33,6 +33,7 @@ window.FS_OCT = {
     items: [
       { k: "Qué es", v: "Alianza multinacional de seguridad liderada por Estados Unidos, creada en marzo de 2026. Los países miembros se ofrecen para liderar esfuerzos por región o por red; Colombia se unió en agosto de 2026." },
       { k: "Países participantes", v: "19 países miembros participaron en las reuniones de Panamá, entre ellos Colombia y Estados Unidos." },
+      { k: "Países miembros", v: "Argentina, Bahamas, Belice, Bolivia, Chile, Colombia, Costa Rica, Ecuador, El Salvador, Estados Unidos, Guatemala, Guyana, Honduras, Jamaica, Panamá, Paraguay, Perú, República Dominicana y Trinidad y Tobago." },
       { k: "Áreas de cooperación", v: "Campañas contra los cárteles y las redes criminales transnacionales prioritarias; coordinación frente a amenazas compartidas; asignación de roles nacionales." },
       { k: "Mecanismos de coordinación", v: "Grupos de trabajo con objetivos e hitos; evaluaciones de campaña de la coalición; acuerdo de Acceso, Estacionamiento y Sobrevuelo entre Colombia y Estados Unidos." },
       { k: "Resultados a la fecha", v: "19 países en las reuniones de Panamá, donde Colombia se unió como el miembro más reciente de la coalición (fuente: Comando Sur de Estados Unidos)." },
@@ -180,6 +181,7 @@ window.FS_OCT_EN = {
     items: [
       { k: "What it is", v: "U.S.-led multinational security alliance formed in March 2026. Member nations volunteer to lead efforts by region or network; Colombia joined in August 2026." },
       { k: "Participating countries", v: "19 member nations took part in the Panama meetings, including Colombia and the United States." },
+      { k: "Member countries", v: "Argentina, Bahamas, Belize, Bolivia, Chile, Colombia, Costa Rica, Dominican Republic, Ecuador, El Salvador, Guatemala, Guyana, Honduras, Jamaica, Panama, Paraguay, Peru, Trinidad and Tobago and the United States." },
       { k: "Cooperation areas", v: "Counter-cartel campaigns against priority transnational criminal networks; coordination on shared threats; assignment of national roles." },
       { k: "Coordination mechanisms", v: "Working groups with objectives and milestones; coalition campaign assessments; Access, Basing and Overflight agreement between Colombia and the United States." },
       { k: "Results to date", v: "19 member nations at the Panama meetings, where Colombia joined as the coalition's newest member (source: U.S. Southern Command)." },
