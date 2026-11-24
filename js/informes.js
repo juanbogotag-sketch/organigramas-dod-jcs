@@ -110,8 +110,8 @@
   }
 
   // ---------- Acordeón ----------
-  function accordion(titulo, badge, inner, open) {
-    return '<div class="acc' + (open ? ' open' : '') + '">' +
+  function accordion(titulo, badge, inner, open, cls) {
+    return '<div class="acc' + (cls ? ' ' + cls : '') + (open ? ' open' : '') + '">' +
       '<button type="button" class="accbtn" aria-expanded="' + (open ? 'true' : 'false') + '">' +
       '<span class="acct">' + esc(titulo) + '</span>' +
       (badge ? '<span class="accb">' + esc(badge) + '</span>' : '') +
@@ -147,7 +147,7 @@
     const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
       D.a3c.items.map(it => '<div class="a3c"><span class="k">' + esc(it.k) + '</span><span class="v">' + esc(it.v) + '</span></div>').join('') + '</div>';
     h += '<p class="accsec">' + TXT.a3cSec[lang] + '</p>' +
-      accordion('Americas Counter Cartel Coalition (A3C)', TXT.a3cBadge[lang], a3cInner, true);
+      accordion('Americas Counter Cartel Coalition (A3C)', TXT.a3cBadge[lang], a3cInner, true, 'acc-a3c');
 
     let lastSec = '';
     D.grupos.forEach((g, gi) => {
