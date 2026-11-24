@@ -43,7 +43,7 @@
     mback: ['Volver a la lista', 'Back to the list'],
     mshare: ['Compartir / Guardar en el celular', 'Share / Save to phone'],
     sugTitle: ['Sugerencias', 'Suggestions'],
-    sugOpt: ['Sugerir perfiles', 'Suggest profiles'],
+    sugOpt: ['Sugerencias', 'Suggestions'],
     sugLab: ['Ayuda a Juan a mejorar esta página con tus sugerencias.', 'Help Juan improve this page with your suggestions.'],
     sugSend: ['Enviar', 'Send'],
     sugBack: ['Volver', 'Back'],
