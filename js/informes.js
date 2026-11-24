@@ -61,8 +61,8 @@
     a3cSec: { es: 'Coalición multinacional', en: 'Multinational Coalition' },
     a3cBadge: { es: '19 países', en: '19 countries' },
     cierre: {
-      es: 'Síntesis en español del October 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, enlazado arriba). Las fotografías son las del propio documento.',
-      en: 'English synthesis of the Embassy of Colombia\u2019s October 2026 Fact Sheet (original document linked above). The photographs are from the document itself.'
+      es: 'Síntesis en español del October 2026 Fact Sheet de la Embajada de Colombia (documento original en el idioma seleccionado, enlazado arriba). Las fotografías son las del propio documento.',
+      en: 'English synthesis of the Embassy of Colombia\u2019s October 2026 Fact Sheet (original document in the selected language, linked above). The photographs are from the document itself.'
     },
     cierreSep: {
       es: 'Síntesis en español del September 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, enlazado arriba).',
@@ -151,7 +151,7 @@
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
-      '<a href="' + esc(ES.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
+      '<a href="' + esc(D.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
