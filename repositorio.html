@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=45">
+  <link rel="stylesheet" href="css/repositorio.css?v=46">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -276,6 +276,10 @@
         </div>
         <div class="mrow"><button id="exAdd" type="button" class="p">+ Agregar persona externa</button></div>
         <div class="mrow"><button id="exFileBtn" type="button" class="p">📎 Adjuntar matriz de invitados (.csv o .xlsx)</button><input id="exFile" type="file" accept=".csv,.xlsx,.xls" hidden></div>
+        <div class="mrow evgrow">
+          <label class="evglab"><input id="exGroupNew" type="checkbox"> Aislar esta matriz en un grupo nuevo</label>
+          <input id="exGroupName" placeholder="Nombre del grupo (ej.: Base de Álvaro)" autocomplete="off" disabled>
+        </div>
         <p id="exFileMsg" class="evfilemsg"></p>
         <div id="exList"></div>
       </div>
@@ -334,7 +338,7 @@
   <script src="js/datos_ct.js?v=4"></script>
   <script src="js/datos_foro.js?v=8"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=50"></script>
+  <script src="js/repositorio.js?v=51"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
