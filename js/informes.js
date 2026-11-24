@@ -20,14 +20,14 @@
     pgEmb: { es: 'Embajada de Colombia en Estados Unidos', en: 'Embassy of Colombia in the United States' },
     subtitle: { es: 'Seguridad · Defensa · Drogas', en: 'Security · Defense · Drugs' },
     homeBtn: { es: '← Menú principal', en: '← Main menu' },
-    tabCumS: { es: 'Indicadores acumulados de la cooperación contra los cárteles · Deshabilitado temporalmente', en: 'Cumulative indicators of counter-cartel cooperation · Temporarily disabled' },
+    tabCumS: { es: 'Indicadores acumulados de la cooperación contra los cárteles', en: 'Cumulative indicators of counter-cartel cooperation' },
     tabFsS: { es: 'Síntesis mensual interactiva, mes a mes', en: 'Interactive monthly synthesis, month by month' },
     cumIntro: {
       es: 'Indicadores acumulados a partir de los fact sheets mensuales de la Embajada. Por ahora incluyen <b>octubre de 2026</b>, el primer fact sheet cargado; septiembre y noviembre se sumarán en cuanto se carguen sus documentos, y el acumulado se actualizará solo.',
       en: 'Cumulative indicators drawn from the Embassy\u2019s monthly fact sheets. For now they cover <b>October 2026</b>, the first fact sheet uploaded; September and November will be added as soon as their documents are uploaded, and the cumulative totals will update automatically.'
     },
     cumH1: { es: 'Operaciones contra organizaciones criminales, por organización', en: 'Operations against criminal organizations, by organization' },
-    cumS1: { es: 'Tabla resumen del fact sheet de octubre · Total: 44 operaciones', en: 'Summary table of the October fact sheet · Total: 44 operations' },
+    cumS1: { es: 'Detalle sintetizado del fact sheet de octubre · Total: 38 operaciones', en: 'Synthesized detail from the October fact sheet · Total: 38 operations' },
     cumH2: { es: 'Interdicción e incautación, por tipo de operación', en: 'Interdiction and seizures, by type of operation' },
     cumS2: { es: 'Detalle sintetizado del fact sheet de octubre', en: 'Synthesized detail from the October fact sheet' },
     cumNote: {
@@ -71,12 +71,12 @@
     },
     bars2: {
       es: [
-        { org: 'Interdicción internacional y marítima', n: 7 },
+        { org: 'Interdicción internacional y marítima', n: 6 },
         { org: 'Puertos, controles e interdicción terrestre', n: 5 },
         { org: 'Laboratorios e incautaciones en tierra', n: 3 }
       ],
       en: [
-        { org: 'International and maritime interdiction', n: 7 },
+        { org: 'International and maritime interdiction', n: 6 },
         { org: 'Ports, checkpoints and inland interdiction', n: 5 },
         { org: 'Laboratories and land seizures', n: 3 }
       ]
@@ -258,7 +258,6 @@
     tabFs.setAttribute('aria-selected', openBlock === 'fs' ? 'true' : 'false');
   }
   function toggleBlock(which) {
-    if (which === 'cum') return; // CI deshabilitado temporalmente (24 nov 2026, orden de Juan)
     openBlock = (openBlock === which) ? null : which;
     paintBlocks();
     notifyResize();
