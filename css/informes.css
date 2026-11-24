@@ -165,8 +165,6 @@
 
 /* Cumulative Indicators deshabilitado temporalmente (24 nov 2026,
    orden de Juan): se verificarán los datos antes de reactivarlo. */
-.inftab[disabled] { opacity: .45; cursor: not-allowed; filter: grayscale(.5); }
-.inftab[disabled]:hover { transform: none; box-shadow: none; }
 
 /* Botón Ver / Descargar con menú de idiomas (24 nov 2026, orden de Juan) */
 .dlmenu { position: relative; display: inline-block; }
