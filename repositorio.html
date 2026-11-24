@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=41">
+  <link rel="stylesheet" href="css/repositorio.css?v=42">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -38,8 +38,12 @@
   <img id="wm" alt="" hidden>
 
   <header>
+    <!-- Botón de idioma global (24 nov 2026, orden de Juan): arriba a la
+         izquierda del banner de Todo; traduce la página principal y las
+         secciones Organigrama, Perfiles e Informes. -->
+    <button type="button" id="btnLangMain" class="langbtn-main" aria-label="Switch language / Cambiar idioma">EN · English</button>
     <h1>Todo</h1>
-    <p class="emb">Embajada de Colombia en Estados Unidos</p>
+    <p class="emb" id="pgEmb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Perfiles · Eventos · Publicaciones</p>
     <!-- Botón de inicio de sesión (23 nov 2026, orden de Juan): abre la
          puerta privada de Eventos y Publicaciones. Símbolo de persona
@@ -61,35 +65,35 @@
              tiles, como los demás paneles. -->
         <button id="tileOrg" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="6" width="20" height="12" rx="3"/><rect x="6" y="44" width="14" height="12" rx="3"/><rect x="25" y="44" width="14" height="12" rx="3"/><rect x="44" y="44" width="14" height="12" rx="3"/><path d="M32 18v8M13 26h38M13 26v18M32 26v18M51 26v18"/></svg>
-          <span class="tlab">Organigrama Estados Unidos</span>
-          <span class="tsub">Estructura y cargos del Gobierno de Estados Unidos</span>
+          <span class="tlab" id="tOrgL">Organigrama Estados Unidos</span>
+          <span class="tsub" id="tOrgS">Estructura y cargos del Gobierno de Estados Unidos</span>
         </button>
         <button id="tilePerfiles" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="22" cy="28" r="7"/><path d="M12 46c2-6 6-8 10-8s8 2 10 8"/><path d="M38 22h10M38 30h10M38 38h10"/></svg>
-          <span class="tlab">Perfiles</span>
-          <span class="tsub">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
+          <span class="tlab" id="tPerfL">Perfiles</span>
+          <span class="tsub" id="tPerfS">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
         </button>
         <button id="tileInformes" type="button" class="tile tile-main">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l20 7v18c0 13-8.5 22-20 27C20.5 53 12 44 12 31V13z"/><path d="M22 32l7 7 13-14"/></svg>
-          <span class="tlab">Informes en seguridad, defensa y drogas</span>
-          <span class="tsub">Informes y análisis</span>
+          <span class="tlab" id="tInfL">Informes en seguridad, defensa y drogas</span>
+          <span class="tsub" id="tInfS">Informes y análisis</span>
         </button>
         <button id="tileEventos" type="button" class="tile">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="14" width="44" height="40" rx="6"/><path d="M10 26h44M22 8v12M42 8v12"/><path d="M20 36h8M30 36h8M40 36h4M20 44h8M30 44h8"/></svg>
-          <span class="tlab">Eventos</span>
+          <span class="tlab" id="tEvL">Eventos</span>
           <span class="tsub">Crear y gestionar eventos</span>
         </button>
         <button id="tilePublicaciones" type="button" class="tile">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8h24l8 8v40H16z"/><path d="M40 8v8h8"/><path d="M22 26h20M22 34h20M22 42h14"/></svg>
-          <span class="tlab">Publicaciones</span>
-          <span class="tsub">Documentos e informes de la Embajada</span>
+          <span class="tlab" id="tPubL">Publicaciones</span>
+          <span class="tsub" id="tPubS">Documentos e informes de la Embajada</span>
         </button>
       </div>
       <div id="perfilesView" hidden>
         <div class="panelhead">
-          <h2>Perfiles</h2>
-          <p class="emb">Embajada de Colombia en Estados Unidos</p>
-          <p class="sub">Buscar y gestionar perfiles</p>
+          <h2 id="perfH">Perfiles</h2>
+          <p class="emb" id="pgEmb2">Embajada de Colombia en Estados Unidos</p>
+          <p class="sub" id="perfSub">Buscar y gestionar perfiles</p>
         </div>
         <p id="perfilesCount" class="pcount"></p>
         <div class="homesch">
@@ -118,13 +122,13 @@
         <iframe id="framePublicaciones" title="Publicaciones" src="publicaciones.html"></iframe>
       </div>
       <div id="informesView" class="panelView" hidden>
-        <iframe id="frameInformes" title="Informes en seguridad, defensa y drogas" src="informes.html?v=7"></iframe>
+        <iframe id="frameInformes" title="Informes en seguridad, defensa y drogas" src="informes.html?v=8"></iframe>
       </div>
       <div id="organigramaView" class="panelView" hidden>
         <div class="panelhead">
-          <h2>Organigrama Estados Unidos</h2>
-          <p class="emb">Embajada de Colombia en Estados Unidos</p>
-          <p class="sub">Estructura del Gobierno de Estados Unidos</p>
+          <h2 id="orgH">Organigrama Estados Unidos</h2>
+          <p class="emb" id="orgEmb">Embajada de Colombia en Estados Unidos</p>
+          <p class="sub" id="orgSub">Estructura del Gobierno de Estados Unidos</p>
         </div>
         <iframe id="frameOrganigrama" title="Organigrama Estados Unidos" src="organigrama.html"></iframe>
       </div>
@@ -151,7 +155,7 @@
         </select>
       </div>
       <div class="frow2" id="frow2" hidden>
-        <span class="sub2lab">Subgrupo:</span>
+        <span class="sub2lab" id="sub2lab">Subgrupo:</span>
         <select id="fsub2" aria-label="Filtrar por subgrupo de segundo nivel">
           <option value="">Todos</option>
         </select>
@@ -194,12 +198,12 @@
   <div id="sug" hidden role="dialog" aria-modal="true" aria-label="Sugerencias">
     <div class="mbox">
       <button id="sugx" type="button" aria-label="Cerrar">✕ Cerrar</button>
-      <h2 class="sugtitle">Sugerencias</h2>
+      <h2 class="sugtitle" id="sugTitle">Sugerencias</h2>
       <div id="sugStep1">
         <button type="button" class="p sugopt" id="sugOpt">Sugerir perfiles</button>
       </div>
       <form id="sugForm" hidden>
-        <label for="sugText">Ayuda a Juan a mejorar esta página con tus sugerencias.</label>
+        <label for="sugText" id="sugLab">Ayuda a Juan a mejorar esta página con tus sugerencias.</label>
         <textarea id="sugText" rows="10" placeholder="Pega o escribe aquí tu sugerencia, puedes poner lo que sea…"></textarea>
         <div class="mrow">
           <button type="submit" class="p" id="sugSend" disabled>Enviar</button>
@@ -216,7 +220,7 @@
   <button type="button" id="selFab" class="selfab" title="Seleccionar perfiles tocando su tarjeta" aria-label="Seleccionar perfiles para la carpeta" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 6.8A1.7 1.7 0 0 1 4.5 5.2h5l2 2.6h7.9a1.7 1.7 0 0 1 1.7 1.7v7.6a1.7 1.7 0 0 1-1.7 1.7H4.5a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M12 10.6v5.2M9.4 13.2h5.2"/></svg><span id="selDot" class="seldot"></span></button>
 
   <div id="cartPanel" hidden role="dialog" aria-label="Carpeta de perfiles">
-    <div class="cphead"><b>📁 Carpeta de perfiles</b><button id="cartX" type="button" aria-label="Cerrar carpeta">✕</button></div>
+    <div class="cphead"><b id="cartHeadT">📁 Carpeta de perfiles</b><button id="cartX" type="button" aria-label="Cerrar carpeta">✕</button></div>
     <div id="cartList"></div>
     <p id="cartMsg"></p>
     <div class="mrow">
@@ -236,15 +240,15 @@
       <button id="evX" type="button" aria-label="Cerrar">✕ Cerrar</button>
       <h2 class="sugtitle" id="evTitle">Crear evento</h2>
       <div class="evsec">
-        <label for="evName"><b>Nombre del evento *</b></label>
+        <label for="evName"><b id="evNameL">Nombre del evento *</b></label>
         <input id="evName" placeholder="Ej.: Protegiendo las Américas" autocomplete="off">
         <div class="evform">
           <div>
-            <label for="evDate"><b>Fecha</b></label>
+            <label for="evDate"><b id="evDateL">Fecha</b></label>
             <input id="evDate" type="date">
           </div>
           <div>
-            <label for="evPlace"><b>Lugar</b></label>
+            <label for="evPlace"><b id="evPlaceL">Lugar</b></label>
             <input id="evPlace" placeholder="Ej.: Residencia de la Embajada de Colombia en Washington" autocomplete="off">
           </div>
         </div>
@@ -327,10 +331,10 @@
   <script src="js/photos.js"></script>
   <script src="js/data.js"></script>
   <script src="js/photos_ct.js"></script>
-  <script src="js/datos_ct.js?v=3"></script>
-  <script src="js/datos_foro.js?v=7"></script>
+  <script src="js/datos_ct.js?v=4"></script>
+  <script src="js/datos_foro.js?v=8"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=46"></script>
+  <script src="js/repositorio.js?v=47"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
