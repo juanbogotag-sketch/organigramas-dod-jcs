@@ -190,7 +190,24 @@
   <script src="js/vendor/docx.min.js"></script>
   <script src="js/photos.js"></script>
   <script src="js/data.js"></script>
-  <script src="js/app.js?v=1"></script>
+  <script src="js/app.js?v=2"></script>
+<script>
+  // Idioma global (24 nov 2026): si la página principal quedó en inglés
+  // (localStorage 'todo_lang'), los textos fijos de esta página también.
+  (function () {
+    var en = false;
+    try { en = localStorage.getItem('todo_lang') === 'en'; } catch (e) {}
+    if (!en) return;
+    document.documentElement.lang = 'en';
+    document.title = 'United States Org Chart';
+    var t = document.getElementById('mainTitle'); if (t) t.textContent = 'United States Org Chart';
+    var q = document.getElementById('q');
+    if (q) { q.placeholder = 'Search by name or position…'; q.setAttribute('aria-label', 'Search officials by name or position'); }
+    var phx = document.getElementById('phx'); if (phx) phx.textContent = '✕ Close';
+    var ovc = document.getElementById('ovc'); if (ovc) ovc.textContent = 'Close';
+    var shc = document.getElementById('shc'); if (shc) shc.textContent = 'Close';
+  })();
+</script>
 </body>
 
 </html>
