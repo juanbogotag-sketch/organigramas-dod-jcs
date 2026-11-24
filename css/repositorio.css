@@ -550,6 +550,7 @@ a.tile { text-decoration: none; }
 /* El organigrama es una interfaz pesada: el iframe arranca con altura
    amplia y sizeFrame() lo ajusta al contenido al abrir. */
 #frameOrganigrama { min-height: 720px; }
+#frameInformes { min-height: 720px; }
 @media (max-width: 640px) {
   .panelhead { padding: 26px 14px 20px; }
   .panelhead h2 { font-size: 26px; }
