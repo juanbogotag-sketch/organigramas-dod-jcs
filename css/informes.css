@@ -167,3 +167,12 @@
    orden de Juan): se verificarán los datos antes de reactivarlo. */
 .inftab[disabled] { opacity: .45; cursor: not-allowed; filter: grayscale(.5); }
 .inftab[disabled]:hover { transform: none; box-shadow: none; }
+
+/* Botón Ver / Descargar con menú de idiomas (24 nov 2026, orden de Juan) */
+.dlmenu { position: relative; display: inline-block; }
+.dlbtn { background: #fff; color: var(--navy); font-weight: 700; border: none; border-radius: 999px; padding: 7px 14px; cursor: pointer; font-size: 13px; font-family: inherit; }
+.dlbtn:hover { background: var(--light2); }
+.dlpop { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid var(--light); border-radius: 12px; box-shadow: 0 8px 24px rgba(10,29,56,.18); min-width: 220px; overflow: hidden; z-index: 30; }
+.dlpop .dlitem { display: block; padding: 10px 14px; color: var(--navy); text-decoration: none; font-weight: 600; font-size: 13.5px; }
+.dlpop a.dlitem:hover { background: var(--light2); }
+.dlpop .dlitem.off { color: #8a94a6; font-weight: 500; cursor: default; }
