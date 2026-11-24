@@ -136,3 +136,13 @@ header { position: relative; }
 #btnLang:hover { background: #cf6514; color: #fff; }
 .kpis2 { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 640px) { .kpis2 { grid-template-columns: 1fr 1fr; } #btnLang { top: 10px; right: 10px; padding: 7px 12px; font-size: 12.5px; } }
+
+/* Sección A3C (23 nov 2026, orden de Juan): color más claro, casi
+   blanco, porque es la sección que varía en cada entrega del fact
+   sheet; así se distingue de las secciones fijas, de encabezado azul. */
+.acc-a3c { border-color: #e3e8ef; }
+.acc-a3c > button.accbtn { background: #f7f9fb; color: var(--navy2); border-left-color: var(--orange); }
+.acc-a3c > button.accbtn:hover { background: #eef2f7; }
+.acc-a3c .accbtn .accb { background: #e3e8ef; color: var(--navy2); }
+.acc-a3c .accbody { background: #fdfdfe; }
+.acc-a3c .a3c { background: #fff; border: 1px solid #e3e8ef; }
