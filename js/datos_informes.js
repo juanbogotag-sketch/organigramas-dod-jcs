@@ -299,6 +299,37 @@ window.FS_OCT_EN = {
 // September 2026 Fact Sheet synthesis (13–30 Sep 2026). Same structure as
 // FS_OCT / FS_OCT_EN. Source: 13_September_-_October Fact Sheet v.10.8.26
 // (docx). Photos: none yet (ph: null everywhere).
+FS_PHOTOS_SEP = [
+  "informes/img/sep-01.jpg",
+  "informes/img/sep-02.jpg",
+  "informes/img/sep-03.jpg",
+  "informes/img/sep-04.jpg",
+  "informes/img/sep-05.jpg",
+  "informes/img/sep-06.jpg",
+  "informes/img/sep-07.jpg",
+  "informes/img/sep-08.jpg",
+  "informes/img/sep-09.jpg",
+  "informes/img/sep-10.jpg",
+  "informes/img/sep-11.jpg",
+  "informes/img/sep-12.jpg",
+  "informes/img/sep-13.jpg",
+  "informes/img/sep-14.jpg",
+  "informes/img/sep-15.jpg",
+  "informes/img/sep-16.jpg",
+  "informes/img/sep-17.jpg",
+  "informes/img/sep-18.jpg",
+  "informes/img/sep-19.jpg",
+  "informes/img/sep-20.jpg",
+  "informes/img/sep-21.jpg",
+  "informes/img/sep-22.jpg",
+  "informes/img/sep-23.jpg",
+  "informes/img/sep-24.jpg",
+  "informes/img/sep-25.jpg",
+  "informes/img/sep-26.jpg",
+  "informes/img/sep-27.jpg",
+  "informes/img/sep-28.jpg"
+];
+
 FS_SEP = {
   titulo: "Colombia in the Shield of the Americas and in the Coalition Against the Cartels of the Americas",
   subtitulo: "Avances en las operaciones contra organizaciones narcoterroristas (DTO) y organizaciones criminales transnacionales (TCO), y en la reducción del cultivo de coca",
@@ -322,36 +353,25 @@ FS_SEP = {
     { org: "ACSN", n: 4 },
     { org: "Clan del Golfo", n: 3 }
   ],
-  a3c: {
-    intro: "Colombia y sus socios hemisféricos comparten el compromiso con el Estado de derecho, la seguridad regional y la protección de sus ciudadanos frente al crimen transnacional, sobre la base de décadas de cooperación en antinarcóticos, interdicción y asistencia en seguridad. En agosto de 2026, Colombia se unió a la Americas Counter Cartel Coalition (A3C).",
-    items: [
-      { k: "Qué es", v: "Alianza multinacional de seguridad liderada por Estados Unidos, creada en marzo de 2026. Los países miembros se ofrecen para liderar esfuerzos por región o por red; Colombia se unió en agosto de 2026." },
-      { k: "Países participantes", v: "19 países miembros participaron en las reuniones de Panamá, entre ellos Colombia y Estados Unidos." },
-      { k: "Áreas de cooperación", v: "Campañas contra los cárteles y las redes criminales transnacionales prioritarias; coordinación frente a amenazas compartidas; asignación de roles nacionales." },
-      { k: "Mecanismos de coordinación", v: "Grupos de trabajo con objetivos e hitos; evaluaciones de campaña de la coalición; acuerdo de Acceso, Estacionamiento y Sobrevuelo entre Colombia y Estados Unidos." },
-      { k: "Resultados a la fecha", v: "19 países en las reuniones de Panamá, donde Colombia se unió como el miembro más reciente de la coalición (fuente: Comando Sur de Estados Unidos)." },
-      { k: "Próximos pasos", v: "Un plan de campaña multinacional contra las redes transnacionales de drogas está programado para su aprobación en noviembre de 2026; los miembros lo redactan bajo el liderazgo del Comando Sur (fuente: Comando Sur de Estados Unidos)." }
-    ]
-  },
   grupos: [
     {
       id: "maritima", seccion: "1 · Incautación, interdicción y erradicación estratégica",
       titulo: "Interdicción internacional y marítima", badge: "4 operaciones",
       nota: "Incluye la mayor incautación del periodo: más de 4 t de cocaína en una embarcación en Antioquia (21 sep).",
       ops: [
-        { ph: null, f: "14 sep", l: "Magdalena", s: "Policía · DEA de Estados Unidos · Guardia Costera", r: "Lancha rápida <b>interceptada</b> en aguas internacionales: <b>297 kg de cocaína</b> pertenecientes al ELN, con destino a República Dominicana; 4 tripulantes capturados. Impacto: $7.365 millones COP a las finanzas criminales." },
-        { ph: null, f: "21 sep", l: "Antioquia", s: "Armada", r: "Embarcación <b>interceptada</b>: <b>4.022 paquetes de clorhidrato de cocaína</b>, más de <b>4,0 t</b>, ocultos en 126 bultos; 5 personas capturadas en flagrancia." },
-        { ph: null, f: "25 sep", l: "Vichada", s: "Armada · Ejército · Fuerza Aérea · Policía", r: "Embarcación <b>interceptada</b> en el río Meta: cerca de <b>1,5 t de clorhidrato de cocaína</b> en 38 bultos, con destino a territorio venezolano; vinculada al Frente de Guerra Oriental del ELN. Impacto: más de <b>US$80 millones</b>; 4 millones de dosis fuera del mercado ilegal." },
-        { ph: null, f: "25 sep", l: "México", s: "Policía · Seguridad Nacional de Estados Unidos · Armada de México", r: "Cocaína <b>interceptada</b>: <b>1,2 t</b> oculta en paquetes de café molido, con destino a España. Pérdida de más de <b>US$17 millones</b> para las redes de narcotráfico." }
+        { ph: 18, f: "14 sep", l: "Magdalena", s: "Policía · DEA de Estados Unidos · Guardia Costera", r: "Lancha rápida <b>interceptada</b> en aguas internacionales: <b>297 kg de cocaína</b> pertenecientes al ELN, con destino a República Dominicana; 4 tripulantes capturados. Impacto: $7.365 millones COP a las finanzas criminales." },
+        { ph: 21, f: "21 sep", l: "Antioquia", s: "Armada", r: "Embarcación <b>interceptada</b>: <b>4.022 paquetes de clorhidrato de cocaína</b>, más de <b>4,0 t</b>, ocultos en 126 bultos; 5 personas capturadas en flagrancia." },
+        { ph: 25, f: "25 sep", l: "Vichada", s: "Armada · Ejército · Fuerza Aérea · Policía", r: "Embarcación <b>interceptada</b> en el río Meta: cerca de <b>1,5 t de clorhidrato de cocaína</b> en 38 bultos, con destino a territorio venezolano; vinculada al Frente de Guerra Oriental del ELN. Impacto: más de <b>US$80 millones</b>; 4 millones de dosis fuera del mercado ilegal." },
+        { ph: 24, f: "25 sep", l: "México", s: "Policía · Seguridad Nacional de Estados Unidos · Armada de México", r: "Cocaína <b>interceptada</b>: <b>1,2 t</b> oculta en paquetes de café molido, con destino a España. Pérdida de más de <b>US$17 millones</b> para las redes de narcotráfico." }
       ]
     },
     {
       id: "puertos", seccion: "1 · Incautación, interdicción y erradicación estratégica",
       titulo: "Puertos, controles e interdicción terrestre", badge: "4 operaciones",
       ops: [
-        { ph: null, f: "14 sep", l: "Bolívar", s: "Policía", r: "<b>102 kg de cocaína interceptados</b>, camuflados en 280 bolsas de mortero en la terminal marítima de Cartagena (Estrategia Esmeralda). Se evitó la exportación de <b>256.000 dosis</b>; afectación de $564 millones COP a las finanzas ilícitas." },
+        { ph: 19, f: "14 sep", l: "Bolívar", s: "Policía", r: "<b>102 kg de cocaína interceptados</b>, camuflados en 280 bolsas de mortero en la terminal marítima de Cartagena (Estrategia Esmeralda). Se evitó la exportación de <b>256.000 dosis</b>; afectación de $564 millones COP a las finanzas ilícitas." },
         { ph: null, f: "23 sep", l: "Antioquia", s: "Policía", r: "<b>10.250 dosis</b> de marihuana, bazuco y cocaína incautadas en allanamientos contra las estructuras criminales «La Oficina» y «Los Chatas»." },
-        { ph: null, f: "24 sep", l: "Bolívar", s: "Policía", r: "<b>885 kg de clorhidrato de cocaína incautados</b> en el puerto de Cartagena, ocultos dentro de un bloque de piedra travertino procedente del Callao, Perú, con destino a Valencia, España. Se evitó la distribución de más de <b>2,2 millones de dosis</b>." },
+        { ph: 23, f: "24 sep", l: "Bolívar", s: "Policía", r: "<b>885 kg de clorhidrato de cocaína incautados</b> en el puerto de Cartagena, ocultos dentro de un bloque de piedra travertino procedente del Callao, Perú, con destino a Valencia, España. Se evitó la distribución de más de <b>2,2 millones de dosis</b>." },
         { ph: null, f: "26 sep", l: "Huila", s: "Policía", r: "<b>4,2 t de marihuana incautadas</b>, ocultas entre bultos de cal en un camión de carga; 1 sospechoso capturado. Se retiraron <b>4,2 millones de dosis</b>, valoradas en $2.225 millones COP." }
       ]
     },
@@ -359,11 +379,11 @@ FS_SEP = {
       id: "laboratorios", seccion: "1 · Incautación, interdicción y erradicación estratégica",
       titulo: "Laboratorios e incautaciones en tierra", badge: "5 operaciones",
       ops: [
-        { ph: null, f: "16 sep", l: "Putumayo", s: "Ejército", r: "Laboratorio de procesamiento químico del Comando de Frontera <b>destruido</b>: más de <b>3.000 galones de ácido sulfúrico</b>, cilindros de gas y equipos industriales de laboratorio incautados." },
-        { ph: null, f: "23 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "Complejo de procesamiento de coca <b>localizado</b>, valorado en más de $6.700 millones COP y vinculado al ELN; se evitó la distribución de <b>470.000 dosis</b> de cocaína." },
+        { ph: 20, f: "16 sep", l: "Putumayo", s: "Ejército", r: "Laboratorio de procesamiento químico del Comando de Frontera <b>destruido</b>: más de <b>3.000 galones de ácido sulfúrico</b>, cilindros de gas y equipos industriales de laboratorio incautados." },
+        { ph: 22, f: "23 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "Complejo de procesamiento de coca <b>localizado</b>, valorado en más de $6.700 millones COP y vinculado al ELN; se evitó la distribución de <b>470.000 dosis</b> de cocaína." },
         { ph: null, f: "24 sep", l: "Guaviare", s: "Ejército · Armada · Policía", r: "<b>975 kg de clorhidrato de cocaína incautados</b>; 2 presuntos integrantes de la estructura «Jhon Linares», del Bloque Jorge Suárez Briceño, capturados en flagrancia." },
-        { ph: null, f: "26 sep", l: "Putumayo", s: "Ejército", r: "<b>620 plantas de coca destruidas</b>, afectando directamente las rentas ilícitas de la estructura disidente Segunda Marquetalia." },
-        { ph: null, f: "29 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "Megacomplejo de procesamiento de alcaloides del ELN <b>destruido</b>, valorado en $5.300 millones COP: más de <b>1,1 t de cocaína</b>, 125 kg de base de coca e insumos químicos incautados." }
+        { ph: 26, f: "26 sep", l: "Putumayo", s: "Ejército", r: "<b>620 plantas de coca destruidas</b>, afectando directamente las rentas ilícitas de la estructura disidente Segunda Marquetalia." },
+        { ph: 27, f: "29 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "Megacomplejo de procesamiento de alcaloides del ELN <b>destruido</b>, valorado en $5.300 millones COP: más de <b>1,1 t de cocaína</b>, 125 kg de base de coca e insumos químicos incautados." }
       ]
     },
     {
@@ -371,11 +391,11 @@ FS_SEP = {
       titulo: "ELN — Ejército de Liberación Nacional", badge: "26 en total contra las organizaciones",
       nota: "Tratado como organización criminal transnacional (TCO): múltiples economías criminales, entre ellas extorsión, minería ilegal y ataques con explosivos. Cifras por organización según las operaciones de septiembre: ELN 5 · Disidencias de las FARC 6 · Clan del Golfo 3 · ACSN 4 · Otras redes 8.",
       ops: [
-        { ph: null, f: "15 sep", l: "Bolívar", s: "Ejército", r: "Combate contra el frente «Darío Ramírez Castro» del ELN: <b>5 combatientes neutralizados</b>; 6 armas de fuego de largo alcance incautadas." },
-        { ph: null, f: "15 sep", l: "Meta", s: "Policía · Fiscalía", r: "Se entregó Gildardo Quinchía Giraldo, operador financiero del ELN y primo de alias «Pablito», quien manejaba más de <b>$33.000 millones COP</b> en fondos ilícitos." },
-        { ph: null, f: "18 sep", l: "Cesar y Norte de Santander", s: "Policía · Ejército", r: "Operación URANO: <b>7 personas capturadas</b> por el hurto de hidrocarburos destinados a financiar al ELN." },
-        { ph: null, f: "24 sep", l: "Norte de Santander", s: "Fuerza Pública", r: "<b>5 integrantes del ELN capturados</b>, entre ellos alias «El Indio» (otro resultó herido), dedicados a extorsionar a comerciantes, transportadores y propietarios de maquinaria pesada; 4 armas de fuego, proveedores y munición incautados." },
-        { ph: null, f: "29 sep", l: "Cesar", s: "Policía · Fuerza de Tarea Urano · Fiscalía", r: "<b>9 integrantes de una red de apoyo del ELN capturados</b>, dedicados a la extorsión y al hurto de combustible, entre ellos alias «Murdoc», experto en explosivos vinculado a ataques contra la fuerza pública." }
+        { ph: 2, f: "15 sep", l: "Bolívar", s: "Ejército", r: "Combate contra el frente «Darío Ramírez Castro» del ELN: <b>5 combatientes neutralizados</b>; 6 armas de fuego de largo alcance incautadas." },
+        { ph: 3, f: "15 sep", l: "Meta", s: "Policía · Fiscalía", r: "Se entregó Gildardo Quinchía Giraldo, operador financiero del ELN y primo de alias «Pablito», quien manejaba más de <b>$33.000 millones COP</b> en fondos ilícitos." },
+        { ph: 7, f: "18 sep", l: "Cesar y Norte de Santander", s: "Policía · Ejército", r: "Operación URANO: <b>7 personas capturadas</b> por el hurto de hidrocarburos destinados a financiar al ELN." },
+        { ph: 13, f: "24 sep", l: "Norte de Santander", s: "Fuerza Pública", r: "<b>5 integrantes del ELN capturados</b>, entre ellos alias «El Indio» (otro resultó herido), dedicados a extorsionar a comerciantes, transportadores y propietarios de maquinaria pesada; 4 armas de fuego, proveedores y munición incautados." },
+        { ph: 15, f: "29 sep", l: "Cesar", s: "Policía · Fuerza de Tarea Urano · Fiscalía", r: "<b>9 integrantes de una red de apoyo del ELN capturados</b>, dedicados a la extorsión y al hurto de combustible, entre ellos alias «Murdoc», experto en explosivos vinculado a ataques contra la fuerza pública." }
       ]
     },
     {
@@ -384,11 +404,11 @@ FS_SEP = {
       nota: "Tratadas como DTO/TCO: narcotráfico con mando definido, combinado con extorsión, secuestro, homicidio y minería ilegal. Categoría que agrupa a los grupos disidentes de las antiguas FARC.",
       ops: [
         { ph: null, f: "15 sep", l: "Valle del Cauca", s: "Policía", r: "Capturado alias <b>«Yeiner»</b>, cabecilla de zona del Frente 57 «Yair Bermúdez» de las disidencias; armas de fuego y equipos de comunicaciones incautados." },
-        { ph: null, f: "20 sep", l: "Antioquia", s: "Ejército · Policía", r: "Alias <b>«Huevo»</b> y otro integrante de la Estructura 36 de las disidencias neutralizados; capturado alias «Sebastián» o «Jair»; <b>4 personas secuestradas rescatadas</b> y un menor recuperado." },
+        { ph: 8, f: "20 sep", l: "Antioquia", s: "Ejército · Policía", r: "Alias <b>«Huevo»</b> y otro integrante de la Estructura 36 de las disidencias neutralizados; capturado alias «Sebastián» o «Jair»; <b>4 personas secuestradas rescatadas</b> y un menor recuperado." },
         { ph: null, f: "21 sep", l: "Valle del Cauca", s: "Policía · Fuerza Aérea", r: "Alias <b>«Sarria»</b>, operador financiero del Frente 57 de las disidencias, neutralizado; capturado su cómplice logístico, alias «El Indio»." },
         { ph: null, f: "23 sep", l: "Tolima", s: "Ejército · Policía · Fuerza Aérea", r: "Operación Horus: <b>2 integrantes capturados</b> de la estructura Gerónimo Galeano, disidencia de alias «Iván Mordisco»; un menor recuperado; 11 fusiles, 2 pistolas, 2 drones y 10 granadas improvisadas incautados." },
-        { ph: null, f: "23 sep", l: "Cauca", s: "Fuerzas Militares · Fuerza Aérea · Policía", r: "<b>4 integrantes neutralizados</b> de las estructuras Carlos Patiño y Dagoberto Ramos, disidencias de alias «Iván Mordisco», y 2 presuntos integrantes capturados; 5 motocicletas, 8 armas de fuego y 342 cartuchos incautados." },
-        { ph: null, f: "23 sep", l: "Guaviare", s: "Ejército · Armada", r: "Operación «SAMUEL»: estructura narcoterrorista «Jhon Linares», del Bloque Jorge Suárez Briceño y facción Calarcá, <b>desarticulada</b>; 1 integrante neutralizado; 5 armas de fuego, 560 cartuchos, 14 proveedores, una mira Trijicon, una granada de fragmentación y material militar incautados." }
+        { ph: 11, f: "23 sep", l: "Cauca", s: "Fuerzas Militares · Fuerza Aérea · Policía", r: "<b>4 integrantes neutralizados</b> de las estructuras Carlos Patiño y Dagoberto Ramos, disidencias de alias «Iván Mordisco», y 2 presuntos integrantes capturados; 5 motocicletas, 8 armas de fuego y 342 cartuchos incautados." },
+        { ph: 12, f: "23 sep", l: "Guaviare", s: "Ejército · Armada", r: "Operación «SAMUEL»: estructura narcoterrorista «Jhon Linares», del Bloque Jorge Suárez Briceño y facción Calarcá, <b>desarticulada</b>; 1 integrante neutralizado; 5 armas de fuego, 560 cartuchos, 14 proveedores, una mira Trijicon, una granada de fragmentación y material militar incautados." }
       ]
     },
     {
@@ -398,7 +418,7 @@ FS_SEP = {
       ops: [
         { ph: null, f: "13 sep", l: "Antioquia, Cauca y La Guajira", s: "Ejército · Fuerza Aérea · Policía · Fiscalía", r: "Alias <b>«Niche»</b>, cabecilla de zona del Clan del Golfo, <b>neutralizado</b>; 3 operativos capturados y <b>7 víctimas de secuestro rescatadas</b>. Además, 2 integrantes de la estructura disidente «Jaime Martínez» capturados, 7 unidades de minería ilegal destruidas y armamento pesado y equipos de comunicación Starlink incautados." },
         { ph: null, f: "14 sep", l: "Cesar", s: "Ejército", r: "Capturados alias <b>«Yogui»</b> y alias «Juan», coordinadores clave de logística e inteligencia del Clan del Golfo." },
-        { ph: null, f: "14 sep", l: "Colombia", s: "Coalición A3C · Comando Sur de Estados Unidos · DEA · Socios colombianos", r: "Red de narcotráfico y lavado de activos vinculada al Clan del Golfo <b>desmantelada</b> por la Coalición contra los Cárteles de las Américas (A3C), junto con el Comando Sur de Estados Unidos, la DEA y socios colombianos." }
+        { ph: 1, f: "14 sep", l: "Colombia", s: "Coalición A3C · Comando Sur de Estados Unidos · DEA · Socios colombianos", r: "Red de narcotráfico y lavado de activos vinculada al Clan del Golfo <b>desmantelada</b> por la Coalición contra los Cárteles de las Américas (A3C), junto con el Comando Sur de Estados Unidos, la DEA y socios colombianos." }
       ]
     },
     {
@@ -406,10 +426,10 @@ FS_SEP = {
       titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "",
       nota: "Tratadas como DTO: estructura de mando definida y el narcotráfico como actividad central verificable.",
       ops: [
-        { ph: null, f: "18 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "<b>5 integrantes capturados</b> de las Autodefensas Conquistadoras de la Sierra Nevada, entre ellos alias «Miguel»; armas, explosivos y munición incautados." },
-        { ph: null, f: "22 sep", l: "Colombia", s: "Policía · Fuerza Aérea", r: "<b>13 narcoterroristas neutralizados</b> de las Autodefensas Conquistadoras de la Sierra Nevada, entre ellos alias «Cholo», segundo al mando y operador financiero; 10 fusiles, 2 lanzagranadas, pistolas y material militar incautados." },
+        { ph: 6, f: "18 sep", l: "Norte de Santander", s: "Ejército · Policía", r: "<b>5 integrantes capturados</b> de las Autodefensas Conquistadoras de la Sierra Nevada, entre ellos alias «Miguel»; armas, explosivos y munición incautados." },
+        { ph: 9, f: "22 sep", l: "Colombia", s: "Policía · Fuerza Aérea", r: "<b>13 narcoterroristas neutralizados</b> de las Autodefensas Conquistadoras de la Sierra Nevada, entre ellos alias «Cholo», segundo al mando y operador financiero; 10 fusiles, 2 lanzagranadas, pistolas y material militar incautados." },
         { ph: null, f: "30 sep", l: "Cesar", s: "Policía", r: "<b>2 presuntos integrantes capturados</b> de las Autodefensas Conquistadoras de la Sierra; un revólver, una escopeta artesanal, un visor nocturno, miras telescópicas y equipos de comunicaciones incautados." },
-        { ph: null, f: "30 sep", l: "Santander", s: "Fuerzas Militares", r: "Alias <b>«Marihuano»</b>, de las Autodefensas Conquistadoras de la Sierra, <b>capturado</b> en Santander. El mismo día, la Embajada de Estados Unidos y la Fiscalía firmaron un memorando de entendimiento con HSI para combatir el contrabando, el tráfico de armas y el lavado de activos." }
+        { ph: 17, f: "30 sep", l: "Santander", s: "Fuerzas Militares", r: "Alias <b>«Marihuano»</b>, de las Autodefensas Conquistadoras de la Sierra, <b>capturado</b> en Santander. El mismo día, la Embajada de Estados Unidos y la Fiscalía firmaron un memorando de entendimiento con HSI para combatir el contrabando, el tráfico de armas y el lavado de activos." }
       ]
     },
     {
@@ -417,14 +437,14 @@ FS_SEP = {
       titulo: "Otras redes criminales y fugitivos internacionales", badge: "",
       nota: "Redes menores, fugitivos internacionales y organizaciones sin volumen suficiente para una sección propia.",
       ops: [
-        { ph: null, f: "14 sep", l: "Magdalena", s: "Fuerzas de seguridad", r: "Operación «Fénix 2»: <b>7 integrantes de redes criminales capturados</b>, entre ellos el cabecilla alias «Come Pan»." },
-        { ph: null, f: "15 sep", l: "Risaralda, Caquetá, Huila y Antioquia", s: "Policía", r: "Operación «Marte»: <b>7 integrantes capturados</b> de la red «Cordillera», entre ellos el cabecilla alias «Muelas», además de <b>23 capturas adicionales</b> en todo el país de objetivos de alto valor de estructuras disidentes y del Clan del Golfo." },
-        { ph: null, f: "16 sep", l: "Bogotá", s: "Policía", r: "Operación «Rapaz»: banda criminal «Los Buitres» <b>desmantelada</b>; <b>6 integrantes capturados</b>, entre ellos el cabecilla alias «Homero»." },
+        { ph: 0, f: "14 sep", l: "Magdalena", s: "Fuerzas de seguridad", r: "Operación «Fénix 2»: <b>7 integrantes de redes criminales capturados</b>, entre ellos el cabecilla alias «Come Pan»." },
+        { ph: 4, f: "15 sep", l: "Risaralda, Caquetá, Huila y Antioquia", s: "Policía", r: "Operación «Marte»: <b>7 integrantes capturados</b> de la red «Cordillera», entre ellos el cabecilla alias «Muelas», además de <b>23 capturas adicionales</b> en todo el país de objetivos de alto valor de estructuras disidentes y del Clan del Golfo." },
+        { ph: 5, f: "16 sep", l: "Bogotá", s: "Policía", r: "Operación «Rapaz»: banda criminal «Los Buitres» <b>desmantelada</b>; <b>6 integrantes capturados</b>, entre ellos el cabecilla alias «Homero»." },
         { ph: null, f: "19 sep", l: "Colombia", s: "Fuerza Pública", r: "Balance de 24 horas: <b>42 delincuentes capturados</b>, 1 narcoterrorista neutralizado, 3 minas ilegales intervenidas y 18 bienes criminales afectados, por un valor de $7.600 millones COP." },
-        { ph: null, f: "23 sep", l: "Antioquia", s: "Policía", r: "31 allanamientos: <b>25 integrantes capturados</b> de «La Oficina» y «Los Chatas», entre ellos los cabecillas urbanos alias «Santa María» y alias «Cutu»." },
-        { ph: null, f: "25 sep", l: "Valle del Cauca", s: "Policía · Fiscalía", r: "Capturado alias <b>«Pineda»</b>, cabecilla regional de «Los Shottas», responsable de narcotráfico internacional hacia Centroamérica, alianzas con el ELN, extorsión y desplazamiento forzado." },
+        { ph: 10, f: "23 sep", l: "Antioquia", s: "Policía", r: "31 allanamientos: <b>25 integrantes capturados</b> de «La Oficina» y «Los Chatas», entre ellos los cabecillas urbanos alias «Santa María» y alias «Cutu»." },
+        { ph: 14, f: "25 sep", l: "Valle del Cauca", s: "Policía · Fiscalía", r: "Capturado alias <b>«Pineda»</b>, cabecilla regional de «Los Shottas», responsable de narcotráfico internacional hacia Centroamérica, alianzas con el ELN, extorsión y desplazamiento forzado." },
         { ph: null, f: "26 sep", l: "Valle del Cauca", s: "Policía · Fiscalía · Aduanas · Agencias de Estados Unidos", r: "Entrega controlada <b>interceptada</b>: componentes de fusiles de alto calibre (.308 / 7,62 mm) enviados desde Miami; se frustró el contrabando de armas hacia sindicatos criminales regionales." },
-        { ph: null, f: "30 sep", l: "Cundinamarca, Boyacá y Caquetá", s: "Policía · Ejército", r: "Red de préstamos «Los Cobra» <b>desmantelada</b>: 6 personas capturadas y $62,5 millones COP incautados. Además, <b>3 disidentes de las FARC</b> (Frente Rodrigo Cadete) capturados, con 3 pistolas y 1.772 cartuchos." }
+        { ph: 16, f: "30 sep", l: "Cundinamarca, Boyacá y Caquetá", s: "Policía · Ejército", r: "Red de préstamos «Los Cobra» <b>desmantelada</b>: 6 personas capturadas y $62,5 millones COP incautados. Además, <b>3 disidentes de las FARC</b> (Frente Rodrigo Cadete) capturados, con 3 pistolas y 1.772 cartuchos." }
       ]
     }
   ]
@@ -456,17 +476,6 @@ FS_SEP_EN = {
     { org: "ACSN", n: 4 },
     { org: "Clan del Golfo", n: 3 }
   ],
-  a3c: {
-    intro: "Colombia and its hemispheric partners share a commitment to the rule of law, regional security and the protection of their citizens from transnational crime, building on decades of cooperation in counternarcotics, interdiction and security assistance. In August 2026, Colombia joined the Americas Counter Cartel Coalition (A3C).",
-    items: [
-      { k: "What it is", v: "U.S.-led multinational security alliance formed in March 2026. Member nations volunteer to lead efforts by region or network; Colombia joined in August 2026." },
-      { k: "Participating countries", v: "19 member nations took part in the Panama meetings, including Colombia and the United States." },
-      { k: "Cooperation areas", v: "Counter-cartel campaigns against priority transnational criminal networks; coordination on shared threats; assignment of national roles." },
-      { k: "Coordination mechanisms", v: "Working groups with objectives and milestones; coalition campaign assessments; Access, Basing and Overflight agreement between Colombia and the United States." },
-      { k: "Results to date", v: "19 member nations at the Panama meetings, where Colombia joined as the coalition's newest member (source: U.S. Southern Command)." },
-      { k: "Next steps", v: "A multinational campaign plan against transnational drug networks is scheduled for approval by November 2026; members are drafting it under U.S. Southern Command leadership (source: U.S. Southern Command)." }
-    ]
-  },
   grupos: [
     {
       id: "maritima", seccion: "1 · Seizure, Interdiction and Strategic Eradication",
