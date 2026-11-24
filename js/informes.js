@@ -137,7 +137,6 @@
     const D = L(), ES = window.FS_OCT;
     if (!host || !D || !ES) return;
     let h = '';
-    h += '<div class="langrow"><button type="button" class="langbtn2" data-lang-toggle>' + (lang === 'es' ? 'EN · English' : 'ES · Español') + '</button></div>';
     h += '<div class="fshero"><h2>' + esc(D.titulo) + '</h2>' +
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
@@ -161,7 +160,6 @@
     h += '<p class="accnote" style="margin-top:16px">' + TXT.cierre[lang] + '</p>';
     host.innerHTML = h;
     bindAccordions(host);
-    host.querySelectorAll('[data-lang-toggle]').forEach(b2 => b2.addEventListener('click', toggleLang));
   }
 
   // ---------- Aplicar idioma a todo ----------
@@ -171,10 +169,14 @@
       const el = document.getElementById(id);
       if (el) el.innerHTML = T[id][lang];
     });
+    const bl = $('#btnLang');
+    if (bl) bl.textContent = lang === 'es' ? 'EN · English' : 'ES · Español';
     renderCum();
     renderOct();
     notifyResize();
   }
+  const btnLangEl = $('#btnLang');
+  if (btnLangEl) btnLangEl.addEventListener('click', () => toggleLang());
   function toggleLang() {
     lang = lang === 'es' ? 'en' : 'es';
     try { localStorage.setItem('informes_lang', lang); } catch (e) {}
