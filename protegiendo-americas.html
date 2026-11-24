@@ -277,7 +277,11 @@ const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '
 const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades', exemb: 'Exembajadores', colomb: 'Colombianos destacados en Washington', alvaro: 'Contactos Álvaro', oyg: 'O y G' };
 // Grupos: los 4 de la base + los agregados por el usuario (en orden de creación).
 function grupos() {
-  return PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] })).concat(gruposExtra);
+  const base = PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] }));
+  // Un grupo agregado a mano cuyo nombre ya existe en la base no se duplica
+  // (pasó con «Exembajadores» y «Colombianos destacados» al entrar en la base).
+  const nombresBase = new Set(base.map(g => norm(g.name)));
+  return base.concat(gruposExtra.filter(g => !nombresBase.has(norm(g.name))));
 }
 function nombreGrupo(k) {
   const g = grupos().find(x => x.key === k);
