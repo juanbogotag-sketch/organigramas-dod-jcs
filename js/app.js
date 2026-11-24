@@ -1,4 +1,6 @@
 window.__APP_FN = function () {
+  // Idioma global elegido en la página principal (24 nov 2026).
+  const UI_LANG = (() => { try { return localStorage.getItem('todo_lang') === 'en' ? 'en' : 'es'; } catch (e) { return 'es'; } })();
   let HH = 38, BH = 34, HM = {};
   const hh = n => HM[n.id] || NH;
   const FORCE_VIEW = !!window.__FORCE_VIEW;
@@ -352,7 +354,7 @@ window.__APP_FN = function () {
       ids.map(i => {
         const n = node(i), p = P[i];
         const showPfBtn = DEV == 'desktop' && (n.es || n.en || !VIEW);
-        return `<div class="card${S.sel == i ? ' sel' : ''}" data-id="${i}" style="left:${p.x}px;top:${p.y}px;height:${hh(n)}px;background:${cst(n).bg};color:${cst(n).fg}">${n.name ? `<b>${esc(n.title)}</b><span>${esc(n.name)}</span>` : `<b>${esc(n.title)}</b>`}${showPfBtn ? `<button class="pf" data-pf="${i}" title="${VIEW ? 'Ver perfil' : 'Editar / Ver perfil'}" aria-label="Ver perfil de ${esc(n.name || n.title)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></button>` : ''}${kids(i).length ? `<button class="tg" title="Plegar / desplegar dependientes">${n.c ? '+' + cnt(i) : '−'}</button>` : ''}</div>`;
+        return `<div class="card${S.sel == i ? ' sel' : ''}" data-id="${i}" style="left:${p.x}px;top:${p.y}px;height:${hh(n)}px;background:${cst(n).bg};color:${cst(n).fg}">${n.name ? `<b>${esc(n.title)}</b><span>${esc(n.name)}</span>` : `<b>${esc(n.title)}</b>`}${showPfBtn ? `<button class="pf" data-pf="${i}" title="${UI_LANG == 'en' ? (VIEW ? 'View profile' : 'Edit / View profile') : (VIEW ? 'Ver perfil' : 'Editar / Ver perfil')}" aria-label="${UI_LANG == 'en' ? 'View profile of' : 'Ver perfil de'} ${esc(n.name || n.title)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></button>` : ''}${kids(i).length ? `<button class="tg" title="${UI_LANG == 'en' ? 'Collapse / expand reports' : 'Plegar / desplegar dependientes'}">${n.c ? '+' + cnt(i) : '−'}</button>` : ''}</div>`;
       }).join('');
     W0 = SW;
     H0 = SH;
@@ -527,7 +529,7 @@ window.__APP_FN = function () {
 
   function viewPanel(n, p) {
     const t = tree(n.t), ps = n.p && node(n.p);
-    p.innerHTML = `<div id="phandle" title="Arrastra para cambiar el ancho del panel" role="separator" aria-orientation="vertical" aria-label="Cambiar el ancho del panel"></div><button id="pc" style="float:right">✕</button><div class="pwrap">${IS_OWNER ? `<div style="margin-bottom:8px"><button id="swEdit" style="width:100%">✏️ Editar este cargo / perfil</button></div>` : ''}<div class="row tabs" style="justify-content:center;margin:0 0 12px"><button data-l="es" class="on">Español</button><button data-l="en">English</button></div>${n.photo ? `<img id="pimg" class="pimg" src="${n.photo}" alt="Foto de ${esc(n.name || n.title)}" title="Ampliar foto" tabindex="0" role="button" aria-label="Ampliar foto" style="width:100%;max-width:250px;border-radius:8px;display:block;margin:0 auto 6px;clear:right"><div style="font-size:12px;color:var(--mu);margin:0 0 10px;text-align:center">Toca la foto para verla ampliada</div>` : ''}<h2 style="margin:0 0 2px;font-size:19px;text-align:center">${esc(n.name || n.title)}</h2>${n.name ? `<div style="text-align:center">${esc(n.title)}</div>` : ''}<div style="font-size:12px;color:var(--mu);margin:4px 0 12px;text-align:center">${esc(t.name)}${ps ? ' · dependiente de ' + esc(ps.title) : ''}</div><div id="pd"></div><div style="margin-top:16px;border-top:1px solid #88888855;padding-top:12px;text-align:center"><div style="font-size:12px;color:var(--mu);margin-bottom:8px">Descargar perfil en Word</div><div class="row" style="justify-content:center;margin:0"><button data-wd="es">Español</button><button data-wd="en">English</button></div><div id="wdmsg" style="margin-top:8px;font-size:13px"></div></div></div>`;
+    p.innerHTML = `<div id="phandle" title="Arrastra para cambiar el ancho del panel" role="separator" aria-orientation="vertical" aria-label="Cambiar el ancho del panel"></div><button id="pc" style="float:right">✕</button><div class="pwrap">${IS_OWNER ? `<div style="margin-bottom:8px"><button id="swEdit" style="width:100%">✏️ Editar este cargo / perfil</button></div>` : ''}<div class="row tabs" style="justify-content:center;margin:0 0 12px"><button data-l="es" class="on">Español</button><button data-l="en">English</button></div>${n.photo ? `<img id="pimg" class="pimg" src="${n.photo}" alt="Foto de ${esc(n.name || n.title)}" title="Ampliar foto" tabindex="0" role="button" aria-label="Ampliar foto" style="width:100%;max-width:250px;border-radius:8px;display:block;margin:0 auto 6px;clear:right"><div style="font-size:12px;color:var(--mu);margin:0 0 10px;text-align:center">${UI_LANG == 'en' ? 'Tap the photo to enlarge it' : 'Toca la foto para verla ampliada'}</div>` : ''}<h2 style="margin:0 0 2px;font-size:19px;text-align:center">${esc(n.name || n.title)}</h2>${n.name ? `<div style="text-align:center">${esc(n.title)}</div>` : ''}<div style="font-size:12px;color:var(--mu);margin:4px 0 12px;text-align:center">${esc(t.name)}${ps ? (UI_LANG == 'en' ? ' · reports to ' : ' · dependiente de ') + esc(ps.title) : ''}</div><div id="pd"></div><div style="margin-top:16px;border-top:1px solid #88888855;padding-top:12px;text-align:center"><div style="font-size:12px;color:var(--mu);margin-bottom:8px">${UI_LANG == 'en' ? 'Download profile in Word' : 'Descargar perfil en Word'}</div><div class="row" style="justify-content:center;margin:0"><button data-wd="es">Español</button><button data-wd="en">English</button></div><div id="wdmsg" style="margin-top:8px;font-size:13px"></div></div></div>`;
     bindResizeHandle(p);
     const swEdit = $('#swEdit');
     if (swEdit) swEdit.onclick = () => setMode('edit');
@@ -541,7 +543,8 @@ window.__APP_FN = function () {
         }
       };
     }
-    let L = 'es';
+    let L = UI_LANG;
+    p.querySelectorAll('[data-l]').forEach(x => x.classList.toggle('on', x.dataset.l === L));
     const show = () => {
       const tx = n[L];
       $('#pd').innerHTML = tx ? paras(tx).map(x => `<p>${esc(x)}</p>`).join('') : `<p>${L == 'es' ? 'Sin perfil en español.' : 'No English profile yet.'}</p>`;
@@ -741,7 +744,7 @@ window.__APP_FN = function () {
     if (pm) return pm[1].trim().replace(/[^\w\u00C0-\u00FF-]+/g, '');
     const dm = nm.match(/^([A-Z\u00C1\u00C9\u00CD\u00D3\u00DA\u00D1]{2,})\s*[\u2013\u2014-]/);
     if (dm) return dm[1];
-    const map = { dod: 'DOD', army: 'ARMY', af: 'USAF', navy: 'USN', state: 'DOS', wh: 'WH' };
+    const map = { dod: 'DOW', army: 'ARMY', af: 'USAF', navy: 'USN', state: 'DOS', wh: 'WH' };
     if (map[t.id]) return map[t.id];
     const stop = new Set(['of', 'the', 'and', 'for', 'de', 'la', 'el', 'los', 'las', 'y']);
     const ws = nm.replace(/[^A-Za-z\u00C0-\u00FF\s]/g, ' ').split(/\s+/).filter(Boolean).filter(w => !stop.has(w.toLowerCase()));
@@ -1696,7 +1699,7 @@ window.__APP_FN = function () {
       if (v.length < 2) { hide(); return; }
       const hits = S.nodes.filter(n => (n.name && norm(n.name).includes(v)) || (n.title && norm(n.title).includes(v))).slice(0, 12);
       if (!hits.length) {
-        res.innerHTML = '<div class="qr"><small>Sin resultados para \u201c' + esc(q.value.trim()) + '\u201d</small></div>';
+        res.innerHTML = '<div class="qr"><small>' + (UI_LANG == 'en' ? 'No results for \u201c' : 'Sin resultados para \u201c') + esc(q.value.trim()) + '\u201d</small></div>';
         res.hidden = false;
         return;
       }
