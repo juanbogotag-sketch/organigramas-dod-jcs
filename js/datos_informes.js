@@ -17,6 +17,10 @@ window.FS_OCT = {
     { n: "19", l: "países miembros de la coalición A3C" },
     { n: "4,9 t", l: "de cocaína incautadas en la operación aeroportuaria JOTAM" }
   ],
+  kpisFS: [
+    { n: "60", l: "operaciones reportadas en el mes" },
+    { n: "44", l: "operaciones contra organizaciones criminales (DTO/TCO)" }
+  ],
   orgChart: [
     { org: "Otras redes criminales y fugitivos internacionales", n: 12 },
     { org: "Disidencias de las FARC", n: 11 },
@@ -158,6 +162,10 @@ window.FS_OCT_EN = {
     { n: "44", l: "operations against criminal organizations (DTOs/TCOs)" },
     { n: "19", l: "member nations of the A3C coalition" },
     { n: "4.9 t", l: "of cocaine seized in airport operation JOTAM" }
+  ],
+  kpisFS: [
+    { n: "60", l: "operations reported in the month" },
+    { n: "44", l: "operations against criminal organizations (DTOs/TCOs)" }
   ],
   orgChart: [
     { org: "Other criminal networks and international fugitives", n: 12 },
