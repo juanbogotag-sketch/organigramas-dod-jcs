@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=39">
+  <link rel="stylesheet" href="css/repositorio.css?v=40">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -69,6 +69,11 @@
           <span class="tlab">Perfiles</span>
           <span class="tsub">Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada</span>
         </button>
+        <button id="tileInformes" type="button" class="tile tile-main">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l20 7v18c0 13-8.5 22-20 27C20.5 53 12 44 12 31V13z"/><path d="M22 32l7 7 13-14"/></svg>
+          <span class="tlab">Informes en seguridad, defensa y drogas</span>
+          <span class="tsub">Informes y análisis</span>
+        </button>
         <button id="tileEventos" type="button" class="tile">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="14" width="44" height="40" rx="6"/><path d="M10 26h44M22 8v12M42 8v12"/><path d="M20 36h8M30 36h8M40 36h4M20 44h8M30 44h8"/></svg>
           <span class="tlab">Eventos</span>
@@ -111,6 +116,14 @@
       </div>
       <div id="publicacionesView" class="panelView" hidden>
         <iframe id="framePublicaciones" title="Publicaciones" src="publicaciones.html"></iframe>
+      </div>
+      <div id="informesView" class="panelView" hidden>
+        <div class="panelhead">
+          <h2>Informes en seguridad, defensa y drogas</h2>
+          <p class="emb">Embajada de Colombia en Estados Unidos</p>
+          <p class="sub">Seguridad · Defensa · Drogas</p>
+        </div>
+        <p class="pcount">Aquí se reunirán los informes en seguridad, defensa y drogas. Todavía no hay informes cargados.</p>
       </div>
       <div id="organigramaView" class="panelView" hidden>
         <div class="panelhead">
@@ -322,7 +335,7 @@
   <script src="js/datos_ct.js?v=3"></script>
   <script src="js/datos_foro.js?v=7"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=44"></script>
+  <script src="js/repositorio.js?v=45"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
