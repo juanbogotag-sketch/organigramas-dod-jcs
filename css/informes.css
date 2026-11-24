@@ -174,3 +174,5 @@
 .dlpop .dlitem { display: block; padding: 10px 14px; color: var(--navy); text-decoration: none; font-weight: 600; font-size: 13.5px; }
 .dlpop a.dlitem:hover { background: var(--light2); }
 .dlpop .dlitem.off { color: #8a94a6; font-weight: 500; cursor: default; }
+.inftab[disabled] { opacity: .45; cursor: not-allowed; filter: grayscale(.5); }
+.inftab[disabled]:hover { transform: none; box-shadow: none; }
