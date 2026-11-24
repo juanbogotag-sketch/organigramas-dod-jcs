@@ -152,3 +152,8 @@
 .acc-a3c .accbtn .accb { background: #e3e8ef; color: var(--navy2); }
 .acc-a3c .accbody { background: #fdfdfe; }
 .acc-a3c .a3c { background: #fff; border: 1px solid #e3e8ef; }
+
+/* Cumulative Indicators deshabilitado temporalmente (24 nov 2026,
+   orden de Juan): se verificarán los datos antes de reactivarlo. */
+.inftab[disabled] { opacity: .45; cursor: not-allowed; filter: grayscale(.5); }
+.inftab[disabled]:hover { transform: none; box-shadow: none; }
