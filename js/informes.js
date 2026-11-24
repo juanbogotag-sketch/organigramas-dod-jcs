@@ -11,6 +11,7 @@
   let lang = 'es';
   try { lang = localStorage.getItem('informes_lang') === 'en' ? 'en' : 'es'; } catch (e) {}
   const L = () => lang === 'en' ? window.FS_OCT_EN : window.FS_OCT;
+  const LS = () => lang === 'en' ? window.FS_SEP_EN : window.FS_SEP;
   const T = {
     pgTitle: { es: 'Informes en seguridad, defensa y drogas', en: 'Reports on Security, Defense and Drugs' },
     subtitle: { es: 'Seguridad · Defensa · Drogas', en: 'Security · Defense · Drugs' },
@@ -36,7 +37,7 @@
     mSep: { es: 'Septiembre', en: 'September' },
     mOct: { es: 'Octubre', en: 'October' },
     mNov: { es: 'Noviembre', en: 'November' },
-    mSepS: { es: 'Fact sheet pendiente de carga', en: 'Fact sheet pending upload' },
+    mSepS: { es: 'Fact sheet disponible · V: 10.8.26', en: 'Fact sheet available · V: 10.8.26' },
     mOctS: { es: 'Fact sheet disponible · V: 11.2.26', en: 'Fact sheet available · V: 11.2.26' },
     mNovS: { es: 'Fact sheet pendiente de carga', en: 'Fact sheet pending upload' },
     sepH: { es: 'Septiembre de 2026', en: 'September 2026' },
@@ -58,6 +59,10 @@
     cierre: {
       es: 'Síntesis en español del October 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, enlazado arriba). Las fotografías son las del propio documento.',
       en: 'English synthesis of the Embassy of Colombia\u2019s October 2026 Fact Sheet (original document linked above). The photographs are from the document itself.'
+    },
+    cierreSep: {
+      es: 'Síntesis en español del September 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, enlazado arriba).',
+      en: 'English synthesis of the Embassy of Colombia\u2019s September 2026 Fact Sheet (original document linked above).'
     },
     bars2: {
       es: [
@@ -162,6 +167,38 @@
     bindAccordions(host);
   }
 
+
+  // ---------- Vista de septiembre (no toca octubre) ----------
+  function renderSep() {
+    const host = $('#monthSep');
+    const D = LS(), ES = window.FS_SEP;
+    if (!host || !D || !ES) return;
+    let h = '';
+    h += '<div class="fshero"><h2>' + esc(D.titulo) + '</h2>' +
+      '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
+      '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
+      '<span><b>' + esc(D.version) + '</b></span>' +
+      '<a href="' + esc(ES.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
+    h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
+
+    const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
+      D.a3c.items.map(it => '<div class="a3c"><span class="k">' + esc(it.k) + '</span><span class="v">' + esc(it.v) + '</span></div>').join('') + '</div>';
+    h += '<p class="accsec">' + TXT.a3cSec[lang] + '</p>' +
+      accordion('Americas Counter Cartel Coalition (A3C)', TXT.a3cBadge[lang], a3cInner, true, 'acc-a3c');
+
+    let lastSec = '';
+    D.grupos.forEach((g, gi) => {
+      if (g.seccion !== lastSec) { h += '<p class="accsec">' + esc(g.seccion) + '</p>'; lastSec = g.seccion; }
+      const inner = (g.nota ? '<p class="accnote">' + esc(g.nota) + '</p>' : '') +
+        '<div class="opgrid">' + g.ops.map((op, oi) => opCard(op, ES.grupos[gi].ops[oi].ph)).join('') + '</div>';
+      h += accordion(g.titulo, g.badge, inner, false);
+    });
+
+    h += '<p class="accnote" style="margin-top:16px">' + TXT.cierreSep[lang] + '</p>';
+    host.innerHTML = h;
+    bindAccordions(host);
+  }
+
   // ---------- Aplicar idioma a todo ----------
   function applyLang() {
     document.documentElement.lang = lang;
@@ -169,19 +206,19 @@
       const el = document.getElementById(id);
       if (el) el.innerHTML = T[id][lang];
     });
-    const bl = $('#btnLang');
-    if (bl) bl.textContent = lang === 'es' ? 'EN · English' : 'ES · Español';
+    const btn = $('#btnLang');
+    if (btn) btn.textContent = lang === 'es' ? 'EN · English' : 'ES · Español';
     renderCum();
     renderOct();
+    renderSep();
     notifyResize();
   }
-  const btnLangEl = $('#btnLang');
-  if (btnLangEl) btnLangEl.addEventListener('click', () => toggleLang());
-  function toggleLang() {
+  const btnLang = $('#btnLang');
+  if (btnLang) btnLang.addEventListener('click', () => {
     lang = lang === 'es' ? 'en' : 'es';
     try { localStorage.setItem('informes_lang', lang); } catch (e) {}
     applyLang();
-  }
+  });
 
   // ---------- Bloques principales: desplegar / plegar al repetir clic ----------
   const tabCum = $('#tabCum'), tabFs = $('#tabFs');
