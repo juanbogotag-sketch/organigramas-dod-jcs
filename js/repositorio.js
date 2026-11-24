@@ -1029,7 +1029,8 @@
   // La matriz del evento se arma con los perfiles de la carpeta (los mismos
   // que «Generar matriz en Excel») más las personas externas que se agregan
   // aquí. La descarga trae UNA sola pestaña, «Matriz» (seleccionados +
-  // externos, con las mismas 10 columnas, QR incluido). El QR se genera en
+  // externos, con las 10 columnas de la matriz, el QR y la columna «Grupo»
+  // de los externos aislados por matriz). El QR se genera en
   // cada descarga a partir del nombre del invitado (ev|<apellido>-<nombre>);
   // no se pre-genera ningún QR para los perfiles del Repositorio. La
   // segunda pestaña, la lista de asistencia del evento, se hará después,
@@ -1045,7 +1046,7 @@
   else { try { externals = JSON.parse(localStorage.getItem('torio_externos_v1') || '[]'); } catch (e) { externals = []; } }
   externals = (externals || []).filter(x => x && x.fn && x.ln);
   const saveExternals = () => {
-    if (curEvent) { curEvent.externals = externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '' })); saveEvents(); }
+    if (curEvent) { curEvent.externals = externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '', grupo: x.grupo || '' })); saveEvents(); }
     else { try { localStorage.setItem('torio_externos_v1', JSON.stringify(externals)); } catch (e) {} }
   };
 
@@ -1054,7 +1055,7 @@
   // perfiles del Repositorio (primero en la lista del evento, si no desde
   // el nombre: ev|<apellido>-<nombre>).
   function externalRow(x) {
-    return ['', x.fn, x.ln, x.title || '', x.office || '', x.org || '', x.type || '', x.email || '', x.other || '', qrUrl({ key: 'ex|ext', fn: x.fn, ln: x.ln }, x.email)];
+    return ['', x.fn, x.ln, x.title || '', x.office || '', x.org || '', x.type || '', x.email || '', x.other || '', qrUrl({ key: 'ex|ext', fn: x.fn, ln: x.ln }, x.email), x.grupo || ''];
   }
 
   function paintExternals() {
@@ -1063,12 +1064,38 @@
       list.innerHTML = '<p class="cempty">Todavía no hay personas externas. Agrégalas con el formulario de arriba.</p>';
       return;
     }
-    list.innerHTML = externals.map((x, i) =>
+    const itemHtml = (x, i) =>
       '<div class="citem"><div class="cphx">' + esc(initials(x.fn + ' ' + x.ln)) + '</div>' +
       '<div class="cinfo"><b>' + esc(x.fn + ' ' + x.ln) + '</b><small>' + esc([x.title, x.org].filter(Boolean).join(' · ') || 'Persona externa') + '</small></div>' +
-      '<button type="button" class="crm" data-i="' + i + '" aria-label="Quitar persona externa">✕</button></div>').join('');
-    list.querySelectorAll('.crm').forEach(b => b.addEventListener('click', () => {
+      '<button type="button" class="crm" data-i="' + i + '" aria-label="Quitar persona externa">✕</button></div>';
+    // Grupos (24 nov 2026): las matrices importadas con la opción de aislar
+    // se pintan bajo su propio encabezado, separadas del resto; el botón del
+    // encabezado quita el grupo entero (dos toques, como «Eliminar evento»).
+    // Sin ningún grupo, la lista se pinta plana, como siempre.
+    const groups = [];
+    externals.forEach((x, i) => {
+      const g = x.grupo || '';
+      let slot = null;
+      for (const s of groups) if (s.name === g) { slot = s; break; }
+      if (!slot) { slot = { name: g, idx: [] }; groups.push(slot); }
+      slot.idx.push(i);
+    });
+    const anyGroup = groups.some(s => s.name);
+    list.innerHTML = groups.map(s => {
+      const head = anyGroup
+        ? '<div class="evghead"><b>' + (s.name ? '📁 Grupo: ' + esc(s.name) : 'Sin grupo') + '</b><small>' + s.idx.length + ' persona(s)</small>' +
+          (s.name ? '<button type="button" class="crm" data-g="' + esc(s.name) + '" aria-label="Quitar grupo">✕</button>' : '') + '</div>'
+        : '';
+      return head + s.idx.map(i => itemHtml(externals[i], i)).join('');
+    }).join('');
+    list.querySelectorAll('.crm[data-i]').forEach(b => b.addEventListener('click', () => {
       externals.splice(+b.dataset.i, 1);
+      saveExternals(); paintWorkspace();
+    }));
+    list.querySelectorAll('.crm[data-g]').forEach(b => b.addEventListener('click', () => {
+      if (!b.dataset.armed) { b.dataset.armed = '1'; b.classList.add('armed'); b.textContent = '¿Quitar el grupo?'; return; }
+      const g = b.dataset.g;
+      externals = externals.filter(x => (x.grupo || '') !== g);
       saveExternals(); paintWorkspace();
     }));
   }
@@ -1151,7 +1178,7 @@
     const f = readEvFields();
     if (!f.name) { $('#evMsg').textContent = 'Ponle un nombre al evento antes de guardarlo.'; $('#evName').focus(); return; }
     if (!curEvent) {
-      curEvent = { id: newEvId(), name: f.name, date: f.date, place: f.place, guests: cart.map(x => ({ key: x.key, lang: x.lang })), externals: externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '' })) };
+      curEvent = { id: newEvId(), name: f.name, date: f.date, place: f.place, guests: cart.map(x => ({ key: x.key, lang: x.lang })), externals: externals.map(x => ({ fn: x.fn, ln: x.ln, title: x.title || '', office: x.office || '', org: x.org || '', type: x.type || '', email: x.email || '', other: x.other || '', grupo: x.grupo || '' })) };
       events.push(curEvent);
     } else {
       curEvent.name = f.name; curEvent.date = f.date; curEvent.place = f.place;
@@ -1286,6 +1313,12 @@
     if (!rows.length) { $('#exFileMsg').textContent = 'El archivo no trae filas con datos.'; return; }
     const heads = headsOf(rows[0]);
     const data = heads ? rows.slice(1) : rows;
+    // Opción «Aislar esta matriz en un grupo nuevo» (24 nov 2026, orden de
+    // Juan): si está marcada, TODAS las personas de esta matriz quedan con
+    // el mismo `grupo` (el nombre escrito o, si va vacío, el del archivo) y
+    // la lista de externos las pinta aisladas bajo su propio encabezado.
+    const grpOn = !!($('#exGroupNew') && $('#exGroupNew').checked);
+    const grpName = grpOn ? (($('#exGroupName').value || '').trim() || String(fname || 'Matriz').replace(/\.[^.]+$/, '')) : '';
     let added = 0, dup = 0;
     data.forEach(function (cells) {
       const x = rowToExternal(cells, heads);
@@ -1293,14 +1326,20 @@
       const key = (x.email ? x.email.toLowerCase() : (x.fn + ' ' + x.ln).toLowerCase());
       const exists = externals.some(function (e) { return (e.email ? e.email.toLowerCase() : (e.fn + ' ' + e.ln).toLowerCase()) === key; });
       if (exists) { dup++; return; }
+      if (grpName) x.grupo = grpName;
       externals.push(x); added++;
     });
     saveExternals(); paintWorkspace();
     $('#exFileMsg').textContent = added
-      ? 'Archivo «' + fname + '»: ' + added + ' persona(s) externa(s) agregada(s)' + (dup ? ' (' + dup + ' ya estaban en la lista).' : '.')
+      ? 'Archivo «' + fname + '»: ' + added + ' persona(s) externa(s) agregada(s)' + (grpName ? ' al grupo «' + grpName + '»' : '') + (dup ? ' (' + dup + ' ya estaban en la lista).' : '.')
       : 'El archivo no trajo personas nuevas (revisa que tenga Nombre y Apellido).';
   }
   $('#exFileBtn').addEventListener('click', () => $('#exFile').click());
+  $('#exGroupNew').addEventListener('change', () => {
+    const on = $('#exGroupNew').checked;
+    $('#exGroupName').disabled = !on;
+    if (on) $('#exGroupName').focus();
+  });
   $('#exFile').addEventListener('change', async (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
@@ -1328,11 +1367,11 @@
     if (!name) { $('#evMsg').textContent = 'Ponle un nombre al evento antes de descargar la lista.'; $('#evName').focus(); return; }
     const seen = new Set();
     const items = cart.map(x => PEOPLE.find(q => q.key === x.key)).filter(p => p && !seen.has(p.key) && seen.add(p.key));
-    const rows = items.map(matrixRow).concat(externals.map(externalRow));
+    const rows = items.map(p => matrixRow(p).concat('')).concat(externals.map(externalRow));
     if (!rows.length) { $('#evMsg').textContent = 'Selecciona al menos un perfil de la carpeta o agrega una persona externa.'; return; }
     $('#evMsg').textContent = 'Generando la matriz del evento…';
     try {
-      const blob = await buildXlsx(rows);
+      const blob = await buildXlsx(rows, undefined, undefined, ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Teléfono', 'QR', 'Grupo']);
       const now = new Date(), p2 = n => String(n).padStart(2, '0');
       const slug = (slugTxt(name) || 'evento').replace(/-/g, '_');
       offerFile(blob, 'Matriz_Evento_' + slug + '_' + now.getFullYear() + p2(now.getMonth() + 1) + p2(now.getDate()) + '.xlsx', $('#evDlA'));
@@ -1604,11 +1643,11 @@
     return [s.prefix, s.first, s.last, p.title_en || p.title || '', office, org, type, email, other.join(' · '), qrUrl(p, email)];
   }
 
-  async function buildXlsx(rows, outType, sheet2) {
+  async function buildXlsx(rows, outType, sheet2, headX) {
     const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const colL = i => String.fromCharCode(65 + i);
     const rowXml = (cells, r) => '<row r="' + r + '">' + cells.map((c, i) => '<c r="' + colL(i) + r + '" t="inlineStr"><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>').join('') + '</row>';
-    const head = ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Teléfono', 'QR'];
+    const head = headX || ['Prefix', 'Name', 'Last Name', 'Job Title', 'Office', 'Organization', 'Organization Type', 'E-mail', 'Teléfono', 'QR'];
     const sheetXml = (h, rs) => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
       rowXml(h, 1) + rs.map((r, i) => rowXml(r, i + 2)).join('') + '</sheetData></worksheet>';
