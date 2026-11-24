@@ -1752,12 +1752,12 @@
   })();
   // Armar los iframes al cargar (aunque el panel esté oculto) para que el
   // contenido esté listo al desplegar; la altura se mide al abrir.
-  ['frameEventos', 'framePublicaciones', 'frameOrganigrama'].forEach(id => {
+  ['frameEventos', 'framePublicaciones', 'frameOrganigrama', 'frameInformes'].forEach(id => {
     const fr = document.getElementById(id);
     if (fr) setupPanelFrame(fr);
   });
   window.addEventListener('resize', () => {
-    const open = ['eventos', 'publicaciones', 'organigrama'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden);
+    const open = ['eventos', 'publicaciones', 'organigrama', 'informes'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden);
     if (open) {
       const fr = document.getElementById(PANEL_VIEWS[open]).querySelector('iframe');
       if (fr) sizeFrame(fr);
