@@ -10,7 +10,7 @@ window.FS_OCT = {
   subtitulo: "Avances en la interdicción de drogas ilícitas y el desmantelamiento de organizaciones criminales",
   periodo: "1 al 31 de octubre de 2026",
   version: "V: 11.2.26",
-  pdf: "informes/October_Fact_Sheet_v.02.11.26.pdf",
+  pdf: "informes/October_Fact_Sheet_ES_v.02.11.26.pdf",
   kpis: [
     { n: "60", l: "operaciones reportadas en el mes" },
     { n: "44", l: "operaciones contra organizaciones criminales (DTO/TCO)" },
@@ -157,6 +157,7 @@ window.FS_OCT_EN = {
   subtitulo: "Progress in Interdicting Illicit Drugs and Dismantling Criminal Organizations",
   periodo: "October 1–31, 2026",
   version: "V: 11.2.26",
+  pdf: "informes/October_Fact_Sheet_v.02.11.26.pdf",
   kpis: [
     { n: "60", l: "operations reported in the month" },
     { n: "44", l: "operations against criminal organizations (DTOs/TCOs)" },
@@ -205,7 +206,7 @@ window.FS_OCT_EN = {
       titulo: "Ports, Checkpoints and Inland Interdiction", badge: "5 operations",
       ops: [
         { f: "Oct 1", l: "Meta", s: "Army", r: "Vehicle intercepted: <b>1.2 tons of cocaine</b> seized; 2 people arrested in flagrante delicto, linked to FARC dissidents." },
-        { f: "Oct 4", l: "Valle del Cauca", s: "Police", r: "More than <b>1.4 tons of cocaine seized</b>; AKA “El Transportador” arrested, linked to the Clan del Golfo." },
+        { f: "Oct 4", l: "Valle del Cauca", s: "Police", r: "More than <b>1.4 tons of cocaine seized</b>; a.k.a. “El Transportador” arrested, linked to the Clan del Golfo." },
         { f: "Oct 8", l: "Vaupés", s: "Army", r: "Seized: more than <b>1.0 ton of marijuana</b>, 2 speedboats and an outboard motor; 5 alleged members of a criminal group captured." },
         { f: "Oct 21", l: "Bogotá", s: "Police · Attorney General's Office", r: "Vehicle fitted with a crane intercepted: more than <b>700 kg of marijuana</b> seized; 1 woman arrested." },
         { f: "Oct 22", l: "Chocó", s: "Navy · Police", r: "Coastal storage and dispatch site dismantled: <b>1.6 tons of cocaine hydrochloride</b> seized. Estimated impact: <b>US$76 million</b>; 4.1 million doses kept off illegal markets." }
@@ -228,11 +229,11 @@ window.FS_OCT_EN = {
         { f: "Oct 4", l: "Norte de Santander", s: "Army · Air Force · Police · Attorney General's Office", r: "ELN stockpile destroyed: <b>1.0 ton of explosives</b> and 100 homemade grenades." },
         { f: "Oct 6", l: "Cauca and Norte de Santander", s: "Police", r: "Vehicle intercepted heading toward Cali: approximately <b>400 kg of C4 explosives</b> seized; 100 explosive devices destroyed in a controlled detonation." },
         { f: "Oct 7", l: "Chocó", s: "Navy", r: "Alleged ELN member arrested: 9 improvised explosive devices seized, reportedly intended for attacks against civilians and security forces." },
-        { f: "Oct 7", l: "Valle del Cauca", s: "Navy · Police", r: "AKA <b>“Mi Sangre”</b>, alleged senior leader, captured; accused of extortion, terrorism and illegal mining." },
-        { f: "Oct 14", l: "Atlántico", s: "Police", r: "AKA <b>“Kleiver”</b> captured; reportedly linked to ELN explosive devices and banner deployments." },
-        { f: "Oct 21", l: "Norte de Santander", s: "Army · Police", r: "AKA <b>“Resorte”</b>, alleged finance chief, killed in combat; reportedly responsible for extortion and kidnapping in the Cúcuta metropolitan area." },
+        { f: "Oct 7", l: "Valle del Cauca", s: "Navy · Police", r: "a.k.a. <b>“Mi Sangre”</b>, alleged senior leader, captured; accused of extortion, terrorism and illegal mining." },
+        { f: "Oct 14", l: "Atlántico", s: "Police", r: "a.k.a. <b>“Kleiver”</b> captured; reportedly linked to ELN explosive devices and banner deployments." },
+        { f: "Oct 21", l: "Norte de Santander", s: "Army · Police", r: "a.k.a. <b>“Resorte”</b>, alleged finance chief, killed in combat; reportedly responsible for extortion and kidnapping in the Cúcuta metropolitan area." },
         { f: "Oct 22", l: "Vichada", s: "Army · Navy · Air Force · Tax and Customs Authority (DIAN)", r: "Strategic mineral shipment seized: <b>10.0 tons of coltan</b>, allegedly intended for illegal export to Europe and Asia. Estimated impact: more than COP 16,000 million." },
-        { f: "Oct 22", l: "Cesar", s: "Police", r: "Alleged ELN member AKA <b>“Liro”</b> arrested in flagrante delicto; rolls of detonating cord and explosive bars seized." },
+        { f: "Oct 22", l: "Cesar", s: "Police", r: "Alleged ELN member a.k.a. <b>“Liro”</b> arrested in flagrante delicto; rolls of detonating cord and explosive bars seized." },
         { f: "Oct 27", l: "Cauca", s: "Security forces", r: "<b>10 alleged ELN members</b> neutralized in combat." }
       ]
     },
@@ -241,15 +242,15 @@ window.FS_OCT_EN = {
       titulo: "FARC Dissidents", badge: "",
       nota: "Treated as a DTO/TCO: drug trafficking under defined command, combined with extortion, kidnapping, homicide and illegal mining. Umbrella category for dissident groups of the former FARC.",
       ops: [
-        { f: "Oct 5", l: "Antioquia and Huila", s: "Army · Air Force · Police · Attorney General's Office", r: "AKA <b>“Lobo”</b>, alleged senior leader, and AKA <b>“Zamanta”</b> arrested; extortion, homicide and kidnapping networks disrupted." },
-        { f: "Oct 6", l: "Caquetá", s: "Army · Air Force · Police", r: "AKA <b>“La Morocha”</b>, alleged political leader, captured; 2 firearms seized. In the same action, 2 members surrendered with 3 long weapons and a drone." },
+        { f: "Oct 5", l: "Antioquia and Huila", s: "Army · Air Force · Police · Attorney General's Office", r: "a.k.a. <b>“Lobo”</b>, alleged senior leader, and a.k.a. <b>“Zamanta”</b> arrested; extortion, homicide and kidnapping networks disrupted." },
+        { f: "Oct 6", l: "Caquetá", s: "Army · Air Force · Police", r: "a.k.a. <b>“La Morocha”</b>, alleged political leader, captured; 2 firearms seized. In the same action, 2 members surrendered with 3 long weapons and a drone." },
         { f: "Oct 6", l: "Tolima and Córdoba", s: "Army · Police", r: "Illegal mining operations funding the group destroyed: 6 excavators, 25 dredges, 34 water pumps and other equipment, valued at more than COP 3,198 million." },
-        { f: "Oct 15", l: "Valle del Cauca", s: "Army · Air Force · Police · Attorney General's Office", r: "<b>9 alleged members arrested</b>, including AKA “Majiño” and AKA “Bastidas” (alleged leaders)." },
-        { f: "Oct 17", l: "Meta", s: "Army", r: "1 alleged member neutralized and <b>3 captured</b>, including AKA “Junior Rojas” (alleged finance leader); weapons and grenades seized." },
-        { f: "Oct 26", l: "Cesar", s: "Army", r: "AKA <b>“Muco”</b>, alleged leader, captured under a judicial warrant." },
-        { f: "Oct 26", l: "Bolívar", s: "Army · Police", r: "<b>3 alleged members captured</b> in Santa Rosa del Sur; 1 minor recovered; war materiel seized. AKA “Brayan Veneco”, alleged hitman leader, captured under a judicial warrant at a medical center." },
-        { f: "Oct 27", l: "Cauca", s: "Ministry of Defense · Police · Attorney General's Office", r: "2 alleged members, AKA <b>“May”</b> and AKA <b>“Joselito”</b>, captured; linked to the December 2025 killing of a police officer." },
-        { f: "Oct 29", l: "Valle del Cauca", s: "Army · Air Force", r: "<b>5 alleged members captured</b> in flagrante delicto, including AKA “Brayan” (armed squad leader) and AKA “Sebastián” (second-in-command); 7 rifles, 2 pistols, ammunition and communications equipment seized." }
+        { f: "Oct 15", l: "Valle del Cauca", s: "Army · Air Force · Police · Attorney General's Office", r: "<b>9 alleged members arrested</b>, including a.k.a. “Majiño” and a.k.a. “Bastidas” (alleged leaders)." },
+        { f: "Oct 17", l: "Meta", s: "Army", r: "1 alleged member neutralized and <b>3 captured</b>, including a.k.a. “Junior Rojas” (alleged finance leader); weapons and grenades seized." },
+        { f: "Oct 26", l: "Cesar", s: "Army", r: "a.k.a. <b>“Muco”</b>, alleged leader, captured under a judicial warrant." },
+        { f: "Oct 26", l: "Bolívar", s: "Army · Police", r: "<b>3 alleged members captured</b> in Santa Rosa del Sur; 1 minor recovered; war materiel seized. A.k.a. “Brayan Veneco”, alleged hitman leader, captured under a judicial warrant at a medical center." },
+        { f: "Oct 27", l: "Cauca", s: "Ministry of Defense · Police · Attorney General's Office", r: "2 alleged members, a.k.a. <b>“May”</b> and a.k.a. <b>“Joselito”</b>, captured; linked to the December 2025 killing of a police officer." },
+        { f: "Oct 29", l: "Valle del Cauca", s: "Army · Air Force", r: "<b>5 alleged members captured</b> in flagrante delicto, including a.k.a. “Brayan” (armed squad leader) and a.k.a. “Sebastián” (second-in-command); 7 rifles, 2 pistols, ammunition and communications equipment seized." }
       ]
     },
     {
@@ -258,13 +259,13 @@ window.FS_OCT_EN = {
       nota: "Treated as a DTO/TCO: drug trafficking under a defined command structure, combined with extortion and contract killings.",
       ops: [
         { f: "Oct 1", l: "Magdalena", s: "Police · Attorney General's Office", r: "<b>10 alleged members</b> of the Clan del Golfo and the ACSN arrested; 7 firearms, 2 explosive devices and ammunition seized." },
-        { f: "Oct 4", l: "Antioquia", s: "Army · Police · Attorney General's Office · DEA", r: "AKA <b>“El Paisa”</b>, alleged international narcotics coordinator, captured; wanted for extradition by a U.S. federal court." },
-        { f: "Oct 7", l: "Cesar", s: "Army", r: "AKA <b>“Yordan”</b>, alleged squad commander, and AKA <b>“Samir”</b> captured following combat." },
+        { f: "Oct 4", l: "Antioquia", s: "Army · Police · Attorney General's Office · DEA", r: "a.k.a. <b>“El Paisa”</b>, alleged international narcotics coordinator, captured; wanted for extradition by a U.S. federal court." },
+        { f: "Oct 7", l: "Cesar", s: "Army", r: "a.k.a. <b>“Yordan”</b>, alleged squad commander, and a.k.a. <b>“Samir”</b> captured following combat." },
         { f: "Oct 8", l: "Chocó", s: "Army", r: "1 alleged member killed in combat and <b>3 captured</b>." },
         { f: "Oct 9", l: "Antioquia", s: "Army", r: "<b>2 alleged members</b> killed in combat." },
         { f: "Oct 14", l: "Cesar", s: "Police", r: "<b>2 alleged members arrested</b>; allegedly involved in extortion of local landowners." },
-        { f: "Oct 21", l: "Magdalena", s: "Police", r: "<b>11 alleged members</b> of extortion and contract-killing networks arrested in flagrante delicto, including AKA “Alvejanis” and AKA “El Bordón”; 4 firearms, 100 cartridges and communications equipment seized." },
-        { f: "Oct 31", l: "Magdalena", s: "Police", r: "AKA <b>“El Burro”</b>, alleged chief of hitmen in the department, captured after a confrontation; accused of homicides and extortion in 8 municipalities. 1 pistol (9 mm) and 21 cartridges seized." }
+        { f: "Oct 21", l: "Magdalena", s: "Police", r: "<b>11 alleged members</b> of extortion and contract-killing networks arrested in flagrante delicto, including a.k.a. “Alvejanis” and a.k.a. “El Bordón”; 4 firearms, 100 cartridges and communications equipment seized." },
+        { f: "Oct 31", l: "Magdalena", s: "Police", r: "a.k.a. <b>“El Burro”</b>, alleged chief of hitmen in the department, captured after a confrontation; accused of homicides and extortion in 8 municipalities. 1 pistol (9 mm) and 21 cartridges seized." }
       ]
     },
     {
@@ -272,8 +273,8 @@ window.FS_OCT_EN = {
       titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "",
       nota: "Treated as a DTO: defined command structure with drug trafficking as its central verifiable activity.",
       ops: [
-        { f: "Oct 6", l: "Cesar and Magdalena", s: "Army · Police", r: "AKA <b>“Messi”</b>, alleged leader, captured with 3 alleged accomplices and 2 handguns; AKA <b>“Mongolo”</b>, alleged leader, arrested with a revolver." },
-        { f: "Oct 22", l: "Sierra Nevada de Santa Marta", s: "Police", r: "AKA <b>“Kevin Masacre”</b>, alleged drug trafficking leader and successor of AKA “Bendito Menor”, captured; 1 fragmentation grenade, 120 .38-caliber cartridges, 1 pickup truck and 3 mobile devices seized." }
+        { f: "Oct 6", l: "Cesar and Magdalena", s: "Army · Police", r: "a.k.a. <b>“Messi”</b>, alleged leader, captured with 3 alleged accomplices and 2 handguns; a.k.a. <b>“Mongolo”</b>, alleged leader, arrested with a revolver." },
+        { f: "Oct 22", l: "Sierra Nevada de Santa Marta", s: "Police", r: "a.k.a. <b>“Kevin Masacre”</b>, alleged drug trafficking leader and successor of a.k.a. “Bendito Menor”, captured; 1 fragmentation grenade, 120 .38-caliber cartridges, 1 pickup truck and 3 mobile devices seized." }
       ]
     },
     {
@@ -281,16 +282,16 @@ window.FS_OCT_EN = {
       titulo: "Other Criminal Networks and International Fugitives", badge: "",
       nota: "Smaller networks, international fugitives and organizations without enough volume for their own section.",
       ops: [
-        { f: "Oct 1", l: "Antioquia", s: "Police", r: "AKA <b>“Ash”</b>, Australian-Iranian national wanted under an INTERPOL Red Notice for alleged drug trafficking and money laundering, detained; reportedly coordinated operations from Colombia." },
-        { f: "Oct 4", l: "Tolima, Atlántico and La Guajira", s: "Army · Police · Attorney General's Office · Migration authorities", r: "AKA <b>“Camilo”</b> (also AKA “Salchichón”) and his second-in-command captured; military-grade weapons seized; 23 foreign nationals expelled." },
-        { f: "Oct 5", l: "Santander, Antioquia and Quindío", s: "Police", r: "AKA <b>“Orlanda”</b>, alleged member of Tren de Aragua, captured. Also: 1 suspect in alleged child abuse cases arrested; 2 people detained; a revolver and narcotics seized." },
+        { f: "Oct 1", l: "Antioquia", s: "Police", r: "a.k.a. <b>“Ash”</b>, Australian-Iranian national wanted under an INTERPOL Red Notice for alleged drug trafficking and money laundering, detained; reportedly coordinated operations from Colombia." },
+        { f: "Oct 4", l: "Tolima, Atlántico and La Guajira", s: "Army · Police · Attorney General's Office · Migration authorities", r: "a.k.a. <b>“Camilo”</b> (also a.k.a. “Salchichón”) and his second-in-command captured; military-grade weapons seized; 23 foreign nationals expelled." },
+        { f: "Oct 5", l: "Santander, Antioquia and Quindío", s: "Police", r: "a.k.a. <b>“Orlanda”</b>, alleged member of Tren de Aragua, captured. Also: 1 suspect in alleged child abuse cases arrested; 2 people detained; a revolver and narcotics seized." },
         { f: "Oct 6", l: "Boyacá", s: "Army · Police · Attorney General's Office", r: "Local drug trafficking organization <b>“Los Aquiles” dismantled</b>: 12 alleged members arrested; more than 10 kg of narcotics, a traumatic weapon and drug packaging equipment seized." },
         { f: "Oct 7", l: "Meta", s: "Army · Police · Attorney General's Office", r: "3 Venezuelan alleged members of the Ecuadorian organization Los Choneros arrested; weapons reportedly bound for insurgent groups seized." },
-        { f: "Oct 15", l: "La Guajira and Sucre", s: "Army · Navy · Air Force · Police · Attorney General's Office", r: "Transnational drug trafficking network dismantled: 13 alleged members arrested, including AKA “Isen” (alleged leader)." },
-        { f: "Oct 16", l: "Santander", s: "Police", r: "5 alleged members of Los del Sur captured, including AKA “Julito” (alleged hitman linked to multiple homicides); 1 minor recovered." },
+        { f: "Oct 15", l: "La Guajira and Sucre", s: "Army · Navy · Air Force · Police · Attorney General's Office", r: "Transnational drug trafficking network dismantled: 13 alleged members arrested, including a.k.a. “Isen” (alleged leader)." },
+        { f: "Oct 16", l: "Santander", s: "Police", r: "5 alleged members of Los del Sur captured, including a.k.a. “Julito” (alleged hitman linked to multiple homicides); 1 minor recovered." },
         { f: "Oct 22", l: "La Guajira and Atlántico", s: "Army · Navy · Air Force · Attorney General's Office", r: "Transnational drug trafficking network dismantled: 6 alleged members arrested under judicial warrants." },
         { f: "Oct 22", l: "Bogotá, Atlántico, La Guajira and Cundinamarca", s: "Army · Attorney General's Office · DEA", r: "7 people detained for extradition to the United States; charges: criminal conspiracy, money laundering and drug trafficking." },
-        { f: "Oct 30", l: "Chocó", s: "Army", r: "AKA <b>“Kevin”</b>, alleged zone chief of Los Mexicanos, killed in combat." }
+        { f: "Oct 30", l: "Chocó", s: "Army", r: "a.k.a. <b>“Kevin”</b>, alleged zone chief of Los Mexicanos, killed in combat." }
       ]
     }
   ]
