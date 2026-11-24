@@ -213,7 +213,7 @@
       if (el) el.innerHTML = T[id][lang];
     });
     const btn = $('#btnLang');
-    if (btn) btn.textContent = lang === 'es' ? 'EN · English' : 'ES · Español';
+    if (btn) { btn.classList.toggle('en', lang === 'en'); btn.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false'); }
     renderCum();
     renderOct();
     renderSep();
