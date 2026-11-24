@@ -144,14 +144,15 @@
 
   // ---------- Botón Ver / Descargar (24 nov 2026, orden de Juan) ----------
   // Un botón por fact sheet; al presionarlo despliega las opciones en
-  // español e inglés. Octubre tiene ambos PDF; septiembre solo el DOCX
-  // en inglés (la versión en español sale deshabilitada, próximamente).
-  function dlMenu(es, en) {
+  // español e inglés. Octubre tiene ambos PDF y ambos Word editables;
+  // septiembre solo el DOCX en inglés (la versión en español sale
+  // deshabilitada, próximamente).
+  function dlMenu(items) {
     const item = o => o.off
       ? '<span class="dlitem off">' + esc(o.label) + '</span>'
       : '<a class="dlitem" href="' + esc(o.href) + '" target="_blank" rel="noopener">' + esc(o.label) + '</a>';
     return '<span class="dlmenu"><button type="button" class="dlbtn" aria-haspopup="true" aria-expanded="false">' + TXT.verDl[lang] + '</button>' +
-      '<span class="dlpop" hidden>' + item(es) + item(en) + '</span></span>';
+      '<span class="dlpop" hidden>' + items.map(item).join('') + '</span></span>';
   }
 
   // ---------- Vista de octubre ----------
@@ -164,7 +165,12 @@
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
-      dlMenu({ href: ES.pdf, label: 'Español (PDF)' }, { href: window.FS_OCT_EN.pdf, label: 'English (PDF)' }) + '</div></div>';
+      dlMenu([
+        { href: ES.pdf, label: 'Español (PDF)' },
+        { href: window.FS_OCT_EN.pdf, label: 'English (PDF)' },
+        { href: 'informes/October_Fact_Sheet_ES_v.02.11.26.docx', label: 'Español (Word editable)' },
+        { href: 'informes/October_Fact_Sheet_v.02.11.26.docx', label: 'English (Word editable)' }
+      ]) + '</div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
@@ -197,7 +203,7 @@
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
-      dlMenu({ off: true, label: 'Español · ' + TXT.prox[lang] }, { href: window.FS_SEP_EN.pdf, label: 'English (DOCX)' }) + '</div></div>';
+      dlMenu([{ off: true, label: 'Español · ' + TXT.prox[lang] }, { href: window.FS_SEP_EN.pdf, label: 'English (DOCX)' }]) + '</div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     let lastSec = '';
