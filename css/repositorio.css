@@ -33,15 +33,28 @@ header {
 /* Botón de idioma global (24 nov 2026, orden de Juan): arriba a la
    izquierda del banner de Todo. Clase propia y colores explícitos. */
 header { position: relative; }
-.langbtn-main {
+.langswitch-main {
   position: absolute; top: 14px; left: 14px; z-index: 6;
-  background: #e87722 !important; color: #ffffff !important; border: 2px solid #ffffff;
-  border-radius: 999px; padding: 9px 16px;
-  font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: none; padding: 4px 2px; cursor: pointer;
+  font-family: inherit;
 }
-.langbtn-main:hover { background: #cf6514 !important; }
-@media (max-width: 640px) { .langbtn-main { top: 10px; left: 10px; padding: 7px 12px; font-size: 12.5px; } }
+.msw-lab { font-size: 13px; font-weight: 800; letter-spacing: .5px; color: rgba(255,255,255,.55); transition: color .2s; }
+.langswitch-main .msw-es { color: #ffffff; }
+.langswitch-main.en .msw-es { color: rgba(255,255,255,.55); }
+.langswitch-main.en .msw-en { color: #ffffff; }
+.msw-track {
+  width: 48px; height: 26px; border-radius: 999px; flex: none;
+  background: #e87722; border: 2px solid #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  display: inline-flex; align-items: center; padding: 0 3px;
+}
+.msw-knob {
+  width: 18px; height: 18px; border-radius: 50%; background: #ffffff;
+  transition: transform .22s ease;
+}
+.langswitch-main.en .msw-knob { transform: translateX(22px); }
+@media (max-width: 640px) { .langswitch-main { top: 10px; left: 10px; } }
 
 header h1 {
   margin: 0 0 6px;
