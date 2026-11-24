@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/repositorio.css?v=42">
+  <link rel="stylesheet" href="css/repositorio.css?v=43">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1d38">
 <meta name="mobile-web-app-capable" content="yes">
@@ -41,7 +41,7 @@
     <!-- Botón de idioma global (24 nov 2026, orden de Juan): arriba a la
          izquierda del banner de Todo; traduce la página principal y las
          secciones Organigrama, Perfiles e Informes. -->
-    <button type="button" id="btnLangMain" class="langbtn-main" aria-label="Switch language / Cambiar idioma">EN · English</button>
+    <button type="button" id="btnLangMain" class="langswitch-main" role="switch" aria-checked="false" aria-label="Idioma / Language: Español / English"><span class="msw-lab msw-es">ES</span><span class="msw-track"><span class="msw-knob"></span></span><span class="msw-lab msw-en">EN</span></button>
     <h1>Todo</h1>
     <p class="emb" id="pgEmb">Embajada de Colombia en Estados Unidos</p>
     <p id="subtitle">Perfiles · Eventos · Publicaciones</p>
@@ -122,7 +122,7 @@
         <iframe id="framePublicaciones" title="Publicaciones" src="publicaciones.html"></iframe>
       </div>
       <div id="informesView" class="panelView" hidden>
-        <iframe id="frameInformes" title="Informes en seguridad, defensa y drogas" src="informes.html?v=8"></iframe>
+        <iframe id="frameInformes" title="Informes en seguridad, defensa y drogas" src="informes.html?v=9"></iframe>
       </div>
       <div id="organigramaView" class="panelView" hidden>
         <div class="panelhead">
@@ -334,7 +334,7 @@
   <script src="js/datos_ct.js?v=4"></script>
   <script src="js/datos_foro.js?v=8"></script>
   <script src="js/logo.js"></script>
-  <script src="js/repositorio.js?v=47"></script>
+  <script src="js/repositorio.js?v=48"></script>
 
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
