@@ -57,16 +57,17 @@
   };
   const TXT = {
     periodo: { es: 'Periodo', en: 'Reporting period' },
-    verPdf: { es: 'Ver el documento original (PDF) →', en: 'See the original document (PDF) →' },
+    verDl: { es: 'Ver / Descargar ▾', en: 'View / Download ▾' },
+    prox: { es: 'próximamente', en: 'coming soon' },
     a3cSec: { es: 'Coalición multinacional', en: 'Multinational Coalition' },
     a3cBadge: { es: '19 países', en: '19 countries' },
     cierre: {
-      es: 'Síntesis en español del October 2026 Fact Sheet de la Embajada de Colombia (documento original en el idioma seleccionado, enlazado arriba). Las fotografías son las del propio documento.',
-      en: 'English synthesis of the Embassy of Colombia\u2019s October 2026 Fact Sheet (original document in the selected language, linked above). The photographs are from the document itself.'
+      es: 'Síntesis en español del October 2026 Fact Sheet de la Embajada de Colombia (documento original en español e inglés, botón Ver / Descargar arriba). Las fotografías son las del propio documento.',
+      en: 'English synthesis of the Embassy of Colombia\u2019s October 2026 Fact Sheet (original document in Spanish and English, View / Download button above). The photographs are from the document itself.'
     },
     cierreSep: {
-      es: 'Síntesis en español del September 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, enlazado arriba).',
-      en: 'English synthesis of the Embassy of Colombia\u2019s September 2026 Fact Sheet (original document linked above).'
+      es: 'Síntesis en español del September 2026 Fact Sheet de la Embajada de Colombia (documento original en inglés, botón Ver / Descargar arriba; la versión en español estará disponible próximamente).',
+      en: 'English synthesis of the Embassy of Colombia\u2019s September 2026 Fact Sheet (original document in English, View / Download button above; the Spanish version will be available soon).'
     },
     bars2: {
       es: [
@@ -141,6 +142,18 @@
     });
   }
 
+  // ---------- Botón Ver / Descargar (24 nov 2026, orden de Juan) ----------
+  // Un botón por fact sheet; al presionarlo despliega las opciones en
+  // español e inglés. Octubre tiene ambos PDF; septiembre solo el DOCX
+  // en inglés (la versión en español sale deshabilitada, próximamente).
+  function dlMenu(es, en) {
+    const item = o => o.off
+      ? '<span class="dlitem off">' + esc(o.label) + '</span>'
+      : '<a class="dlitem" href="' + esc(o.href) + '" target="_blank" rel="noopener">' + esc(o.label) + '</a>';
+    return '<span class="dlmenu"><button type="button" class="dlbtn" aria-haspopup="true" aria-expanded="false">' + TXT.verDl[lang] + '</button>' +
+      '<span class="dlpop" hidden>' + item(es) + item(en) + '</span></span>';
+  }
+
   // ---------- Vista de octubre ----------
   function renderOct() {
     const host = $('#monthOct');
@@ -151,7 +164,7 @@
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
-      '<a href="' + esc(D.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
+      dlMenu({ href: ES.pdf, label: 'Español (PDF)' }, { href: window.FS_OCT_EN.pdf, label: 'English (PDF)' }) + '</div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
@@ -184,7 +197,7 @@
       '<p class="fssub">' + esc(D.subtitulo) + '</p>' +
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
-      '<a href="' + esc(ES.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
+      dlMenu({ off: true, label: 'Español · ' + TXT.prox[lang] }, { href: window.FS_SEP_EN.pdf, label: 'English (DOCX)' }) + '</div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     let lastSec = '';
@@ -263,6 +276,25 @@
     });
   });
   paintMonths();
+
+  // ---------- Menú Ver / Descargar: abrir/cerrar (delegado) ----------
+  // Un solo listener en document: sobrevive a los re-renders de
+  // renderOct/renderSep al cambiar el idioma. Clic en el botón abre o
+  // cierra su menú; cualquier otro clic (incluida una opción) lo cierra.
+  document.addEventListener('click', ev => {
+    const t = ev.target;
+    const btn = t && t.closest ? t.closest('.dlbtn') : null;
+    let pop = null, wasOpen = false;
+    if (btn) { pop = btn.parentElement.querySelector('.dlpop'); wasOpen = pop ? !pop.hidden : false; }
+    document.querySelectorAll('.dlpop').forEach(p => { p.hidden = true; });
+    document.querySelectorAll('.dlbtn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    if (btn && pop && !wasOpen) { pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+  });
+  document.addEventListener('keydown', ev => {
+    if (ev.key !== 'Escape') return;
+    document.querySelectorAll('.dlpop').forEach(p => { p.hidden = true; });
+    document.querySelectorAll('.dlbtn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  });
 
   applyLang();
 })();
