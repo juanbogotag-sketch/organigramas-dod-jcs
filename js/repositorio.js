@@ -1557,8 +1557,8 @@
   // lo cierra. La fila de tiles queda siempre visible arriba.
   // El organigrama (15:15 EST, REVERSA la decisión de 14:59 EST de abrirlo
   // como página completa) también es panel: organigrama.html va en iframe.
-  const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView', organigrama: 'organigramaView' };
-  const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones', organigrama: 'tileOrg' };
+  const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView', organigrama: 'organigramaView', informes: 'informesView' };
+  const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones', organigrama: 'tileOrg', informes: 'tileInformes' };
   // Botones «Crear carpeta» (carpeta y selección rápida): solo visibles
   // con el panel de Perfiles abierto; al cerrarse el panel (o al entrar a
   // una categoría) vuelven a ocultarse.
@@ -1625,9 +1625,9 @@
     // Publicaciones solo se abren tras entrar con contraseña; si no,
     // se pide la contraseña en vez de abrir el panel.
     if ((name === 'eventos' || name === 'publicaciones') && !privUnlocked()) { openPrivModal(); return; }
-    const cur = ['perfiles', 'eventos', 'publicaciones', 'organigrama'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
+    const cur = ['perfiles', 'eventos', 'publicaciones', 'organigrama', 'informes'].find(k => !document.getElementById(PANEL_VIEWS[k]).hidden) || null;
     const next = (cur === name) ? null : name;
-    ['perfiles', 'eventos', 'publicaciones', 'organigrama'].forEach(k => {
+    ['perfiles', 'eventos', 'publicaciones', 'organigrama', 'informes'].forEach(k => {
       document.getElementById(PANEL_VIEWS[k]).hidden = (k !== next);
       document.getElementById(PANEL_TILES[k]).classList.toggle('on', k === next);
     });
@@ -1648,6 +1648,7 @@
   $('#tileEventos').addEventListener('click', () => showPanel('eventos'));
   $('#tilePublicaciones').addEventListener('click', () => showPanel('publicaciones'));
   $('#tileOrg').addEventListener('click', () => showPanel('organigrama'));
+  $('#tileInformes').addEventListener('click', () => showPanel('informes'));
 
   // ---------- Puerta privada: Eventos y Publicaciones (23 nov 2026, orden de Juan) ----------
   // Los tiles y paneles de Eventos y Publicaciones solo se ven tras entrar
