@@ -376,6 +376,16 @@ a.vorg { text-decoration: none; cursor: pointer; }
   padding: 4px 8px; cursor: pointer; font-family: inherit; font-size: 12.5px; flex: 0 0 auto;
 }
 .cempty { color: var(--mu); font-size: 13.5px; margin: 8px 0; }
+.evgrow { align-items: center; margin-top: 10px; }
+.evglab { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; cursor: pointer; }
+.evglab input { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
+#exGroupName { flex: 1 1 220px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; font-size: 13.5px; background: #fff; }
+#exGroupName:disabled { opacity: .45; }
+.evghead { display: flex; align-items: center; gap: 8px; margin: 14px 0 2px; padding: 6px 10px; background: #f3eee2; border: 1px solid #e3dac4; border-radius: 6px; font-size: 13px; }
+.evghead b { flex: 1 1 auto; min-width: 0; }
+.evghead small { color: var(--mu); flex: 0 0 auto; }
+.evghead .crm { flex: 0 0 auto; }
+.evghead .crm.armed { background: #b3261e; border-color: #b3261e; color: #fff; }
 #cartMsg { font-size: 12.5px; color: var(--mu); margin: 8px 0 0; }
 #cartPanel a#cartDl {
   border: 1px solid var(--blue); background: var(--blue); color: #fff; border-radius: 6px;
