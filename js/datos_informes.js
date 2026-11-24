@@ -12,21 +12,21 @@ window.FS_OCT = {
   version: "V: 11.2.26",
   pdf: "informes/October_Fact_Sheet_ES_v.02.11.26.pdf",
   kpis: [
-    { n: "60", l: "operaciones reportadas en el mes" },
-    { n: "44", l: "operaciones contra organizaciones criminales (DTO/TCO)" },
+    { n: "52", l: "operaciones reportadas en el mes" },
+    { n: "38", l: "operaciones contra organizaciones criminales (DTO/TCO)" },
     { n: "19", l: "países miembros de la coalición A3C" },
     { n: "4,9 t", l: "de cocaína incautadas en la operación aeroportuaria JOTAM" }
   ],
   kpisFS: [
-    { n: "60", l: "operaciones reportadas en el mes" },
-    { n: "44", l: "operaciones contra organizaciones criminales (DTO/TCO)" }
+    { n: "52", l: "operaciones reportadas en el mes" },
+    { n: "38", l: "operaciones contra organizaciones criminales (DTO/TCO)" }
   ],
   orgChart: [
-    { org: "Otras redes criminales y fugitivos internacionales", n: 12 },
-    { org: "Disidencias de las FARC", n: 11 },
-    { org: "ELN", n: 10 },
+    { org: "Otras redes criminales y fugitivos internacionales", n: 10 },
+    { org: "Disidencias de las FARC", n: 9 },
+    { org: "ELN", n: 9 },
     { org: "Clan del Golfo", n: 8 },
-    { org: "ACSN", n: 3 }
+    { org: "ACSN", n: 2 }
   ],
   a3c: {
     intro: "Colombia y sus socios hemisféricos comparten el compromiso con el Estado de derecho, la seguridad regional y la protección de sus ciudadanos frente al crimen transnacional, sobre la base de décadas de cooperación en antinarcóticos, interdicción y asistencia en seguridad. En agosto de 2026, Colombia se unió a la Americas Counter Cartel Coalition (A3C).",
@@ -159,21 +159,21 @@ window.FS_OCT_EN = {
   version: "V: 11.2.26",
   pdf: "informes/October_Fact_Sheet_v.02.11.26.pdf",
   kpis: [
-    { n: "60", l: "operations reported in the month" },
-    { n: "44", l: "operations against criminal organizations (DTOs/TCOs)" },
+    { n: "52", l: "operations reported in the month" },
+    { n: "38", l: "operations against criminal organizations (DTOs/TCOs)" },
     { n: "19", l: "member nations of the A3C coalition" },
     { n: "4.9 t", l: "of cocaine seized in airport operation JOTAM" }
   ],
   kpisFS: [
-    { n: "60", l: "operations reported in the month" },
-    { n: "44", l: "operations against criminal organizations (DTOs/TCOs)" }
+    { n: "52", l: "operations reported in the month" },
+    { n: "38", l: "operations against criminal organizations (DTOs/TCOs)" }
   ],
   orgChart: [
-    { org: "Other criminal networks and international fugitives", n: 12 },
-    { org: "FARC Dissidents", n: 11 },
-    { org: "ELN", n: 10 },
+    { org: "Other criminal networks and international fugitives", n: 10 },
+    { org: "FARC Dissidents", n: 9 },
+    { org: "ELN", n: 9 },
     { org: "Clan del Golfo", n: 8 },
-    { org: "ACSN", n: 3 }
+    { org: "ACSN", n: 2 }
   ],
   a3c: {
     intro: "Colombia and its hemispheric partners share a commitment to the rule of law, regional security and the protection of their citizens from transnational crime, building on decades of cooperation in counternarcotics, interdiction and security assistance. In August 2026, Colombia joined the Americas Counter Cartel Coalition (A3C).",
