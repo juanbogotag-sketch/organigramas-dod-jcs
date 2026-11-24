@@ -1641,11 +1641,12 @@
   // como página completa) también es panel: organigrama.html va en iframe.
   const PANEL_VIEWS = { perfiles: 'perfilesView', eventos: 'eventosView', publicaciones: 'publicacionesView', organigrama: 'organigramaView', informes: 'informesView' };
   const PANEL_TILES = { perfiles: 'tilePerfiles', eventos: 'tileEventos', publicaciones: 'tilePublicaciones', organigrama: 'tileOrg', informes: 'tileInformes' };
-  // Botones «Crear carpeta» (carpeta y selección rápida): solo visibles
-  // con el panel de Perfiles abierto; al cerrarse el panel (o al entrar a
-  // una categoría) vuelven a ocultarse.
+  // Botones «Crear carpeta» (carpeta y selección rápida): visibles en
+  // TODO el panel de Perfiles (inicio, categorías y buscador global);
+  // solo se ocultan al cerrar el panel. (24 nov 2026: antes desaparecían
+  // al entrar a una categoría, justo donde se seleccionan los perfiles.)
   function syncFabs() {
-    const open = !$('#perfilesView').hidden && !$('#home').hidden;
+    const open = !$('#perfilesView').hidden;
     $('#cartFab').hidden = !open;
     $('#selFab').hidden = !open;
   }
