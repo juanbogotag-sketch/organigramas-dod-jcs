@@ -6,6 +6,87 @@
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
+  // ---------- Idioma global de la interfaz (24 nov 2026, orden de Juan) ----------
+  // Botón arriba a la izquierda del banner de Todo (#btnLangMain). El
+  // idioma se guarda en localStorage 'todo_lang' y lo comparten la
+  // página principal y las secciones Organigrama, Perfiles e Informes
+  // (los iframes leen la misma clave al cargar; al cambiar el idioma
+  // aquí, sus marcos se recargan para que lo tomen).
+  let uiLang = 'es';
+  try { uiLang = localStorage.getItem('todo_lang') === 'en' ? 'en' : 'es'; } catch (e) {}
+  const tx = (es, en) => uiLang === 'en' ? en : es;
+  const T_MAIN = {
+    subtitle: ['Perfiles · Eventos · Publicaciones', 'Profiles · Events · Publications'],
+    pgEmb: ['Embajada de Colombia en Estados Unidos', 'Embassy of Colombia in the United States'],
+    pgEmb2: ['Embajada de Colombia en Estados Unidos', 'Embassy of Colombia in the United States'],
+    orgEmb: ['Embajada de Colombia en Estados Unidos', 'Embassy of Colombia in the United States'],
+    perfH: ['Perfiles', 'Profiles'],
+    perfSub: ['Buscar y gestionar perfiles', 'Search and manage profiles'],
+    orgH: ['Organigrama Estados Unidos', 'United States Org Chart'],
+    orgSub: ['Estructura del Gobierno de Estados Unidos', 'Structure of the United States Government'],
+    tOrgL: ['Organigrama Estados Unidos', 'United States Org Chart'],
+    tOrgS: ['Estructura y cargos del Gobierno de Estados Unidos', 'Structure and positions of the United States Government'],
+    tPerfL: ['Perfiles', 'Profiles'],
+    tPerfS: ['Poder Ejecutivo · Legislativo · Judicial · Think tanks · Academia · Embajada', 'Executive · Legislative · Judicial · Think tanks · Academia · Embassy'],
+    tInfL: ['Informes en seguridad, defensa y drogas', 'Reports on Security, Defense and Drugs'],
+    tInfS: ['Informes y análisis', 'Reports and analysis'],
+    tEvL: ['Eventos', 'Events'],
+    tPubL: ['Publicaciones', 'Publications'],
+    tPubS: ['Documentos e informes de la Embajada', 'Embassy documents and reports'],
+    back: ['← Volver a las categorías', '← Back to categories'],
+    catExtra: ['Ver Congreso →', 'View Congress →'],
+    sub2lab: ['Subgrupo:', 'Subgroup:'],
+    mx: ['✕ Cerrar', '✕ Close'],
+    mword: ['Descargar en Word', 'Download as Word'],
+    mcontact: ['Contacto', 'Contact'],
+    madd: ['📁 Agregar a la carpeta', '📁 Add to folder'],
+    mback: ['Volver a la lista', 'Back to the list'],
+    mshare: ['Compartir / Guardar en el celular', 'Share / Save to phone'],
+    sugTitle: ['Sugerencias', 'Suggestions'],
+    sugOpt: ['Sugerir perfiles', 'Suggest profiles'],
+    sugLab: ['Ayuda a Juan a mejorar esta página con tus sugerencias.', 'Help Juan improve this page with your suggestions.'],
+    sugSend: ['Enviar', 'Send'],
+    sugBack: ['Volver', 'Back'],
+    sugx: ['✕ Cerrar', '✕ Close'],
+    cartHeadT: ['📁 Carpeta de perfiles', '📁 Profile folder'],
+    cartGen: ['Generar ▾', 'Generate ▾'],
+    cartShare: ['Compartir / Guardar', 'Share / Save'],
+    cartClear: ['Vaciar', 'Clear'],
+    cartZip: ['📁 Carpeta con los perfiles en Word (ZIP)', '📁 Folder with the profiles in Word (ZIP)'],
+    cartXlsx: ['📊 Matriz en Excel (.xlsx)', '📊 Matrix in Excel (.xlsx)'],
+    evTitle: ['Crear evento', 'Create event'],
+    evInt: ['👥 Invitados del Repositorio', '👥 Repository guests'],
+    evExtBtn: ['🌍 Invitados externos', '🌍 External guests'],
+    evNameL: ['Nombre del evento *', 'Event name *'],
+    evDateL: ['Fecha', 'Date'],
+    evPlaceL: ['Lugar', 'Place']
+  };
+  const T_MAIN_PH = {
+    qg: ['Buscar en todos los perfiles: nombre, cargo u organización…', 'Search all profiles: name, position or organization…'],
+    q: ['Buscar por nombre, cargo u organización…', 'Search by name, position or organization…'],
+    sugText: ['Pega o escribe aquí tu sugerencia, puedes poner lo que sea…', 'Paste or write your suggestion here, anything goes…'],
+    evName: ['Ej.: Protegiendo las Américas', 'E.g.: Protecting the Americas'],
+    evPlace: ['Ej.: Residencia de la Embajada de Colombia en Washington', 'E.g.: Residence of the Embassy of Colombia in Washington']
+  };
+  function applyMainLang() {
+    document.documentElement.lang = uiLang;
+    document.title = uiLang === 'es' ? 'Todo · Embajada de Colombia en Estados Unidos' : 'Todo · Embassy of Colombia in the United States';
+    Object.keys(T_MAIN).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = T_MAIN[id][uiLang === 'en' ? 1 : 0];
+    });
+    Object.keys(T_MAIN_PH).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.placeholder = T_MAIN_PH[id][uiLang === 'en' ? 1 : 0];
+    });
+    const bl = $('#btnLangMain');
+    if (bl) bl.textContent = uiLang === 'es' ? 'EN · English' : 'ES · Español';
+    const bp = $('#btnPriv');
+    if (bp) { bp.title = tx('Iniciar sesión', 'Sign in'); bp.setAttribute('aria-label', tx('Iniciar sesión', 'Sign in')); }
+    const fl = $('#footlogo');
+    if (fl) fl.alt = tx('Embajada de Colombia en Estados Unidos', 'Embassy of Colombia in the United States');
+  }
+
   // ---------- Membrete de la Embajada ----------
   if (typeof LOGO_EMB !== 'undefined') {
     $('#footlogo').src = LOGO_EMB;
@@ -162,7 +243,7 @@
   }));
 
   // Subgrupos de segundo nivel: árboles que cuelgan de un nodo de otro árbol
-  // (p. ej., Department of Defense/War -> Army, Air Force, Navy, JCS, DIA, Policy)
+  // (p. ej., Department of War -> Army, Air Force, Navy, JCS, DIA, Policy)
   const CHILDREN = {};
   SD.trees.forEach(t => {
     if (t.link) {
@@ -172,20 +253,21 @@
   });
 
   const CATS = [
-    { id: 'ejecutivo', label: 'Poder Ejecutivo' },
-    { id: 'legislativo', label: 'Poder Legislativo' },
-    { id: 'judicial', label: 'Poder Judicial' },
-    { id: 'centros', label: 'Centros de pensamiento' },
-    { id: 'academia', label: 'Academia y universidades' },
-    { id: 'embajada', label: 'Embajada de Colombia' },
-    { id: 'otros', label: 'Otros' }
+    { id: 'ejecutivo', label: 'Poder Ejecutivo', label_en: 'Executive Branch' },
+    { id: 'legislativo', label: 'Poder Legislativo', label_en: 'Legislative Branch' },
+    { id: 'judicial', label: 'Poder Judicial', label_en: 'Judicial Branch' },
+    { id: 'centros', label: 'Centros de pensamiento', label_en: 'Think Tanks' },
+    { id: 'academia', label: 'Academia y universidades', label_en: 'Academia and Universities' },
+    { id: 'embajada', label: 'Embajada de Colombia', label_en: 'Embassy of Colombia' },
+    { id: 'otros', label: 'Otros', label_en: 'Others' }
   ];
+  const catName = c => uiLang === 'en' ? (c.label_en || c.label) : c.label;
   const inCat = id => PEOPLE.filter(p => p.cat === id && p.visible);
   // 20 nov 2026 (orden de Juan): el conteo de perfiles NO va en el
   // encabezado de la página; vive dentro del panel desplegado de Perfiles
   // (#perfilesCount), así que solo se ve con el panel abierto.
   const pc = $('#perfilesCount');
-  if (pc) pc.textContent = 'Base de datos de perfiles · ' + PEOPLE.filter(p => p.visible).length + ' personas';
+  if (pc) pc.textContent = tx('Base de datos de perfiles · ', 'Profile database · ') + PEOPLE.filter(p => p.visible).length + tx(' personas', ' people');
 
   // ---------- Utilidades de texto ----------
   function firstPara(text) {
@@ -221,10 +303,10 @@
     // Poder Legislativo: desde que hay perfiles de staffers (17 nov 2026), la
     // tarjeta abre la lista de la categoría; la página del Congreso queda
     // enlazada dentro de la vista y en el botón del encabezado.
-    const sub = (c.id === 'legislativo' && !n) ? 'Ir a la página del Congreso'
-      : (n ? n + (n === 1 ? ' perfil' : ' perfiles') : 'Todavía sin perfiles');
+    const sub = (c.id === 'legislativo' && !n) ? tx('Ir a la página del Congreso', 'Go to the Congress page')
+      : (n ? n + (n === 1 ? tx(' perfil', ' profile') : tx(' perfiles', ' profiles')) : tx('Todavía sin perfiles', 'No profiles yet'));
     return '<button type="button" class="cat" data-cat="' + c.id + '">' +
-      '<span class="cl">' + esc(c.label) + '</span>' +
+      '<span class="cl">' + esc(catName(c)) + '</span>' +
       '<span class="cn">' + sub + '</span></button>';
   }
   function renderCats() {
@@ -248,7 +330,7 @@
     syncFabs();
     $('#listview').hidden = false;
     $('#wm').hidden = false;
-    $('#catTitle').textContent = (CATS.find(c => c.id === id) || {}).label || id;
+    const cc = CATS.find(c => c.id === id); $('#catTitle').textContent = cc ? catName(cc) : id;
     const catEx = $('#catExtra');
     if (catEx) catEx.hidden = (id !== 'legislativo');
     $('#q').value = '';
@@ -264,7 +346,7 @@
       if (ordOf[p.org] === undefined || p.ord < ordOf[p.org]) ordOf[p.org] = p.ord;
     });
     orgs.sort((a, b) => (cntOf[b] - cntOf[a]) || (ordOf[a] - ordOf[b]));
-    sel.innerHTML = '<option value="">Todos los subgrupos</option>' +
+    sel.innerHTML = '<option value="">' + tx('Todos los subgrupos', 'All subgroups') + '</option>' +
       orgs.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
     sel.value = '';
     $('#fsub2').value = '';
@@ -284,7 +366,7 @@
         .map(id => (treeById[id] || {}).name).filter(Boolean);
     }
     if (kids.length) {
-      f2.innerHTML = '<option value="">Todos</option>' +
+      f2.innerHTML = '<option value="">' + tx('Todos', 'All') + '</option>' +
         kids.map(o => '<option value="' + esc(o) + '">' + esc(o) + '</option>').join('');
       f2.value = '';
       row2.hidden = false;
@@ -299,11 +381,11 @@
       (p.photo ? '<img class="ph" src="' + p.photo + '" alt="">' : '<div class="phx">' + esc(initials(p.name)) + '</div>') +
       '<div class="info"><div class="nm">' + esc(p.name) + '</div>' +
       (p.title ? '<div class="ti">' + esc(p.title) + '</div>' : '') +
-      '<div class="og">' + esc(p.org) + (p.dep ? ' · Depende de: ' + esc(p.dep) : '') + '</div>' +
-      (p.es ? '<p class="fp">' + esc(firstPara(p.es)) + '</p>' : '<p class="fp"><em>Sin perfil todavía.</em></p>') +
+      '<div class="og">' + esc(p.org) + (p.dep ? ' · ' + tx('Depende de: ', 'Reports to: ') + esc(p.dep) : '') + '</div>' +
+      ((uiLang === 'en' ? (p.en || p.es) : p.es) ? '<p class="fp">' + esc(firstPara(uiLang === 'en' ? (p.en || p.es) : p.es)) + '</p>' : '<p class="fp"><em>' + tx('Sin perfil todavía.', 'No profile yet.') + '</em></p>') +
       '</div>' +
       '<div class="selbar"><button type="button" data-l="es">ES</button><button type="button" data-l="en">EN</button><button type="button" data-l="both">BOTH</button></div>' +
-      '<button type="button" class="ver" data-key="' + esc(p.key) + '">Ver o descargar</button></div>';
+      '<button type="button" class="ver" data-key="' + esc(p.key) + '">' + tx('Ver o descargar', 'View or download') + '</button></div>';
   }
   function renderList() {
     const all = inCat(curCat);
@@ -320,17 +402,17 @@
     groups.forEach((folks, org) => {
       const tid = (curCat === 'ejecutivo' && folks[0]) ? folks[0].orgId : '';
       html += '<div class="gname"><span>' + esc(org) + ' (' + folks.length + ')</span>' +
-        (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
+        (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">' + tx('Ver organigrama', 'View org chart') + '</a>' : '') + '</div>';
       folks.forEach(p => { html += rowHtml(p); });
     });
     $('#groups').innerHTML = html;
     const empty = $('#empty');
     if (!all.length) {
       empty.hidden = false;
-      empty.textContent = 'Todavía no hay perfiles en esta categoría. Se irán agregando a medida que se elaboren.';
+      empty.textContent = tx('Todavía no hay perfiles en esta categoría. Se irán agregando a medida que se elaboren.', 'There are no profiles in this category yet. They will be added as they are prepared.');
     } else if (!list.length) {
       empty.hidden = false;
-      empty.textContent = 'Ningún perfil coincide con la búsqueda o el filtro.';
+      empty.textContent = tx('Ningún perfil coincide con la búsqueda o el filtro.', 'No profile matches the search or the filter.');
     } else empty.hidden = true;
     document.querySelectorAll('.ver').forEach(b => b.addEventListener('click', () => openProfile(b.dataset.key)));
     paintSelRows();
@@ -355,13 +437,13 @@
     const box = $('#gresults');
     const q = norm($('#qg').value.trim());
     if (q.length < 2) { box.innerHTML = ''; return; }
-    const catLabel = id => (CATS.find(c => c.id === id) || {}).label || id;
+    const catLabel = id => { const c = CATS.find(c => c.id === id); return c ? catName(c) : id; };
     const hits = PEOPLE.filter(p => p.visible && norm(p.name + ' ' + (p.title || '') + ' ' + (p.title_en || '') + ' ' + p.org + ' ' + (p.dep || '') + ' ' + catLabel(p.cat)).includes(q));
     if (!hits.length) {
-      box.innerHTML = '<p id="gempty">Ningún perfil coincide con la búsqueda.</p>';
+      box.innerHTML = '<p id="gempty">' + tx('Ningún perfil coincide con la búsqueda.', 'No profile matches the search.') + '</p>';
       return;
     }
-    let html = '<p class="gcount">' + hits.length + (hits.length === 1 ? ' perfil' : ' perfiles') + ' en todas las categorías</p>';
+    let html = '<p class="gcount">' + hits.length + (hits.length === 1 ? tx(' perfil', ' profile') : tx(' perfiles', ' profiles')) + tx(' en todas las categorías', ' in all categories') + '</p>';
     CATS.forEach(c => {
       const folks = hits.filter(p => p.cat === c.id);
       if (!folks.length) return;
@@ -371,7 +453,7 @@
         const of = folks.filter(p => p.org === org);
         const tid = (c.id === 'ejecutivo' && of[0]) ? of[0].orgId : '';
         html += '<div class="gname"><span>' + esc(catLabel(c.id)) + ' · ' + esc(org) + ' (' + of.length + ')</span>' +
-          (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">Ver organigrama</a>' : '') + '</div>';
+          (tid ? '<a class="vorg" href="organigrama.html?tree=' + encodeURIComponent(tid) + '">' + tx('Ver organigrama', 'View org chart') + '</a>' : '') + '</div>';
         of.forEach(p => { html += rowHtml(p); });
       });
     });
@@ -429,16 +511,16 @@
   });
 
   // ---------- Vista previa del perfil ----------
-  let cur = null, curLang = 'es';
+  let cur = null, curLang = uiLang;
   function openProfile(key) {
     cur = PEOPLE.find(p => p.key === key);
     if (!cur) return;
-    curLang = 'es';
+    curLang = uiLang;
     const img = $('#mph');
     if (cur.photo) { img.src = cur.photo; img.style.display = ''; } else img.style.display = 'none';
     $('#mname').textContent = cur.name;
     $('#morg').textContent = cur.org;
-    $('#mdep').textContent = cur.dep ? 'Depende de: ' + cur.dep : '';
+    $('#mdep').textContent = cur.dep ? tx('Depende de: ', 'Reports to: ') + cur.dep : '';
     $('#mmsg').textContent = '';
     const lk3 = $('#mdl'); if (lk3) lk3.hidden = true;
     const sh3 = $('#mshare'); if (sh3) sh3.hidden = true;
@@ -1270,7 +1352,7 @@
     // el contador de eventos guardados vive ahora en el subtítulo del
     // botón cuadrado grande «Eventos» (#tileEventos .tsub).
     const s = document.querySelector('#tileEventos .tsub');
-    if (s) s.textContent = 'Crear y gestionar eventos' + (events.length ? ' (' + events.length + ')' : '');
+    if (s) s.textContent = tx('Crear y gestionar eventos', 'Create and manage events') + (events.length ? ' (' + events.length + ')' : '');
   }
   function paintOpenEvent() {
     const pill = $('#evOpen');
@@ -1649,6 +1731,28 @@
   $('#tilePublicaciones').addEventListener('click', () => showPanel('publicaciones'));
   $('#tileOrg').addEventListener('click', () => showPanel('organigrama'));
   $('#tileInformes').addEventListener('click', () => showPanel('informes'));
+
+  // ---------- Botón de idioma global: aplicar y alternar ----------
+  applyMainLang();
+  const btnLangMain = $('#btnLangMain');
+  if (btnLangMain) btnLangMain.addEventListener('click', () => {
+    uiLang = uiLang === 'es' ? 'en' : 'es';
+    try { localStorage.setItem('todo_lang', uiLang); } catch (e) {}
+    applyMainLang();
+    const pc2 = $('#perfilesCount');
+    if (pc2) pc2.textContent = tx('Base de datos de perfiles · ', 'Profile database · ') + PEOPLE.filter(p => p.visible).length + tx(' personas', ' people');
+    renderCats();
+    paintEventosBtn();
+    if (curCat && !$('#listview').hidden) { const keepQ = $('#q').value; openCat(curCat); $('#q').value = keepQ; renderList(); }
+    if ($('#qg') && $('#qg').value.trim().length >= 2) renderGlobal();
+    if (cur && !$('#modal').hidden) { curLang = uiLang; paintProfile(); }
+    // Los iframes de Organigrama e Informes leen 'todo_lang' al cargar:
+    // se recargan para que tomen el idioma nuevo.
+    ['frameOrganigrama', 'frameInformes'].forEach(id => {
+      const f = document.getElementById(id);
+      if (f) f.src = f.src;
+    });
+  });
 
   // ---------- Puerta privada: Eventos y Publicaciones (23 nov 2026, orden de Juan) ----------
   // Los tiles y paneles de Eventos y Publicaciones solo se ven tras entrar
