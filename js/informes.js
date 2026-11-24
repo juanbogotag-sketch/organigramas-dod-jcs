@@ -14,6 +14,7 @@
   const LS = () => lang === 'en' ? window.FS_SEP_EN : window.FS_SEP;
   const T = {
     pgTitle: { es: 'Informes en seguridad, defensa y drogas', en: 'Reports on Security, Defense and Drugs' },
+    pgEmb: { es: 'Embajada de Colombia en Estados Unidos', en: 'Embassy of Colombia in the United States' },
     subtitle: { es: 'Seguridad · Defensa · Drogas', en: 'Security · Defense · Drugs' },
     homeBtn: { es: '← Menú principal', en: '← Main menu' },
     tabCumS: { es: 'Indicadores acumulados de la cooperación contra los cárteles', en: 'Cumulative indicators of counter-cartel cooperation' },
@@ -199,6 +200,11 @@
   // ---------- Aplicar idioma a todo ----------
   function applyLang() {
     document.documentElement.lang = lang;
+    document.title = lang === 'es'
+      ? 'Informes en seguridad, defensa y drogas · Todo · Embajada de Colombia en Estados Unidos'
+      : 'Reports on Security, Defense and Drugs · Todo · Embassy of Colombia in the United States';
+    const fl = $('#footlogo');
+    if (fl) fl.alt = T.pgEmb[lang];
     Object.keys(T).forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = T[id][lang];
