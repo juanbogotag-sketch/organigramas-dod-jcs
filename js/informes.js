@@ -20,7 +20,7 @@
     pgEmb: { es: 'Embajada de Colombia en Estados Unidos', en: 'Embassy of Colombia in the United States' },
     subtitle: { es: 'Seguridad · Defensa · Drogas', en: 'Security · Defense · Drugs' },
     homeBtn: { es: '← Menú principal', en: '← Main menu' },
-    tabCumS: { es: 'Indicadores acumulados de la cooperación contra los cárteles', en: 'Cumulative indicators of counter-cartel cooperation' },
+    tabCumS: { es: 'Indicadores acumulados de la cooperación contra los cárteles · Deshabilitado temporalmente', en: 'Cumulative indicators of counter-cartel cooperation · Temporarily disabled' },
     tabFsS: { es: 'Síntesis mensual interactiva, mes a mes', en: 'Interactive monthly synthesis, month by month' },
     cumIntro: {
       es: 'Indicadores acumulados a partir de los fact sheets mensuales de la Embajada. Por ahora incluyen <b>octubre de 2026</b>, el primer fact sheet cargado; septiembre y noviembre se sumarán en cuanto se carguen sus documentos, y el acumulado se actualizará solo.',
@@ -258,6 +258,7 @@
     tabFs.setAttribute('aria-selected', openBlock === 'fs' ? 'true' : 'false');
   }
   function toggleBlock(which) {
+    if (which === 'cum') return; // CI deshabilitado de nuevo (24 nov 2026, orden de Juan)
     openBlock = (openBlock === which) ? null : which;
     paintBlocks();
     notifyResize();
