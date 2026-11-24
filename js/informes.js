@@ -104,9 +104,10 @@
   }
 
   // ---------- Tarjetas de operación (foto desde los datos ES, por posición) ----------
-  function opCard(op, ph) {
-    const img = (ph !== null && ph !== undefined && PH[ph])
-      ? '<img src="' + PH[ph] + '" alt="" loading="lazy">' : '';
+  function opCard(op, ph, photos) {
+    const arr = photos || PH;
+    const img = (ph !== null && ph !== undefined && arr[ph])
+      ? '<img src="' + arr[ph] + '" alt="" loading="lazy">' : '';
     return '<article class="opcard">' + img + '<div>' +
       '<div class="opmeta"><span class="chip">' + esc(op.f) + '</span>' +
       '<span class="chip loc">' + esc(op.l) + '</span></div>' +
@@ -172,6 +173,7 @@
   function renderSep() {
     const host = $('#monthSep');
     const D = LS(), ES = window.FS_SEP;
+    const PH_SEP = window.FS_PHOTOS_SEP || [];
     if (!host || !D || !ES) return;
     let h = '';
     h += '<div class="fshero"><h2>' + esc(D.titulo) + '</h2>' +
@@ -181,16 +183,11 @@
       '<a href="' + esc(ES.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
     h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
-    const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
-      D.a3c.items.map(it => '<div class="a3c"><span class="k">' + esc(it.k) + '</span><span class="v">' + esc(it.v) + '</span></div>').join('') + '</div>';
-    h += '<p class="accsec">' + TXT.a3cSec[lang] + '</p>' +
-      accordion('Americas Counter Cartel Coalition (A3C)', TXT.a3cBadge[lang], a3cInner, true, 'acc-a3c');
-
     let lastSec = '';
     D.grupos.forEach((g, gi) => {
       if (g.seccion !== lastSec) { h += '<p class="accsec">' + esc(g.seccion) + '</p>'; lastSec = g.seccion; }
       const inner = (g.nota ? '<p class="accnote">' + esc(g.nota) + '</p>' : '') +
-        '<div class="opgrid">' + g.ops.map((op, oi) => opCard(op, ES.grupos[gi].ops[oi].ph)).join('') + '</div>';
+        '<div class="opgrid">' + g.ops.map((op, oi) => opCard(op, ES.grupos[gi].ops[oi].ph, PH_SEP)).join('') + '</div>';
       h += accordion(g.titulo, g.badge, inner, false);
     });
 
