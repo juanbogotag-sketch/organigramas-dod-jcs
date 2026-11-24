@@ -80,7 +80,7 @@
       if (el) el.placeholder = T_MAIN_PH[id][uiLang === 'en' ? 1 : 0];
     });
     const bl = $('#btnLangMain');
-    if (bl) bl.textContent = uiLang === 'es' ? 'EN · English' : 'ES · Español';
+    if (bl) { bl.classList.toggle('en', uiLang === 'en'); bl.setAttribute('aria-checked', uiLang === 'en' ? 'true' : 'false'); }
     const bp = $('#btnPriv');
     if (bp) { bp.title = tx('Iniciar sesión', 'Sign in'); bp.setAttribute('aria-label', tx('Iniciar sesión', 'Sign in')); }
     const fl = $('#footlogo');
