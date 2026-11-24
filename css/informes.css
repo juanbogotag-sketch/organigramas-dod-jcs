@@ -125,15 +125,19 @@
 }
 
 /* Botón de idioma ES/EN (23 nov 2026, orden de Juan): pastilla naranja
-   justo encima del recuadro de título del fact sheet («Colombia
-   Strengthening…»), a la derecha, bien visible. */
-.langrow { display: flex; justify-content: flex-end; margin: 14px 0 8px; }
-.langbtn2 {
-  background: var(--orange); color: #fff; border: none; border-radius: 999px;
-  padding: 9px 18px; font-family: inherit; font-size: 13.5px; font-weight: 800;
-  cursor: pointer; box-shadow: 0 2px 8px rgba(10,29,56,.25);
+   con borde blanco SOBRE el banner «Informes en seguridad, defensa y
+   drogas», en su esquina superior derecha. Colores explícitos (sin
+   variables) para que se vea siempre. */
+header { position: relative; }
+.langbtn-banner {
+  position: absolute; top: 14px; right: 14px; z-index: 6;
+  background: #e87722 !important; color: #ffffff !important; border: 2px solid #ffffff;
+  border-radius: 999px; padding: 10px 18px;
+  font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
-.langbtn2:hover { background: #cf6514; }
+.langbtn-banner:hover { background: #cf6514; }
+@media (max-width: 640px) { .langbtn-banner { top: 10px; right: 10px; padding: 8px 13px; font-size: 12.5px; } }
 .kpis2 { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 640px) { .kpis2 { grid-template-columns: 1fr 1fr; } #btnLang { top: 10px; right: 10px; padding: 7px 12px; font-size: 12.5px; } }
 
