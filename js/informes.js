@@ -87,8 +87,9 @@
       '<span class="bartrack"><span class="barfill' + (orange ? ' or' : '') + '" style="width:' + Math.round(r.n / max * 100) + '%"></span></span>' +
       '<span class="bv">' + r.n + '</span></div>').join('');
   }
-  function kpisHTML(D) {
-    return D.kpis.map(k => '<div class="kpi"><span class="n">' + esc(k.n) + '</span><span class="l">' + esc(k.l) + '</span></div>').join('');
+  function kpisHTML(x) {
+    const arr = Array.isArray(x) ? x : x.kpis;
+    return arr.map(k => '<div class="kpi"><span class="n">' + esc(k.n) + '</span><span class="l">' + esc(k.l) + '</span></div>').join('');
   }
   function renderCum() {
     const D = L(); if (!D) return;
@@ -141,7 +142,7 @@
       '<div class="fsmeta"><span>' + TXT.periodo[lang] + ': <b>' + esc(D.periodo) + '</b></span>' +
       '<span><b>' + esc(D.version) + '</b></span>' +
       '<a href="' + esc(ES.pdf) + '" target="_blank" rel="noopener">' + TXT.verPdf[lang] + '</a></div></div>';
-    h += '<div class="kpis">' + kpisHTML(D) + '</div>';
+    h += '<div class="kpis kpis2">' + kpisHTML(D.kpisFS || D.kpis.slice(0, 2)) + '</div>';
 
     const a3cInner = '<p class="accintro">' + esc(D.a3c.intro) + '</p><div class="a3cgrid">' +
       D.a3c.items.map(it => '<div class="a3c"><span class="k">' + esc(it.k) + '</span><span class="v">' + esc(it.v) + '</span></div>').join('') + '</div>';
@@ -169,7 +170,7 @@
       if (el) el.innerHTML = T[id][lang];
     });
     const btn = $('#btnLang');
-    if (btn) btn.textContent = lang === 'es' ? 'English' : 'Español';
+    if (btn) btn.textContent = lang === 'es' ? 'EN · English' : 'ES · Español';
     renderCum();
     renderOct();
     notifyResize();
