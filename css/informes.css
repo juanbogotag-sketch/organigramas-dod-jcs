@@ -125,15 +125,15 @@
 }
 
 /* Botón de idioma ES/EN (23 nov 2026, orden de Juan): pastilla naranja
-   en la esquina superior derecha del banner, bien visible — antes era
-   texto blanco sobre el mismo azul del encabezado y no se distinguía. */
-header { position: relative; }
-#btnLang {
-  position: absolute; top: 14px; right: 14px; z-index: 5;
+   justo encima del recuadro de título del fact sheet («Colombia
+   Strengthening…»), a la derecha, bien visible. */
+.langrow { display: flex; justify-content: flex-end; margin: 14px 0 8px; }
+.langbtn2 {
   background: var(--orange); color: #fff; border: none; border-radius: 999px;
-  padding: 9px 16px; font-size: 13.5px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  padding: 9px 18px; font-family: inherit; font-size: 13.5px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(10,29,56,.25);
 }
-#btnLang:hover { background: #cf6514; color: #fff; }
+.langbtn2:hover { background: #cf6514; }
 .kpis2 { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 640px) { .kpis2 { grid-template-columns: 1fr 1fr; } #btnLang { top: 10px; right: 10px; padding: 7px 12px; font-size: 12.5px; } }
 
