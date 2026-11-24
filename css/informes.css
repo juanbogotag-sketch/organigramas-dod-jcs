@@ -1,0 +1,125 @@
+/* Informes en seguridad, defensa y drogas (23 nov 2026).
+   Identidad del sitio (Montserrat, azul institucional #0a1d38) con la
+   línea gráfica del fact sheet de referencia: encabezados azul marino
+   #16365c con filete naranja, tablas y tarjetas en azul grisáceo claro.
+   Página ancha: aprovecha el espacio horizontal de escritorio. */
+:root {
+  --navy: #0a1d38;
+  --navy2: #16365c;
+  --orange: #e87722;
+  --light: #dbe4ef;
+  --light2: #eef2f7;
+  --mu: #6b675f;
+}
+.infmain { max-width: 1480px; margin: 0 auto; padding: 24px 36px 60px; }
+.infintro { font-size: 15px; line-height: 1.55; color: #333; max-width: 980px; margin: 18px 0 4px; }
+
+/* --- Dos bloques: Cumulative Indicators / Fact Sheets --- */
+.inftabs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+.inftab {
+  font-family: inherit; text-align: left; cursor: pointer;
+  background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 16px;
+  padding: 20px 24px;
+}
+.inftab:hover { background: var(--light2); }
+.inftab.on { background: var(--navy); color: #fff; box-shadow: 0 4px 16px rgba(10,29,56,.18); }
+.inftab-t { display: block; font-size: 22px; font-weight: 800; line-height: 1.2; }
+.inftab-s { display: block; font-size: 13px; margin-top: 5px; color: var(--mu); }
+.inftab.on .inftab-s { color: #cfd8e6; }
+
+/* --- KPIs --- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0 6px; }
+.kpi {
+  background: var(--navy2); color: #fff; border-radius: 14px; padding: 18px 18px 14px;
+  border-left: 6px solid var(--orange);
+}
+.kpi .n { display: block; font-size: 34px; font-weight: 800; line-height: 1.05; }
+.kpi .l { display: block; font-size: 12.5px; color: #cfd8e6; margin-top: 6px; line-height: 1.4; }
+
+/* --- Cumulative: gráficos de barras --- */
+.cumgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.cumcard { background: #fff; border: 1px solid var(--light); border-radius: 14px; padding: 20px 22px; }
+.cumcard h3 { margin: 0 0 4px; font-size: 17px; color: var(--navy2); }
+.cumsub { margin: 0 0 14px; font-size: 12.5px; color: var(--mu); }
+.cumnote { font-size: 13.5px; line-height: 1.55; color: #333; margin: 14px 0 0; }
+.barrow { display: grid; grid-template-columns: minmax(150px, 42%) 1fr 34px; align-items: center; gap: 10px; margin: 9px 0; font-size: 13px; }
+.barrow .bl { line-height: 1.3; }
+.bartrack { background: var(--light2); border-radius: 6px; height: 18px; overflow: hidden; }
+.barfill { background: var(--navy2); height: 100%; border-radius: 6px; }
+.barfill.or { background: var(--orange); }
+.barrow .bv { font-weight: 800; color: var(--navy); text-align: right; }
+
+/* --- Meses --- */
+.months { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 18px 0 6px; }
+.month {
+  font-family: inherit; cursor: pointer; text-align: center;
+  background: #fff; border: 2px solid var(--navy); border-radius: 16px; padding: 20px 14px 16px; color: var(--navy);
+}
+.month:hover { background: var(--light2); }
+.month.on { background: var(--navy); color: #fff; box-shadow: 0 4px 16px rgba(10,29,56,.18); }
+.mname { display: block; font-size: 24px; font-weight: 800; }
+.myear { display: block; font-size: 13px; letter-spacing: 3px; margin-top: 2px; opacity: .75; }
+.mstate { display: inline-block; font-size: 12px; font-weight: 700; margin-top: 12px; padding: 4px 10px; border-radius: 999px; background: var(--light); color: var(--navy2); }
+.month.on .mstate.ok { background: var(--orange); color: #fff; }
+.month.on .mstate.pend { background: rgba(255,255,255,.16); color: #cfd8e6; }
+.emptybox { background: var(--light2); border: 1px dashed var(--navy2); border-radius: 14px; padding: 28px; text-align: center; margin-top: 14px; }
+.emptybox h3 { margin: 0 0 8px; color: var(--navy2); }
+.emptybox p { margin: 0 auto; max-width: 640px; font-size: 14px; line-height: 1.55; color: #444; }
+
+/* --- Cabecera del fact sheet del mes --- */
+.fshero { background: var(--navy2); color: #fff; border-radius: 14px; padding: 26px 28px 20px; margin-top: 16px; border-top: 6px solid var(--orange); }
+.fshero h2 { margin: 0 0 6px; font-size: 25px; line-height: 1.3; font-weight: 800; }
+.fshero .fssub { margin: 0 0 12px; font-size: 15px; color: #cfd8e6; }
+.fsmeta { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13px; color: #cfd8e6; align-items: center; }
+.fsmeta b { color: #fff; }
+.fsmeta a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- Acordeones (subtítulos expandibles) --- */
+.acc { border: 1px solid var(--light); border-radius: 12px; margin-top: 14px; overflow: hidden; background: #fff; }
+.acc > button.accbtn {
+  width: 100%; font-family: inherit; cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--navy2); color: #fff; border: none; border-left: 6px solid var(--orange);
+  padding: 14px 18px;
+}
+.accbtn .acct { font-size: 16.5px; font-weight: 800; line-height: 1.3; flex: 1; }
+.accbtn .accb { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.16); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.accbtn .accx { font-size: 20px; font-weight: 800; transition: transform .2s; }
+.acc.open .accbtn .accx { transform: rotate(45deg); }
+.accbody { padding: 18px 20px 20px; }
+.accbody[hidden] { display: none; }
+.accsec { font-size: 12px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--orange); margin: 22px 0 0; }
+.accnote { font-size: 13.5px; font-style: italic; color: #555; line-height: 1.5; margin: 0 0 14px; }
+.accintro { font-size: 14.5px; line-height: 1.6; color: #333; margin: 0 0 16px; }
+
+/* A3C: tarjetas de definición */
+.a3cgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.a3c { background: var(--light2); border-radius: 10px; padding: 14px 16px; }
+.a3c .k { display: block; font-size: 13px; font-weight: 800; color: var(--navy2); margin-bottom: 6px; }
+.a3c .v { display: block; font-size: 13px; line-height: 1.5; color: #333; }
+
+/* Operaciones: tarjetas anchas con foto */
+.opgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.opcard { display: flex; gap: 14px; background: var(--light2); border-radius: 10px; padding: 12px; align-items: flex-start; }
+.opcard img { width: 168px; height: 112px; object-fit: cover; border-radius: 8px; flex: none; background: var(--light); }
+.opcard .opmeta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.chip { font-size: 11.5px; font-weight: 800; background: var(--navy); color: #fff; border-radius: 999px; padding: 3px 9px; }
+.chip.loc { background: #fff; color: var(--navy2); border: 1.5px solid var(--navy2); }
+.opcard .opf { font-size: 12px; color: var(--mu); margin-bottom: 5px; line-height: 1.4; }
+.opcard .opr { font-size: 13px; line-height: 1.5; color: #2b2b2b; }
+.opcard .opr b { color: var(--navy2); }
+
+@media (max-width: 1100px) {
+  .opgrid { grid-template-columns: 1fr; }
+  .a3cgrid { grid-template-columns: 1fr 1fr; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .cumgrid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .infmain { padding: 18px 14px 48px; }
+  .inftabs, .months { grid-template-columns: 1fr; }
+  .a3cgrid { grid-template-columns: 1fr; }
+  .opcard { flex-direction: column; }
+  .opcard img { width: 100%; height: 170px; }
+  .fshero h2 { font-size: 20px; }
+}
