@@ -1357,7 +1357,7 @@ async function descargarXlsx() {
   const cellF = (f, i, r, s) => '<c r="' + colL(i) + r + '"' + (s != null ? ' s="' + s + '"' : '') + '><f>' + xesc(f) + '</f></c>';
   const rowF = (cells, r, s) => '<row r="' + r + '">' + cells.map((c, i) => (c && c.f ? cellF(c.f, i, r, s) : cellXml(c, i, r, s))).join('') + '</row>';
   const escHoja = n => "'" + String(n).replace(/'/g, "''") + "'";
-  const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo']);
+  const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo', 'Acompañante']);
   const list = efectivos();
   const now = new Date(), p2 = n => String(n).padStart(2, '0');
   const generado = p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
@@ -1398,15 +1398,22 @@ async function descargarXlsx() {
   const sheetsXml = [resumenXml], sheetTags = [], rels = [];
   sheetTags.push('<sheet name="Resumen" sheetId="1" r:id="rId1"/>');
   rels.push('<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>');
+  const porId = {};
+  list.forEach(g => { porId[g.id] = g; });
   listaGrupos.forEach((sh, si) => {
     const nombreHoja = nombresHojaPre[si];
-    const rows = list.filter(g => g.g === sh.key).map(g => {
+    // Acompañantes al final de cada pestaña, todos juntos, sin relleno.
+    const delGrupo = list.filter(g => g.g === sh.key);
+    const ordenadas = delGrupo.filter(g => !g.acomp).concat(delGrupo.filter(g => g.acomp));
+    const rows = ordenadas.map(g => {
       const e = estadoDe(g.id);
       const st = estados[g.id] || {};
       let extra = '';
       if (e === 'delego' && st.d) extra = st.d;
       if (g.reemp && g.orig) extra = (extra ? extra + ' · ' : '') + 'Reemplaza a: ' + nombreDe(g.orig);
-      return [g.pre, g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra];
+      const ac = g.acomp ? porId[g.acomp] : null;
+      const acomp = ac ? 'Acompañante de ' + nombreDe(ac) : (g.acomp ? 'Acompañante' : '');
+      return [g.pre, g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra, acomp];
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
