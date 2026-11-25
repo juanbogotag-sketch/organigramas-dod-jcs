@@ -255,6 +255,7 @@
   </div>
 </main>
 <script src="js/vendor/jszip.min.js"></script>
+<script src="js/vendor/qrcode.min.js"></script>
 <script src="js/logo.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -274,7 +275,7 @@ const LS_E = 'prot_americas_estados_v1', LS_R = 'prot_americas_roster_v1', LS_A 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades', exemb: 'Exembajadores', colomb: 'Colombianos destacados en Washington', alvaro: 'Contactos Álvaro', oyg: 'O y G' };
+const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades', exemb: 'Exembajadores', colomb: 'Colombianos destacados en Washington', alvaro: 'Contactos Álvaro', oyg: 'OIG' };
 // Grupos: los 4 de la base + los agregados por el usuario (en orden de creación).
 function grupos() {
   const base = PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] }));
@@ -1274,16 +1275,77 @@ $('elimLista').addEventListener('click', e => {
 });
 
 // ---------- Descarga de la base (.xlsx, mismo formato de la matriz original) ----------
+// QR del enlace del gestor como PNG (para embeber en el Excel). Usa la
+// librería vendored js/vendor/qrcode.min.js (qrcode-generator 1.4.4).
+function qrPngBytes(url) {
+  if (typeof qrcode === 'undefined') throw new Error('Generador de QR no cargado');
+  const qr = qrcode(0, 'M');
+  qr.addData(url);
+  qr.make();
+  const n = qr.getModuleCount(), quiet = 4, scale = 5;
+  const size = (n + quiet * 2) * scale;
+  const cv = document.createElement('canvas');
+  cv.width = size; cv.height = size;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) ctx.fillRect((c + quiet) * scale, (r + quiet) * scale, scale, scale);
+  const b64 = cv.toDataURL('image/png').split(',')[1];
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
 async function descargarXlsx() {
   const xesc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const colL = i => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
   const cellXml = (c, i, r, s) => '<c r="' + colL(i) + r + '" t="inlineStr"' + (s != null ? ' s="' + s + '"' : '') + '><is><t xml:space="preserve">' + xesc(c) + '</t></is></c>';
   const rowXml = (cells, r, s) => '<row r="' + r + '"' + (r === 1 ? ' ht="94.5" customHeight="1"' : '') + '>' + cells.map((c, i) => cellXml(c, i, r, s)).join('') + '</row>';
+  const rowR = (cells, r, s) => '<row r="' + r + '">' + cells.map((c, i) => cellXml(c, i, r, s)).join('') + '</row>';
   const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo']);
   const list = efectivos();
-  const sheetsXml = [], sheetTags = [], rels = [];
+  const inf = calcularInforme();
+  const GESTOR_URL = 'https://juanbogotag-sketch.github.io/organigramas-dod-jcs/protegiendo-americas.html';
+  const now = new Date(), p2 = n => String(n).padStart(2, '0');
+  const generado = p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
   const listaGrupos = grupos();
-  const nombresHoja = new Set();
+
+  // ---- Hoja 1: Resumen (totales en vivo + enlace con QR) ----
+  const porGrupo = {};
+  inf.porGrupo.forEach(pg => { porGrupo[pg.key] = pg; });
+  const cero = { total: 0, conf: 0, pend: 0, canc: 0, deleg: 0 };
+  const resumenRows = [];
+  resumenRows.push(rowR(['Protegiendo las Américas', '', '', '', '', ''], 1, 2));
+  resumenRows.push(rowR(['Foro · 9 de diciembre de 2026 · Residencia de la Embajadora', '', '', '', '', ''], 2, 0));
+  resumenRows.push(rowR(['Gestor de invitados — Resumen en vivo · Generado: ' + generado, '', '', '', '', ''], 3, 0));
+  resumenRows.push(rowR(['', '', '', '', '', ''], 4, 0));
+  resumenRows.push(rowR(['Total de invitados', 'Confirmados', 'Cancelados', 'Delegaron', 'Pendientes', ''], 5, 2));
+  resumenRows.push(rowR([String(inf.total), String(inf.conf), String(inf.canc), String(inf.deleg), String(inf.pend), ''], 6, 1));
+  resumenRows.push(rowR(['', '', '', '', '', ''], 7, 0));
+  resumenRows.push(rowR(['Grupo', 'Total', 'Confirmados', 'Cancelados', 'Delegaron', 'Pendientes'], 8, 2));
+  listaGrupos.forEach((sh, gi) => {
+    const pg = porGrupo[sh.key] || cero;
+    resumenRows.push(rowR([sh.name, String(pg.total), String(pg.conf), String(pg.canc), String(pg.deleg), String(pg.pend)], 9 + gi, 1));
+  });
+  const filaEnlace = 9 + listaGrupos.length + 1;
+  resumenRows.push(rowR(['', '', '', '', '', ''], filaEnlace - 1, 0));
+  resumenRows.push(rowR(['Gestor de invitados:', GESTOR_URL, '', '', '', ''], filaEnlace, 1));
+  resumenRows.push(rowR(['Escanea el código QR para abrir el gestor:', '', '', '', '', ''], filaEnlace + 1, 0));
+  const resumenCols = '<cols><col min="1" max="1" width="42" customWidth="1"/><col min="2" max="2" width="16" customWidth="1"/><col min="3" max="3" width="16" customWidth="1"/><col min="4" max="4" width="16" customWidth="1"/><col min="5" max="5" width="16" customWidth="1"/><col min="6" max="6" width="16" customWidth="1"/></cols>';
+  const merges = '<mergeCells count="5"><mergeCell ref="A1:F1"/><mergeCell ref="A2:F2"/><mergeCell ref="A3:F3"/><mergeCell ref="B' + filaEnlace + ':F' + filaEnlace + '"/><mergeCell ref="A' + (filaEnlace + 1) + ':F' + (filaEnlace + 1) + '"/></mergeCells>';
+  const qrBytes = qrPngBytes(GESTOR_URL);
+  const qrEmu = 225 * 9525;
+  const resumenXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView showGridLines="0" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>' + resumenCols + '<sheetData>' + resumenRows.join('') + '</sheetData>' + merges + '<hyperlinks><hyperlink ref="B' + filaEnlace + '" r:id="rId2"/></hyperlinks><drawing r:id="rId1"/></worksheet>';
+  const drawingXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><xdr:oneCellAnchor><xdr:from><xdr:col>0</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>' + (filaEnlace + 1) + '</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:ext cx="' + qrEmu + '" cy="' + qrEmu + '"/><xdr:pic><xdr:nvPicPr><xdr:cNvPr id="1" name="QR gestor"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + qrEmu + '" cy="' + qrEmu + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic><xdr:clientData/></xdr:oneCellAnchor></xdr:wsDr>';
+  const drawingRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/></Relationships>';
+  const resumenRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="' + GESTOR_URL + '" TargetMode="External"/></Relationships>';
+
+  // ---- Hojas por grupo (2..n) ----
+  const sheetsXml = [resumenXml], sheetTags = [], rels = [];
+  const nombresHoja = new Set(['resumen']);
+  sheetTags.push('<sheet name="Resumen" sheetId="1" r:id="rId1"/>');
+  rels.push('<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>');
   listaGrupos.forEach((sh, si) => {
     const nombreHoja = nombreHojaExcel(sh.name, sh.key, nombresHoja);
     const rows = list.filter(g => g.g === sh.key).map(g => {
@@ -1292,19 +1354,20 @@ async function descargarXlsx() {
       let extra = '';
       if (e === 'delego' && st.d) extra = st.d;
       if (g.reemp && g.orig) extra = (extra ? extra + ' · ' : '') + 'Reemplaza a: ' + nombreDe(g.orig);
-      if (g.agregado) extra = (extra ? extra + ' · ' : '') + 'Agregado en la página';
       return [g.pre, g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra];
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
     sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="0" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 2) + rows.map((r, i) => rowXml(r, i + 2, 1)).join('') + '</sheetData></worksheet>');
-    sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + (si + 1) + '" r:id="rId' + (si + 1) + '"/>');
-    rels.push('<Relationship Id="rId' + (si + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (si + 1) + '.xml"/>');
+    const n = si + 2;
+    sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + n + '" r:id="rId' + n + '"/>');
+    rels.push('<Relationship Id="rId' + n + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + n + '.xml"/>');
   });
-  rels.push('<Relationship Id=\"rId' + (listaGrupos.length + 1) + '\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>');
+  rels.push('<Relationship Id="rId' + (listaGrupos.length + 2) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>');
   const z = new JSZip();
-  let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
-  listaGrupos.forEach((sh, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  let ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>';
+  sheetsXml.forEach((xml, si) => { ct += '<Override PartName="/xl/worksheets/sheet' + (si + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; });
+  ct += '<Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.drawing+xml"/>';
   ct += '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
   ct += '</Types>';
   z.file('[Content_Types].xml', ct);
@@ -1312,9 +1375,12 @@ async function descargarXlsx() {
   z.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
   z.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>' + sheetTags.join('') + '</sheets></workbook>');
   z.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + rels.join('') + '</Relationships>');
+  z.file('xl/worksheets/_rels/sheet1.xml.rels', resumenRels);
+  z.file('xl/drawings/drawing1.xml', drawingXml);
+  z.file('xl/drawings/_rels/drawing1.xml.rels', drawingRels);
+  z.file('xl/media/image1.png', qrBytes);
   sheetsXml.forEach((xml, si) => z.file('xl/worksheets/sheet' + (si + 1) + '.xml', xml));
   const blob = await z.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  const now = new Date(), p2 = n => String(n).padStart(2, '0');
   const fname = 'Base_de_datos_Evento_Protecting_the_Americas_Forum.V' + p2(now.getDate()) + '.' + p2(now.getMonth() + 1) + '.' + p2(now.getFullYear() % 100) + '.xlsx';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1323,6 +1389,7 @@ async function descargarXlsx() {
   a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
 }
+
 
 // ---------- Inicio ----------
 if (window.LOGO_EMB) { $('escudo').src = window.LOGO_EMB; }
