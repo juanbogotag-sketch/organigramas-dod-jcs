@@ -1451,7 +1451,10 @@ async function descargarXlsx() {
       return [g.pre, (g.sex === 'M' || g.sex === 'F') ? g.sex : '', g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra, acomp];
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
-    const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+    // Columna B (Sexo) OCULTA (orden de Juan 25 nov ~13:29 EST): el dato M/F
+    // sigue escribiéndose en la celda y el Informe lo usa desde la base; solo
+    // no se ve en la matriz. hidden="1" no cambia posiciones ni fórmulas.
+    const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"' + (i === 1 ? ' hidden="1"' : '') + '/>').join('') + '</cols>';
     sheetsXml.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView showGridLines="0" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>' + colsXml + '<sheetData>' + rowXml(heads, 1, 2) + rows.map((r, i) => rowXml(r, i + 2, 1)).join('') + '</sheetData></worksheet>');
     const n = si + 2;
     sheetTags.push('<sheet name="' + xesc(nombreHoja) + '" sheetId="' + n + '" r:id="rId' + n + '"/>');
