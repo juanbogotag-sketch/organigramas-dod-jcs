@@ -44,6 +44,9 @@
     mSepS: { es: 'Fact sheet disponible · V: 10.8.26', en: 'Fact sheet available · V: 10.8.26' },
     mOctS: { es: 'Fact sheet disponible · V: 11.2.26', en: 'Fact sheet available · V: 11.2.26' },
     mNovS: { es: 'Fact sheet pendiente de carga', en: 'Fact sheet pending upload' },
+    mDec: { es: 'Diciembre', en: 'December' },
+    mDecS: { es: 'Próximamente', en: 'Coming soon' },
+    prevBtnT: { es: 'Meses anteriores', en: 'Previous months' },
     sepH: { es: 'Septiembre de 2026', en: 'September 2026' },
     sepP: {
       es: 'El fact sheet de septiembre aún no ha sido cargado en esta sección. En cuanto se reciba el documento, aquí se desplegará su síntesis interactiva con el mismo formato de octubre.',
@@ -53,6 +56,11 @@
     novP: {
       es: 'El fact sheet de noviembre aún no ha sido cargado en esta sección. Se publicará al cierre del mes, con el mismo formato interactivo de octubre.',
       en: 'The November fact sheet has not been uploaded to this section yet. It will be published at the end of the month, in the same interactive format as October.'
+    },
+    decH: { es: 'Diciembre de 2026', en: 'December 2026' },
+    decP: {
+      es: 'El fact sheet de diciembre aún no ha sido cargado en esta sección. Se publicará al cierre del mes, con el mismo formato interactivo de octubre.',
+      en: 'The December fact sheet has not been uploaded to this section yet. It will be published at the end of the month, in the same interactive format as October.'
     }
   };
   const TXT = {
@@ -268,7 +276,7 @@
   paintBlocks();
 
   // ---------- Meses: desplegar / plegar al repetir clic ----------
-  const views = { sep: $('#monthSep'), oct: $('#monthOct'), nov: $('#monthNov') };
+  const views = { sep: $('#monthSep'), oct: $('#monthOct'), nov: $('#monthNov'), dec: $('#monthDec') };
   let openMonth = 'oct';
   function paintMonths() {
     Object.keys(views).forEach(k => { if (views[k]) views[k].hidden = (k !== openMonth); });
@@ -282,6 +290,14 @@
     });
   });
   paintMonths();
+
+  // ---------- Meses anteriores: panel deslizable a la izquierda (25 nov 2026) ----------
+  const btnPrev = $('#btnPrev'), prevPanel = $('#prevPanel');
+  if (btnPrev && prevPanel) btnPrev.addEventListener('click', () => {
+    const open = prevPanel.classList.toggle('open');
+    btnPrev.setAttribute('aria-expanded', open ? 'true' : 'false');
+    notifyResize();
+  });
 
   // ---------- Menú Ver / Descargar: abrir/cerrar (delegado) ----------
   // Un solo listener en document: sobrevive a los re-renders de
