@@ -275,7 +275,7 @@ const LS_E = 'prot_americas_estados_v1', LS_R = 'prot_americas_roster_v1', LS_A 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades', exemb: 'Exembajadores', colomb: 'Colombianos destacados en Washington', alvaro: 'Contactos Álvaro', oyg: 'OIG' };
+const GRUPOS = { secdef: 'Sec y Def', agreg: 'Agregadurías', think: 'Think Tanks', univ: 'Universidades', exemb: 'Exembajadores', colomb: 'Colombianos destacados en Washington', alvaro: 'Contactos Álvaro', oyg: 'OIG', oea: 'OEA' };
 // Grupos: los 4 de la base + los agregados por el usuario (en orden de creación).
 function grupos() {
   const base = PROT_SHEETS.map(s => ({ key: s.key, name: GRUPOS[s.key] }));
