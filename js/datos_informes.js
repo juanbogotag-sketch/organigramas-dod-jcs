@@ -76,8 +76,8 @@ window.FS_OCT = {
       ]
     },
     {
-      id: "eln", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO)",
-      titulo: "ELN — Ejército de Liberación Nacional", badge: "44 en total contra las organizaciones",
+      id: "eln", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO) · 38 en total",
+      titulo: "ELN — Ejército de Liberación Nacional", badge: "9 operaciones",
       nota: "Tratado como organización criminal transnacional (TCO): múltiples economías criminales, entre ellas extorsión, minería ilegal y ataques con explosivos. Cifras por organización según la tabla resumen del documento: ELN 10 · Disidencias de las FARC 11 · Clan del Golfo 8 · ACSN 3 · Otras redes 12.",
       ops: [
         { ph: null, f: "4 oct", l: "Norte de Santander", s: "Ejército · Fuerza Aérea · Policía · Fiscalía", r: "Arsenal del ELN <b>destruido</b>: <b>1,0 t de explosivos</b> y 100 granadas artesanales." },
@@ -92,8 +92,8 @@ window.FS_OCT = {
       ]
     },
     {
-      id: "farc", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO)",
-      titulo: "Disidencias de las FARC", badge: "",
+      id: "farc", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO) · 38 en total",
+      titulo: "Disidencias de las FARC", badge: "9 operaciones",
       nota: "Tratadas como DTO/TCO: narcotráfico con mando definido, combinado con extorsión, secuestro, homicidio y minería ilegal. Categoría que agrupa a los grupos disidentes de las antiguas FARC.",
       ops: [
         { ph: 23, f: "5 oct", l: "Antioquia y Huila", s: "Ejército · Fuerza Aérea · Policía · Fiscalía", r: "Capturados alias <b>«Lobo»</b>, presunto cabecilla, y alias <b>«Zamanta»</b>; desarticuladas redes de extorsión, homicidio y secuestro." },
@@ -108,8 +108,8 @@ window.FS_OCT = {
       ]
     },
     {
-      id: "clan", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO)",
-      titulo: "Clan del Golfo", badge: "",
+      id: "clan", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO) · 38 en total",
+      titulo: "Clan del Golfo", badge: "8 operaciones",
       nota: "Tratado como DTO/TCO: narcotráfico con estructura de mando definida, combinado con extorsión y sicariato.",
       ops: [
         { ph: 32, f: "1 oct", l: "Magdalena", s: "Policía · Fiscalía", r: "<b>10 presuntos integrantes</b> del Clan del Golfo y las ACSN capturados; 7 armas de fuego, 2 artefactos explosivos y munición incautados." },
@@ -123,8 +123,8 @@ window.FS_OCT = {
       ]
     },
     {
-      id: "acsn", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO)",
-      titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "",
+      id: "acsn", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO) · 38 en total",
+      titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "2 operaciones",
       nota: "Tratadas como DTO: estructura de mando definida y el narcotráfico como actividad central verificable.",
       ops: [
         { ph: 29, f: "6 oct", l: "Cesar y Magdalena", s: "Ejército · Policía", r: "Alias <b>«Messi»</b>, presunto cabecilla, capturado con 3 presuntos cómplices y 2 pistolas; alias <b>«Mongolo»</b>, presunto cabecilla, capturado con un revólver." },
@@ -132,8 +132,8 @@ window.FS_OCT = {
       ]
     },
     {
-      id: "otras", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO)",
-      titulo: "Otras redes criminales y fugitivos internacionales", badge: "",
+      id: "otras", seccion: "2 · Operaciones contra organizaciones criminales (DTO/TCO) · 38 en total",
+      titulo: "Otras redes criminales y fugitivos internacionales", badge: "10 operaciones",
       nota: "Redes menores, fugitivos internacionales y organizaciones sin volumen suficiente para una sección propia.",
       ops: [
         { ph: 40, f: "1 oct", l: "Antioquia", s: "Policía", r: "Detenido alias <b>«Ash»</b>, ciudadano australiano-iraní buscado con circular roja de INTERPOL por presunto narcotráfico y lavado de activos; al parecer coordinaba operaciones desde Colombia." },
@@ -224,8 +224,8 @@ window.FS_OCT_EN = {
       ]
     },
     {
-      id: "eln", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs)",
-      titulo: "ELN — National Liberation Army", badge: "44 total against all organizations",
+      id: "eln", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs) · 38 in total",
+      titulo: "ELN — National Liberation Army", badge: "9 operations",
       nota: "Treated as a TCO: multiple criminal economies, including extortion, illegal mining and attacks with explosives. Figures by organization per the fact sheet's summary table: ELN 10 · FARC Dissidents 11 · Clan del Golfo 8 · ACSN 3 · Other networks 12.",
       ops: [
         { f: "Oct 4", l: "Norte de Santander", s: "Army · Air Force · Police · Attorney General's Office", r: "ELN stockpile destroyed: <b>1.0 ton of explosives</b> and 100 homemade grenades." },
@@ -240,8 +240,8 @@ window.FS_OCT_EN = {
       ]
     },
     {
-      id: "farc", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs)",
-      titulo: "FARC Dissidents", badge: "",
+      id: "farc", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs) · 38 in total",
+      titulo: "FARC Dissidents", badge: "9 operations",
       nota: "Treated as a DTO/TCO: drug trafficking under defined command, combined with extortion, kidnapping, homicide and illegal mining. Umbrella category for dissident groups of the former FARC.",
       ops: [
         { f: "Oct 5", l: "Antioquia and Huila", s: "Army · Air Force · Police · Attorney General's Office", r: "a.k.a. <b>“Lobo”</b>, alleged senior leader, and a.k.a. <b>“Zamanta”</b> arrested; extortion, homicide and kidnapping networks disrupted." },
@@ -256,8 +256,8 @@ window.FS_OCT_EN = {
       ]
     },
     {
-      id: "clan", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs)",
-      titulo: "Clan del Golfo", badge: "",
+      id: "clan", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs) · 38 in total",
+      titulo: "Clan del Golfo", badge: "8 operations",
       nota: "Treated as a DTO/TCO: drug trafficking under a defined command structure, combined with extortion and contract killings.",
       ops: [
         { f: "Oct 1", l: "Magdalena", s: "Police · Attorney General's Office", r: "<b>10 alleged members</b> of the Clan del Golfo and the ACSN arrested; 7 firearms, 2 explosive devices and ammunition seized." },
@@ -271,8 +271,8 @@ window.FS_OCT_EN = {
       ]
     },
     {
-      id: "acsn", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs)",
-      titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "",
+      id: "acsn", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs) · 38 in total",
+      titulo: "Autodefensas Conquistadoras de la Sierra Nevada (ACSN)", badge: "2 operations",
       nota: "Treated as a DTO: defined command structure with drug trafficking as its central verifiable activity.",
       ops: [
         { f: "Oct 6", l: "Cesar and Magdalena", s: "Army · Police", r: "a.k.a. <b>“Messi”</b>, alleged leader, captured with 3 alleged accomplices and 2 handguns; a.k.a. <b>“Mongolo”</b>, alleged leader, arrested with a revolver." },
@@ -280,8 +280,8 @@ window.FS_OCT_EN = {
       ]
     },
     {
-      id: "otras", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs)",
-      titulo: "Other Criminal Networks and International Fugitives", badge: "",
+      id: "otras", seccion: "2 · Operations Against Criminal Organizations (DTOs/TCOs) · 38 in total",
+      titulo: "Other Criminal Networks and International Fugitives", badge: "10 operations",
       nota: "Smaller networks, international fugitives and organizations without enough volume for their own section.",
       ops: [
         { f: "Oct 1", l: "Antioquia", s: "Police", r: "a.k.a. <b>“Ash”</b>, Australian-Iranian national wanted under an INTERPOL Red Notice for alleged drug trafficking and money laundering, detained; reportedly coordinated operations from Colombia." },
