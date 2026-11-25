@@ -789,6 +789,56 @@ function escribirListaChecklist(mostrarMsg) {
 }
 function programarSyncLista() { clearTimeout(syncListaTimer); syncListaTimer = setTimeout(() => escribirListaChecklist(false), 1500); }
 
+// Distancia Damerau-Levenshtein (transposición cuenta 1): «Raegan»/«Reagan» = 1.
+function distDamerau(a, b) {
+  const m = a.length, n = b.length, d = [];
+  for (let i = 0; i <= m; i++) d.push([i]);
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
+    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+    if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+  }
+  return d[m][n];
+}
+// Dos nombres son la misma persona si comparten apellido y los nombres
+// coinciden por tokens o a distancia de edición 1 con igual longitud
+// (tolerar «Reagan»/«Raegan» y segundos nombres: «Neyder Barros» =
+// «Neyder Camillo de Barros»; «Juan Pérez» y «Juana Pérez» NO coinciden).
+function mismoInvitado(nombreA, nombreB) {
+  const ta = norm(nombreA).split(/\s+/).filter(Boolean);
+  const tb = norm(nombreB).split(/\s+/).filter(Boolean);
+  if (!ta.length || !tb.length) return false;
+  if (ta[ta.length - 1] !== tb[tb.length - 1]) return false;
+  const na = ta.slice(0, -1), nb = tb.slice(0, -1);
+  if (!na.length || !nb.length) return true;
+  const corto = na.length <= nb.length ? na : nb, largo = na.length <= nb.length ? nb : na;
+  return corto.every(t => largo.some(u => u === t || (u.length === t.length && distDamerau(t, u) <= 1)));
+}
+function existeDelegadoEnGrupo(grupo, nombre) {
+  return efectivos().some(g => g.g === grupo && mismoInvitado(nombreDe(g), nombre));
+}
+// Al delegar se crea una fila propia para la persona delegada (mismo grupo,
+// «Reemplaza a: X», estado inicial Pendiente) para que aparezca en la lista,
+// los totales, el Excel y la checklist al confirmarse. Sin duplicar: si ya
+// existe un invitado con ese nombre en el grupo (p. ej. Frost/Stewart),
+// no se crea segunda fila. Si se quita el Delegó, la fila delegada queda
+// (puede tener estado propio); volver a delegar con el mismo nombre no
+// duplica porque la fila ya existe. Reutiliza el mecanismo de agregados:
+// la fila es un agregado con reemp/orig, así la lista muestra
+// «Reemplaza a: X» y la columna J del Excel también, sin tocar nada más.
+function crearFilaDelegado(orig, nombreDelegado) {
+  if (existeDelegadoEnGrupo(orig.g, nombreDelegado)) return null;
+  const partes = nombreDelegado.split(/\s+/).filter(Boolean);
+  const id = 'n' + Date.now().toString(36) + 'del';
+  agregados[id] = { g: orig.g, pre: '', nom: partes.slice(0, -1).join(' '), ape: partes[partes.length - 1] || '', cargo: '', ofi: '', org: '', tipo: '', mail: '', reemp: true, orig: { pre: orig.pre, nom: orig.nom, ape: orig.ape }, t: Date.now() };
+  saveLocal();
+  if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
+  renderTodo();
+  programarSyncLista();
+  return id;
+}
+
 function abrirDelegar(row, g) {
   const ed = row.querySelector('.editor');
   const st = estados[g.id] || {};
@@ -802,6 +852,7 @@ function abrirDelegar(row, g) {
     const v = inp.value.trim();
     if (!v) { inp.focus(); return; }
     setEstado(g.id, 'delego', v);
+    crearFilaDelegado(g, v);
   });
   ed.querySelectorAll('button')[1].addEventListener('click', () => { ed.hidden = true; ed.innerHTML = ''; });
 }
