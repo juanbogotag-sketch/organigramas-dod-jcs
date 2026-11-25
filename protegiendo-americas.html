@@ -88,6 +88,7 @@
   .invitado .top { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
   .invitado .quien { flex: 1 1 240px; }
   .invitado .nombre { font-weight: 800; font-size: 16px; color: #0a1d38; }
+  .invitado .sexo { display: inline-block; font-size: 11px; font-weight: 800; color: #0a1d38; background: #eef1f3; border-radius: 6px; padding: 1px 7px; margin-left: 6px; vertical-align: 1px; }
   .invitado .cargo { font-size: 13.5px; font-weight: 600; color: #3d4f68; margin-top: 2px; }
   .invitado .mail { font-size: 12.5px; color: #7b8aa0; font-weight: 600; margin-top: 2px; word-break: break-all; }
   .invitado .grupo { font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #5a6b82; }
@@ -107,7 +108,7 @@
   .invitado .editor .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
   @media (max-width: 640px) { .invitado .editor .grid { grid-template-columns: 1fr; } }
   .invitado .editor label { display: block; font-size: 11.5px; font-weight: 700; color: #5a6b82; margin-bottom: 3px; }
-  .invitado .editor input { width: 100%; font: 600 13.5px 'Montserrat', sans-serif; padding: 9px 10px; border: 2px solid #c9d4e4; border-radius: 8px; outline: none; }
+  .invitado .editor input, .invitado .editor select { width: 100%; font: 600 13.5px 'Montserrat', sans-serif; padding: 9px 10px; border: 2px solid #c9d4e4; border-radius: 8px; outline: none; background: #fff; }
   .invitado .editor .frow { display: flex; gap: 8px; margin-top: 10px; }
   .invitado .editor .frow .mini { flex: 1; }
   .invitado .sub { font-size: 12.5px; font-weight: 700; color: #8a6d00; margin-top: 6px; }
@@ -192,6 +193,7 @@
     <div class="grid">
       <div><label>Grupo</label><select id="aGrupo"></select></div>
       <div><label>Prefijo (Mr., Ms., Dr.…)</label><input id="aPre" placeholder="Mr."></div>
+      <div><label>Sexo *</label><select id="aSex"><option value="">—</option><option value="M">M</option><option value="F">F</option></select></div>
       <div><label>Nombre *</label><input id="aNom" placeholder="Nombre"></div>
       <div><label>Apellido *</label><input id="aApe" placeholder="Apellido"></div>
       <div><label>Cargo</label><input id="aCargo" placeholder="Cargo"></div>
@@ -200,6 +202,7 @@
       <div><label>Tipo de organización</label><input id="aTipo" placeholder="Government, Think Tank…"></div>
       <div><label>Correo</label><input id="aMail" placeholder="correo@ejemplo.com" type="email"></div>
     </div>
+    <p class="nota" id="msgAdd" style="color:#b3261e;font-weight:700" hidden></p>
     <div class="frow">
       <button class="btn" id="aGuardar" type="button">Guardar invitado</button>
       <button class="btn sec" id="aCancelar" type="button">Cancelar</button>
@@ -207,7 +210,7 @@
     <hr class="sep">
     <div class="importar">
       <h3>O agregar varios con una matriz</h3>
-      <p class="nota">Sube un archivo .xlsx o .csv con la lista. La matriz puede estar <b>desestructurada</b>: las columnas pueden venir en cualquier orden, con más o con menos columnas. El sistema detecta Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo y Correo por el nombre del encabezado; las columnas que no reconoce las ignora y las que faltan quedan vacías. Si la matriz no trae encabezados, se usa el orden Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo, Correo. Los invitados se agregan al grupo elegido arriba, en estado Pendiente.</p>
+      <p class="nota">Sube un archivo .xlsx o .csv con la lista. La matriz puede estar <b>desestructurada</b>: las columnas pueden venir en cualquier orden, con más o con menos columnas. El sistema detecta Prefijo, Sexo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo y Correo por el nombre del encabezado; las columnas que no reconoce las ignora y las que faltan quedan vacías. Si la matriz no trae encabezados, se usa el orden Prefijo, Nombre, Apellido, Cargo, Oficina, Organización, Tipo, Correo. Los invitados se agregan al grupo elegido arriba, en estado Pendiente.</p>
       <input type="file" id="fileMatriz" accept=".xlsx,.xls,.csv">
       <div id="prevMatriz"></div>
     </div>
@@ -367,7 +370,7 @@ function efectivos() {
     if (r && r.elim) continue;
     if (r && r.reemp) {
       const rep = r.reemp;
-      list.push(Object.assign({}, g, { pre: rep.pre, nom: rep.nom, ape: rep.ape, cargo: rep.cargo, org: rep.org, mail: rep.mail, orig: g, reemp: true }));
+      list.push(Object.assign({}, g, { pre: rep.pre, sex: rep.sex || '', nom: rep.nom, ape: rep.ape, cargo: rep.cargo, org: rep.org, mail: rep.mail, orig: g, reemp: true }));
     } else list.push(Object.assign({}, g));
   }
   for (const k of Object.keys(agregados)) {
@@ -425,12 +428,13 @@ function renderLista() {
     const row = document.createElement('div');
     row.className = 'invitado' + (e === 'confirmado' ? ' conf' : e === 'cancelado' ? ' canc' : e === 'delego' ? ' deleg' : '');
     let sub = '';
+    const nomHtml = [g.pre ? esc(g.pre) : '', (g.sex === 'M' || g.sex === 'F') ? '<span class="sexo">' + g.sex + '</span>' : '', esc(g.nom || ''), esc(g.ape || '')].filter(Boolean).join(' ');
     if (e === 'delego' && st.d) sub = '<div class="sub">Delegó en: ' + esc(st.d) + '</div>';
     if (g.reemp && g.orig) sub += '<div class="sub">Reemplaza a: ' + esc(nombreDe(g.orig)) + '</div>';
     if (g.agregado) sub += '<div class="sub">Agregado en la página</div>';
     row.innerHTML =
       '<div class="top"><div class="quien"><div class="grupo">' + esc(nombreGrupo(g.g)) + '</div>' +
-      '<div class="nombre">' + esc(nombreDe(g)) + '</div>' +
+      '<div class="nombre">' + nomHtml + '</div>' +
       '<div class="cargo">' + esc([g.cargo, g.org].filter(Boolean).join(' · ')) + '</div>' +
       (g.ofi ? '<div class="cargo">' + esc(g.ofi) + '</div>' : '') +
       (g.mail ? '<div class="mail">' + esc(g.mail) + '</div>' : '') + sub + '</div>' +
@@ -526,7 +530,31 @@ $('modalGrupo').addEventListener('click', e => { if (e.target === $('modalGrupo'
 // ---------- Informe provisional (solo lectura) ----------
 // Solo lee efectivos() + estadoDe(). No escribe en Firebase, no cambia
 // estados/roster/agregados, no toca la checklist y no cierra nada.
+// Mapa de nombres -> sexo (M/F) para la casilla Sexo del gestor.
+// Generado 2026-11-25 desde los conjuntos curados de clasificar_sexo.py.
+// Solo nombres claros: los ambiguos o unisex NO estan y devuelven ''.
+const SEX_NOMBRES_M = new Set('aaron agustin alberto alejandro alexander alfonso alfredo alvaro amir andres andrew angelo anthony antonio armando arturo benjamin bernard bernardo bobby brayan brian caleb carlos cesar charles chase christian christophe christopher clement colin collin cristian cristobal cuauhtemoc dan daniel dario david dennis diego donald eduardo efren elias elijah emilio enrique eric erik ethan eugenio ezequiel fabian fabricio felipe felix fernando francisco franklin frederick gabriel gary george gerson gianfranco gilberto gonzalo gregory guido gustavo harold harry hector henry horacio hugo ian ignacio isaac isidoro ivan jack jacob jaime james jason javier jesus jim joel john jonatan jonathan jorge jose joshua juan julian julio julius justin kaleb keith kevin kyle leon liam logan louis luc luis manuel marco marcos marcus mark marshall martin matan mateo matt matteo matthew mauricio maxwell michael miguel miles nathan nathaniel neil nelson neyder nicolas noah octavio oscar osvaldo owen pablo patricio patrick paul pedro peter philip rafael ralph ramiro ramon randall raul raymond ricardo richard robert roberto rodrigo roger ronald ruben ryan samuel santiago scott sebastian sergio simon stephen steven thomas timothy todd tomas valentin varun victor vincent vladimir walter william wilmer zachary zack'.split(' '));
+const SEX_NOMBRES_F = new Set('abigail adela adriana agustina alba alejandra alice alicia alissa allison amanda amber amelia amy ana angela angeles anita anna anne aurelia aurora barbara beatriz betty bonnie brenda camila candelaria carla carmen carolina catherine cecilia celeste charlotte cheryl christine cindy clara claudia concepcion constance consuelo courtney cristina cynthia daniela dawn debbie deborah denise diana dolores donna dora dorothy edith elena elisa elizabeth ella ellen emilia emily emma erica esperanza estelle evelyn frances gabriela gloria grace hannah heather helen inmaculada irene isabella jacqueline janet janice jennifer jessica jill joan joanna judith julia julie karen kate katherine kathia kathleen kathryn katrina keleann kelli kimberly kristen laura lauren leah leidy leonor leslie lillian linda lisa lois lourdes lucia lucile lydia madalen magdalena margaret margarita maria mariana marilyn marisa martha martina mary matilde megan melissa mercedes michelle milagros monica natalia natalie nicole nita nora norma nuria ofelia olga olivia paloma pamela paola patricia paula penelope rachel raegan rebecca rosa rosemary ruth salome samantha sandra sara sarah sharon shawna socorro sofia sonia sophia stella susan susana suzanne sylvia tania teresa tonija valentina vanesa vanessa veronica victoria virginia vivian wanda wilma xiaohong ximena yolanda yuliana zoe'.split(' '));
+function sexPorNombre(nom) {
+  const t = String(nom || '').trim().split(/\s+/)[0] || '';
+  const k = t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]/g, '');
+  if (!k) return '';
+  if (SEX_NOMBRES_F.has(k)) return 'F';
+  if (SEX_NOMBRES_M.has(k)) return 'M';
+  return '';
+}
+function sexoMF(v) {
+  const s = String(v || '').trim().toLowerCase();
+  if (s === 'm' || s === 'masculino' || s === 'hombre' || s === 'male') return 'M';
+  if (s === 'f' || s === 'femenino' || s === 'mujer' || s === 'female') return 'F';
+  return '';
+}
+// Genero para el Informe: el campo sex (M/F) manda; si esta vacio,
+// se cae a la logica anterior por prefijo; si tampoco hay prefijo,
+// 'Sin determinar'. Las etiquetas no cambian.
 function generoDe(g) {
+  if (g.sex === 'F') return 'Mujeres';
+  if (g.sex === 'M') return 'Hombres';
   const p = String(g.pre || '').trim().toLowerCase().replace(/\.$/, '');
   if (p === 'ms' || p === 'mrs' || p === 'miss') return 'Mujeres';
   if (p === 'mr') return 'Hombres';
@@ -831,7 +859,7 @@ function crearFilaDelegado(orig, nombreDelegado) {
   if (existeDelegadoEnGrupo(orig.g, nombreDelegado)) return null;
   const partes = nombreDelegado.split(/\s+/).filter(Boolean);
   const id = 'n' + Date.now().toString(36) + 'del';
-  agregados[id] = { g: orig.g, pre: '', nom: partes.slice(0, -1).join(' '), ape: partes[partes.length - 1] || '', cargo: '', ofi: '', org: '', tipo: '', mail: '', reemp: true, orig: { pre: orig.pre, nom: orig.nom, ape: orig.ape }, t: Date.now() };
+  agregados[id] = { g: orig.g, pre: '', sex: sexPorNombre(partes.slice(0, -1).join(' ')), nom: partes.slice(0, -1).join(' '), ape: partes[partes.length - 1] || '', cargo: '', ofi: '', org: '', tipo: '', mail: '', reemp: true, orig: { pre: orig.pre, nom: orig.nom, ape: orig.ape }, t: Date.now() };
   saveLocal();
   if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
   renderTodo();
@@ -862,6 +890,7 @@ function abrirReemplazo(row, g) {
   ed.hidden = false;
   ed.innerHTML = '<div class="grid">' +
     '<div><label>Prefijo</label><input data-f="pre" placeholder="Mr. / Ms."></div>' +
+    '<div><label>Sexo *</label><select data-f="sex"><option value="">—</option><option value="M">M</option><option value="F">F</option></select></div>' +
     '<div><label>Nombre *</label><input data-f="nom" placeholder="Nombre"></div>' +
     '<div><label>Apellido *</label><input data-f="ape" placeholder="Apellido"></div>' +
     '<div><label>Cargo</label><input data-f="cargo" placeholder="Cargo"></div>' +
@@ -872,7 +901,8 @@ function abrirReemplazo(row, g) {
   ed.querySelectorAll('button')[0].addEventListener('click', () => {
     const val = f => ed.querySelector('[data-f="' + f + '"]').value.trim();
     if (!val('nom') || !val('ape')) { (val('nom') ? ed.querySelector('[data-f="ape"]') : ed.querySelector('[data-f="nom"]')).focus(); return; }
-    roster[g.id] = { reemp: { pre: val('pre'), nom: val('nom'), ape: val('ape'), cargo: val('cargo'), org: val('org'), mail: val('mail') }, t: Date.now() };
+    if (val('sex') !== 'M' && val('sex') !== 'F') { ed.querySelector('[data-f="sex"]').focus(); return; }
+    roster[g.id] = { reemp: { pre: val('pre'), sex: val('sex'), nom: val('nom'), ape: val('ape'), cargo: val('cargo'), org: val('org'), mail: val('mail') }, t: Date.now() };
     saveLocal();
     if (rosterRef) rosterRef.child(g.id).set(roster[g.id]);
     clearEstado(g.id);
@@ -886,15 +916,18 @@ $('btnAdd').addEventListener('click', () => {
   f.hidden = !f.hidden;
   if (!f.hidden) $('aNom').focus();
 });
-$('aCancelar').addEventListener('click', () => { $('formAdd').hidden = true; });
+$('aCancelar').addEventListener('click', () => { $('formAdd').hidden = true; $('msgAdd').hidden = true; });
 $('aGuardar').addEventListener('click', () => {
   const v = id => $(id).value.trim();
   if (!v('aNom') || !v('aApe')) { (v('aNom') ? $('aApe') : $('aNom')).focus(); return; }
+  // El Sexo es obligatorio para inscribir a alguien nuevo (orden de Juan).
+  if ($('aSex').value !== 'M' && $('aSex').value !== 'F') { const m = $('msgAdd'); m.textContent = 'Elige el sexo (M o F) para guardar el invitado.'; m.hidden = false; $('aSex').focus(); return; }
   const id = 'n' + Date.now().toString(36);
-  agregados[id] = { g: $('aGrupo').value, pre: v('aPre'), nom: v('aNom'), ape: v('aApe'), cargo: v('aCargo'), ofi: v('aOfi'), org: v('aOrg'), tipo: v('aTipo'), mail: v('aMail'), t: Date.now() };
+  agregados[id] = { g: $('aGrupo').value, pre: v('aPre'), sex: $('aSex').value, nom: v('aNom'), ape: v('aApe'), cargo: v('aCargo'), ofi: v('aOfi'), org: v('aOrg'), tipo: v('aTipo'), mail: v('aMail'), t: Date.now() };
   saveLocal();
   if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
-  ['aPre', 'aNom', 'aApe', 'aCargo', 'aOfi', 'aOrg', 'aTipo', 'aMail'].forEach(x => { $(x).value = ''; });
+  $('msgAdd').hidden = true;
+  ['aPre', 'aSex', 'aNom', 'aApe', 'aCargo', 'aOfi', 'aOrg', 'aTipo', 'aMail'].forEach(x => { $(x).value = ''; });
   $('formAdd').hidden = true;
   filtroGrupo = agregados[id].g;
   buildChips();
@@ -959,6 +992,7 @@ const ALIAS_IMP = {
   ofi: ['oficina', 'office', 'department', 'departamento', 'dept', 'division'],
   org: ['organizacion', 'organization', 'organisation', 'company', 'empresa', 'organizacion company'],
   tipo: ['tipo', 'tipo de organizacion', 'organization type', 'type', 'sector'],
+  sex: ['sexo', 'sex', 'm/f', 'm f'],
   mail: ['correo', 'correo electronico', 'e mail', 'email', 'email address', 'mail']
 };
 function detectarHeadsImp(rows) {
@@ -981,12 +1015,13 @@ function filaAInvitadoImp(cells, heads) {
   };
   var g;
   if (heads) {
-    g = { pre: pick.apply(null, ALIAS_IMP.pre), nom: pick.apply(null, ALIAS_IMP.nom), ape: pick.apply(null, ALIAS_IMP.ape), cargo: pick.apply(null, ALIAS_IMP.cargo), ofi: pick.apply(null, ALIAS_IMP.ofi), org: pick.apply(null, ALIAS_IMP.org), tipo: pick.apply(null, ALIAS_IMP.tipo), mail: pick.apply(null, ALIAS_IMP.mail) };
+    g = { pre: pick.apply(null, ALIAS_IMP.pre), sex: sexoMF(pick.apply(null, ALIAS_IMP.sex)), nom: pick.apply(null, ALIAS_IMP.nom), ape: pick.apply(null, ALIAS_IMP.ape), cargo: pick.apply(null, ALIAS_IMP.cargo), ofi: pick.apply(null, ALIAS_IMP.ofi), org: pick.apply(null, ALIAS_IMP.org), tipo: pick.apply(null, ALIAS_IMP.tipo), mail: pick.apply(null, ALIAS_IMP.mail) };
   } else {
     g = { pre: cells[0] || '', nom: cells[1] || '', ape: cells[2] || '', cargo: cells[3] || '', ofi: cells[4] || '', org: cells[5] || '', tipo: cells[6] || '', mail: cells[7] || '' };
     Object.keys(g).forEach(function (k) { g[k] = String(g[k] || '').trim(); });
   }
   if (!g.nom || !g.ape) return null;
+  if (!g.sex) g.sex = sexPorNombre(g.nom);
   return g;
 }
 var impPendientes = [];
@@ -1028,7 +1063,7 @@ $('fileMatriz').addEventListener('change', async function (ev) {
       var grupo = $('aGrupo').value;
       impPendientes.forEach(function (g, i) {
         var id = 'ag_' + t + '_' + i;
-        agregados[id] = { g: grupo, pre: g.pre, nom: g.nom, ape: g.ape, cargo: g.cargo, ofi: g.ofi, org: g.org, tipo: g.tipo, mail: g.mail, t: t };
+        agregados[id] = { g: grupo, pre: g.pre, sex: g.sex || '', nom: g.nom, ape: g.ape, cargo: g.cargo, ofi: g.ofi, org: g.org, tipo: g.tipo, mail: g.mail, t: t };
         if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
       });
       saveLocal();
@@ -1255,15 +1290,15 @@ $('fileRsvp').addEventListener('change', async function (ev) {
         } else if (it.tipo === 'agregado') {
           var id = 'n' + t.toString(36) + 'rsvp' + it.idx;
           var r2 = it.r;
-          agregados[id] = { g: grupoPorOrgRsvp(r2.org), pre: '', nom: limpiarNombreRsvp(r2.nom), ape: limpiarNombreRsvp(r2.ape), cargo: '', ofi: '', org: r2.org, tipo: tipoPorOrgRsvp(r2.org), mail: r2.mail || 'pendiente', t: t };
+          agregados[id] = { g: grupoPorOrgRsvp(r2.org), pre: '', sex: sexPorNombre(limpiarNombreRsvp(r2.nom)), nom: limpiarNombreRsvp(r2.nom), ape: limpiarNombreRsvp(r2.ape), cargo: '', ofi: '', org: r2.org, tipo: tipoPorOrgRsvp(r2.org), mail: r2.mail || 'pendiente', t: t };
           if (agregadosRef) agregadosRef.child(id).set(agregados[id]);
           setEstado('ag_' + id, 'confirmado', '');
           nAgr2++;
         } else if (it.tipo === 'acompanante' || it.tipo === 'acompanante-sinnombre') {
           var id2 = 'n' + t.toString(36) + 'rsvp' + it.idx;
           var rec = it.tipo === 'acompanante-sinnombre'
-            ? { g: it.grupo, pre: '', nom: 'Acompañante', ape: '(nombre pendiente)', cargo: 'Acompañante de ' + it.inviterNombre + ' — nombre pendiente', ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t }
-            : { g: it.grupo, pre: it.preA || '', nom: it.nomA, ape: it.apeA, cargo: 'Acompañante de ' + it.inviterNombre, ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t };
+            ? { g: it.grupo, pre: '', sex: '', nom: 'Acompañante', ape: '(nombre pendiente)', cargo: 'Acompañante de ' + it.inviterNombre + ' — nombre pendiente', ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t }
+            : { g: it.grupo, pre: it.preA || '', sex: sexPorNombre(it.nomA), nom: it.nomA, ape: it.apeA, cargo: 'Acompañante de ' + it.inviterNombre, ofi: '', org: it.org, tipo: '', mail: 'pendiente', t: t };
           agregados[id2] = rec;
           if (agregadosRef) agregadosRef.child(id2).set(agregados[id2]);
           setEstado('ag_' + id2, 'confirmado', '');
@@ -1357,7 +1392,7 @@ async function descargarXlsx() {
   const cellF = (f, i, r, s) => '<c r="' + colL(i) + r + '"' + (s != null ? ' s="' + s + '"' : '') + '><f>' + xesc(f) + '</f></c>';
   const rowF = (cells, r, s) => '<row r="' + r + '">' + cells.map((c, i) => (c && c.f ? cellF(c.f, i, r, s) : cellXml(c, i, r, s))).join('') + '</row>';
   const escHoja = n => "'" + String(n).replace(/'/g, "''") + "'";
-  const heads = PROT_HEADERS.concat(['Estado', 'Delegado / Reemplazo', 'Acompañante']);
+  const heads = [PROT_HEADERS[0], 'Sexo'].concat(PROT_HEADERS.slice(1), ['Estado', 'Delegado / Reemplazo', 'Acompañante']);
   const list = efectivos();
   const now = new Date(), p2 = n => String(n).padStart(2, '0');
   const generado = p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
@@ -1383,11 +1418,11 @@ async function descargarXlsx() {
   listaGrupos.forEach((sh, gi) => {
     const h = escHoja(nombresHojaPre[gi]);
     resumenRows.push(rowF([sh.name,
-      { f: "COUNTA(" + h + "!I2:I1000)" },
-      { f: 'COUNTIF(' + h + '!I2:I1000,"Confirmado")' },
-      { f: 'COUNTIF(' + h + '!I2:I1000,"Cancelado")' },
-      { f: 'COUNTIF(' + h + '!I2:I1000,"Delegó")' },
-      { f: 'COUNTIF(' + h + '!I2:I1000,"Pendiente")' }], 9 + gi, 1));
+      { f: "COUNTA(" + h + "!J2:J1000)" },
+      { f: 'COUNTIF(' + h + '!J2:J1000,"Confirmado")' },
+      { f: 'COUNTIF(' + h + '!J2:J1000,"Cancelado")' },
+      { f: 'COUNTIF(' + h + '!J2:J1000,"Delegó")' },
+      { f: 'COUNTIF(' + h + '!J2:J1000,"Pendiente")' }], 9 + gi, 1));
   });
   const resumenCols = '<cols><col min="1" max="1" width="42" customWidth="1"/><col min="2" max="2" width="16" customWidth="1"/><col min="3" max="3" width="16" customWidth="1"/><col min="4" max="4" width="16" customWidth="1"/><col min="5" max="5" width="16" customWidth="1"/><col min="6" max="6" width="16" customWidth="1"/></cols>';
   const merges = '<mergeCells count="3"><mergeCell ref="A1:F1"/><mergeCell ref="A2:F2"/><mergeCell ref="A3:F3"/></mergeCells>';
@@ -1413,7 +1448,7 @@ async function descargarXlsx() {
       if (g.reemp && g.orig) extra = (extra ? extra + ' · ' : '') + 'Reemplaza a: ' + nombreDe(g.orig);
       const ac = g.acomp ? porId[g.acomp] : null;
       const acomp = ac ? 'Acompañante de ' + nombreDe(ac) : (g.acomp ? 'Acompañante' : '');
-      return [g.pre, g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra, acomp];
+      return [g.pre, (g.sex === 'M' || g.sex === 'F') ? g.sex : '', g.nom, g.ape, g.cargo, g.ofi, g.org, g.tipo, g.mail, EST_LABEL[e], extra, acomp];
     });
     const widths = heads.map(() => 26.14); // 188 px por columna
     const colsXml = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
